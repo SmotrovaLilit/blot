@@ -1,0 +1,18 @@
+version: 3
+tasks:
+  install-grpcui:
+    desc: Install grpcui
+    cmds:
+      - go install github.com/fullstorydev/grpcui/cmd/grpcui@latest
+  run-grpcui:
+    desc: Run grpcui
+    vars:
+      BLOT_SERVICE_ADDRESS: '{{.BLOT_SERVICE_ADDRESS | default "127.0.0.1:8081"}}'
+    cmds:
+        - grpcui -plaintext {{.BLOT_SERVICE_ADDRESS}}
+  install-envoy:
+    desc: Install envoy
+    cmds:
+      - brew install envoy
+  run-envoy:
+    envoy -c ./envoy.yaml --log-level debug
