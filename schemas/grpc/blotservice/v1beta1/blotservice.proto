@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+package blotservice.v1beta1;
+
+option go_package = "blotservice/v1beta1;blotservicepb";
+
+service BlotService {
+  rpc GetGameForPlayer(GetGameForPlayerRequest) returns (GetGameForPlayerResponse);
+  rpc CreateGameSet(CreateGameSetRequest) returns (CreateGameSetResponse);
+}
+
+message CreateGameSetRequest {
+  string id = 1;
+  string first_game_id = 2;
+  string team1_id = 3;
+  string team2_id = 4;
+}
+message CreateGameSetResponse {}
+
+message GetGameForPlayerRequest {
+  string game_id = 1;
+  string player_id = 2;
+}
+
+message GetGameForPlayerResponse {
+  Game game = 1;
+  Player current_player = 2;
+  Player ally_player = 3;
+  Player left_player = 4;
+  Player right_player = 5;
+}
+
+message Game {
+  string id = 1;
+  GameStatus status = 2;
+  Round round = 3;
+  Bet bet = 4;
+  repeated Team teams = 5;
+}
+
+message Bet {
+  Suit trump = 1;
+  string team_id = 2;
+  int32 amount = 3;
+}
+
+message Team {
+  string id = 1;
+  string name = 2;
+}
+
+message Player {
+  string id = 1;
+  string name = 2;
+  repeated Card hand_cards = 4;
+  repeated Card discard_stack = 5;
+  string team_id = 6;
+}
+
+message Round {
+  int32 number = 1;
+  repeated PlayerCard table_cards = 2;
+  RoundStatus status = 3;
+  string current_player_id = 4;
+}
+
+message PlayerCard {
+  string player_id = 1;
+  Card card = 2;
+}
+
+enum RoundStatus {
+  ROUND_STATUS_UNSPECIFIED = 0;
+  ROUND_STATUS_STARTED = 1;
+  ROUND_STATUS_FINISHED = 2;
+}
+
+message Card {
+  Rank rank = 1;
+  Suit suit = 2;
+}
+
+enum GameStatus {
+  GAME_STATUS_UNSPECIFIED = 0;
+  GAME_STATUS_CREATED = 1;
+  GAME_STATUS_STARTED = 2;
+  GAME_STATUS_TALKING = 3;
+  GAME_STATUS_BET_PLACED = 4;
+  GAME_STATUS_FINISHED = 5;
+}
+enum Rank {
+  RANK_UNSPECIFIED = 0;
+  RANK_ACE = 1;
+  RANK_SEVEN = 2;
+  RANK_EIGHT = 3;
+  RANK_NINE = 4;
+  RANK_TEN = 5;
+  RANK_JACK = 6;
+  RANK_QUEEN = 7;
+  RANK_KING = 8;
+}
+
+enum Suit {
+  SUIT_UNSPECIFIED = 0;
+  SUIT_HEARTS = 1;
+  SUIT_DIAMONDS = 2;
+  SUIT_CLUBS = 3;
+  SUIT_SPADES = 4;
+}

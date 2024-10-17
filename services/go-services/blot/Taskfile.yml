@@ -1,0 +1,13 @@
+version: '3'
+
+tasks:
+  smoke-test-get-game:
+    desc: Smoke test get game
+    vars:
+      BLOT_SERVICE_ADDRESS: '{{.BLOT_SERVICE_ADDRESS | default "127.0.0.1:8081"}}'
+    cmds:
+      - |
+        grpcurl -vv -plaintext -d '{
+          "game_id": "1",
+          "player_id": "1"
+        }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.GetGameForPlayer
