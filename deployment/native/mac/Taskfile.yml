@@ -1,0 +1,129 @@
+version: 3
+vars:
+  LOGS_DIR: 'logs'
+
+tasks:
+  start:
+    desc: Start all services
+    cmds:
+      - task start-envoy
+      - task start-grpcui
+
+  stop:
+    desc: Stop all services
+    cmds:
+      - task stop-envoy
+      - task stop-grpcui
+
+  status:
+    desc: Get status of all services
+    cmds:
+      - task status-envoy
+      - task status-grpcui
+
+  start-envoy:
+    desc: Start envoy
+    cmds:
+      - mkdir -p {{.LOGS_DIR}}
+      - |
+        bash -c 'nohup envoy -c ./envoy.yaml --log-level debug > {{.LOGS_DIR}}/envoy.log  2>&1 &'
+
+  status-envoy:
+    desc: Get envoy status
+    vars:
+      SERVICE_NAME: 'envoy'
+    cmds:
+      - SERVICE_NAME="{{.SERVICE_NAME}}" task _service-status
+
+  stop-envoy:
+    desc: Stop envoy
+    vars:
+      SERVICE_NAME: 'envoy'
+    cmds:
+      - SERVICE_NAME="{{.SERVICE_NAME}}" task _stop-service
+
+  inspect-envoy:
+    desc: Get envoy info
+    vars:
+      SERVICE_NAME: 'envoy'
+    cmds:
+      - SERVICE_NAME="{{.SERVICE_NAME}}" task _service-inspect
+
+  logs-envoy:
+    desc: Get envoy logs
+    cmds:
+      - tail -f {{.LOGS_DIR}}/envoy.log
+
+  start-grpcui:
+    desc: Start grpcui
+    vars:
+      BLOT_SERVICE_ADDRESS: '{{.BLOT_SERVICE_ADDRESS | default "127.0.0.1:8080"}}'
+    cmds:
+      - mkdir -p {{.LOGS_DIR}}
+      - |
+        bash -c 'nohup grpcui -plaintext {{.BLOT_SERVICE_ADDRESS}} > {{.LOGS_DIR}}/grpcui.log  2>&1 &'
+
+  status-grpcui:
+    desc: Get grpcui status
+    vars:
+      SERVICE_NAME: 'grpcui'
+    cmds:
+      - SERVICE_NAME="{{.SERVICE_NAME}}" task _service-status
+
+  stop-grpcui:
+    desc: Stop grpcui
+    vars:
+      SERVICE_NAME: 'grpcui'
+    cmds:
+      - SERVICE_NAME="{{.SERVICE_NAME}}" task _stop-service
+
+  inspect-grpcui:
+    desc: Get grpcui info
+    vars:
+      SERVICE_NAME: 'grpcui'
+    cmds:
+      - SERVICE_NAME="{{.SERVICE_NAME}}" task _service-inspect
+
+  logs-grpcui:
+    desc: Get grpcui logs
+    cmds:
+      - tail -f {{.LOGS_DIR}}/grpcui.log
+
+  _service-status:
+    desc: Get service status
+    vars:
+      SERVICE_NAME: '{{.SERVICE_NAME}}'
+    cmds:
+      - |
+        if pgrep -x "{{.SERVICE_NAME}}" >/dev/null; then
+          echo "INFO: service {{.SERVICE_NAME}} is running!"
+          exit 0
+        fi
+        echo "INFO: service {{.SERVICE_NAME}} is NOT running!"
+        exit 1
+
+  _service-inspect:
+    desc: Get service info
+    vars:
+      SERVICE_NAME: '{{.SERVICE_NAME}}'
+    cmds:
+      - |
+        if pgrep -x "{{.SERVICE_NAME}}" >/dev/null; then
+          echo "INFO: service {{.SERVICE_NAME}} is running!"
+          echo "INFO: process info: $(ps aux | grep {{.SERVICE_NAME}})"
+          echo "INFO: environment variables: $(cat /proc/$(pgrep -x "{{.SERVICE_NAME}}")/environ)"
+          exit 0
+        fi
+        echo "INFO: service {{.SERVICE_NAME}} is NOT running!"
+
+  _stop-service:
+    vars:
+      SERVICE_NAME: '{{.SERVICE_NAME}}'
+    cmds:
+      - |
+        if pgrep -x "{{.SERVICE_NAME}}" >/dev/null; then
+            pkill -x "{{.SERVICE_NAME}}"
+            echo "{{.SERVICE_NAME}} is stopped."
+        else
+            echo "{{.SERVICE_NAME}} is not running."
+        fi
