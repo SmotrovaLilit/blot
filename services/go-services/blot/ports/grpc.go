@@ -4,7 +4,7 @@ import (
 	"blot/internal/blot/app"
 	"blot/internal/blot/app/command"
 	"blot/internal/blot/domain/gameset"
-	"blot/internal/blot/domain/team"
+	"blot/internal/blot/domain/gameset/player"
 	blotservicepb "blot/internal/common/gen-proto/blotservice/v1beta1"
 	"context"
 	"google.golang.org/grpc/codes"
@@ -21,11 +21,13 @@ func NewGrpcServer(application app.Application) GrpcServer {
 }
 
 func (g GrpcServer) CreateGameSet(ctx context.Context, req *blotservicepb.CreateGameSetRequest) (*blotservicepb.CreateGameSetResponse, error) {
-	err := g.app.Commands.CreateGameSet.Handle(ctx, command.CreateGameSet{
-		TeamID1:     team.NewID(req.Team1Id),
-		TeamID2:     team.NewID(req.Team2Id),
-		ID:          gameset.NewID(req.Id),
-		FirstGameID: gameset.NewGameID(req.FirstGameId),
+	name, err := player.NewName(req.FirstPlayer)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+	}
+	err = g.app.Commands.CreateGameSet.Handle(ctx, command.CreateGameSet{
+		ID:              gameset.NewID(req.Id),
+		FirstPlayerName: name,
 	})
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error

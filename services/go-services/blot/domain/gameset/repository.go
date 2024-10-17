@@ -13,6 +13,14 @@ func (e NotFoundError) Error() string {
 	return fmt.Sprintf("game set '%s' not found", e.ID.String())
 }
 
+type ErrGameSetAlreadyExists struct {
+	ID ID
+}
+
+func (e ErrGameSetAlreadyExists) Error() string {
+	return fmt.Sprintf("game set '%s' already exists", e.ID.String())
+}
+
 type Repository interface {
 	Create(ctx context.Context, gameSet *GameSet) error
 	Get(ctx context.Context, id ID) (*GameSet, error)
