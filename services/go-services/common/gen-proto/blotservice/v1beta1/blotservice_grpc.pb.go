@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BlotService_GetGameForPlayer_FullMethodName = "/blotservice.v1beta1.BlotService/GetGameForPlayer"
-	BlotService_CreateGameSet_FullMethodName    = "/blotservice.v1beta1.BlotService/CreateGameSet"
+	BlotService_GetGameForPlayer_FullMethodName    = "/blotservice.v1beta1.BlotService/GetGameForPlayer"
+	BlotService_CreateGameSet_FullMethodName       = "/blotservice.v1beta1.BlotService/CreateGameSet"
+	BlotService_GetGameSetForPlayer_FullMethodName = "/blotservice.v1beta1.BlotService/GetGameSetForPlayer"
 )
 
 // BlotServiceClient is the client API for BlotService service.
@@ -29,6 +30,7 @@ const (
 type BlotServiceClient interface {
 	GetGameForPlayer(ctx context.Context, in *GetGameForPlayerRequest, opts ...grpc.CallOption) (*GetGameForPlayerResponse, error)
 	CreateGameSet(ctx context.Context, in *CreateGameSetRequest, opts ...grpc.CallOption) (*CreateGameSetResponse, error)
+	GetGameSetForPlayer(ctx context.Context, in *GetGameSetForPlayerRequest, opts ...grpc.CallOption) (*GetGameSetForPlayerResponse, error)
 }
 
 type blotServiceClient struct {
@@ -59,12 +61,23 @@ func (c *blotServiceClient) CreateGameSet(ctx context.Context, in *CreateGameSet
 	return out, nil
 }
 
+func (c *blotServiceClient) GetGameSetForPlayer(ctx context.Context, in *GetGameSetForPlayerRequest, opts ...grpc.CallOption) (*GetGameSetForPlayerResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetGameSetForPlayerResponse)
+	err := c.cc.Invoke(ctx, BlotService_GetGameSetForPlayer_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BlotServiceServer is the server API for BlotService service.
 // All implementations must embed UnimplementedBlotServiceServer
 // for forward compatibility.
 type BlotServiceServer interface {
 	GetGameForPlayer(context.Context, *GetGameForPlayerRequest) (*GetGameForPlayerResponse, error)
 	CreateGameSet(context.Context, *CreateGameSetRequest) (*CreateGameSetResponse, error)
+	GetGameSetForPlayer(context.Context, *GetGameSetForPlayerRequest) (*GetGameSetForPlayerResponse, error)
 	mustEmbedUnimplementedBlotServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedBlotServiceServer) GetGameForPlayer(context.Context, *GetGame
 }
 func (UnimplementedBlotServiceServer) CreateGameSet(context.Context, *CreateGameSetRequest) (*CreateGameSetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGameSet not implemented")
+}
+func (UnimplementedBlotServiceServer) GetGameSetForPlayer(context.Context, *GetGameSetForPlayerRequest) (*GetGameSetForPlayerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGameSetForPlayer not implemented")
 }
 func (UnimplementedBlotServiceServer) mustEmbedUnimplementedBlotServiceServer() {}
 func (UnimplementedBlotServiceServer) testEmbeddedByValue()                     {}
@@ -138,6 +154,24 @@ func _BlotService_CreateGameSet_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BlotService_GetGameSetForPlayer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGameSetForPlayerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlotServiceServer).GetGameSetForPlayer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BlotService_GetGameSetForPlayer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlotServiceServer).GetGameSetForPlayer(ctx, req.(*GetGameSetForPlayerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BlotService_ServiceDesc is the grpc.ServiceDesc for BlotService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var BlotService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateGameSet",
 			Handler:    _BlotService_CreateGameSet_Handler,
+		},
+		{
+			MethodName: "GetGameSetForPlayer",
+			Handler:    _BlotService_GetGameSetForPlayer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

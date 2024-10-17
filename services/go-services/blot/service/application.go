@@ -9,11 +9,10 @@ import (
 )
 
 func NewApplication(ctx context.Context) app.Application {
-	gameSetRepository := adapters.NewGameSetPostgresRepository()
-	teamRepository := adapters.NewTeamPostgresRepository()
+	gameSetRepository := adapters.NewGameSetMemoryRepository()
 	return app.Application{
 		Commands: app.Commands{
-			CreateGameSet: command.NewCreateGameSetHandler(gameSetRepository, teamRepository),
+			CreateGameSet: command.NewCreateGameSetHandler(gameSetRepository),
 			StartNewGame:  command.NewStartNewGameHandler(gameSetRepository),
 			PlayCard:      command.NewPlayCardHandler(gameSetRepository),
 		},

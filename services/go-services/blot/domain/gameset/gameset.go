@@ -2,29 +2,29 @@ package gameset
 
 import (
 	"blot/internal/blot/domain/card"
+	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/blot/domain/user"
 	"errors"
 	"github.com/google/uuid"
 )
 
 type GameSet struct {
-	id       ID
-	lastGame Game
+	id          ID
+	firstPlayer player.Name
+	lastGame    Game
+	status      GamesetStatus
 }
 
 var ErrGameNotFinished = errors.New("last game is not finished")
 
-func NewGameSet(id ID, gameID GameID, t1, t2 Team) (*GameSet, error) {
-	if id.IsZero() || gameID.IsZero() || t1.IsZero() || t2.IsZero() {
+func NewGameSet(id ID, name player.Name) (*GameSet, error) {
+	if id.IsZero() || name.IsZero() {
 		panic("empty input objects, use constructor to create object")
 	}
-	game, err := CreateNewGame(gameID, id, t1, t2)
-	if err != nil {
-		return nil, err
-	}
 	s := GameSet{
-		id:       id,
-		lastGame: *game,
+		id:          id,
+		firstPlayer: name,
+		status:      GamesetStatusWaitedForPlayers,
 	}
 	return &s, nil
 }
