@@ -1,0 +1,43 @@
+version: '3'
+
+vars:
+  PROTOC_IMAGE: '{{.PROTOC_IMAGE | default "protoc"}}'
+
+tasks:
+  format:
+    desc: Format code
+    cmds:
+      - buf format -w blotservice/v1beta1/*.proto
+
+  lint:
+    desc: Lint proto files
+    cmds:
+      - buf lint
+
+  lock:
+    desc: Lock dependencies
+    cmds:
+      - buf mod update
+
+  generate:
+    desc: Generate code with protoc plugins
+    cmds:
+      - task: lock
+      - task: format
+      - task: lint
+      # - task: breaking
+      - buf generate
+
+  generate-js:
+    desc: Generate protobuf code for JavaScript
+    vars:
+      IMAGE_NAME: '{{.IMAGE_NAME | default "protoc"}}'
+    cmds:
+      - rm -rf generated
+      - docker build -t {{.IMAGE_NAME}} -f protoc.dockerfile .
+      - docker run -it --rm --user $(id -u):$(id -g) -v $(pwd):/work -w /work {{.IMAGE_NAME}} bash -c '
+        mkdir generated &&
+        protoc --ts_out="/work/generated" --ts_opt=use_proto_field_name --proto_path="/work" /work/blotservice/v1beta1/*.proto
+        '
+      - rm -rf ../../services/ui-services/blot-ui/src/generated
+      - mv generated ../../services/ui-services/blot-ui/src/
