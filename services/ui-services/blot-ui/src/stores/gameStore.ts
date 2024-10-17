@@ -22,7 +22,7 @@ import {Bet, Card, Game, Player, PlayerCard, Round, Team} from '@/models/game';
 
 // @ts-ignore
 export const PROXY_URL: string = import.meta.env.VITE_PROXY_URL || 'http://127.0.0.1:8080' // grpc-web-proxy
-const TIMEOUT_MILLISECS: number = 5 * 1000
+export const TIMEOUT_MILLISECS: number = 5 * 1000
 
 
 // Function to convert the gRPC response to your model
