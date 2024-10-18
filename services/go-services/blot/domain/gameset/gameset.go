@@ -46,6 +46,14 @@ func (s GameSet) PlayCard(id user.ID, card card.Card) error {
 	return s.lastGame.PlayCard(id, card)
 }
 
+func (s GameSet) FirstPlayer() player.Name {
+	return s.firstPlayer
+}
+
+func (s GameSet) Status() GamesetStatus {
+	return s.status
+}
+
 type ID struct {
 	value uuid.UUID
 }

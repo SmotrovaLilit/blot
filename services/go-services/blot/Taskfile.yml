@@ -23,3 +23,14 @@ tasks:
                 "first_player": "Lilit"
             }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.CreateGameSet
 
+  smoke-test-create-wrong-gameset:
+    desc: Smoke test create game
+    vars:
+      BLOT_SERVICE_ADDRESS: '{{.BLOT_SERVICE_ADDRESS | default "127.0.0.1:8081"}}'
+    cmds:
+        - |
+            grpcurl -vv -plaintext -d '{
+                "id": "71199AC4-DDA2-47F1-A207-2EF9E5C48498",
+                "first_player": ""
+            }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.CreateGameSet
+
