@@ -42,7 +42,7 @@ export default defineComponent({
     const { gameSet } = storeToRefs(gameSetsStore);
 
     onMounted(() => {
-      gameSetsStore.initializeGameSets();
+      gameSetsStore.loadGameSets();
       gameSetsStore.fetchGameSet(route.params.gameSetId);
       console.log(gameSet);
     });

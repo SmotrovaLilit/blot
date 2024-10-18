@@ -4,15 +4,15 @@
       <h2 class="text-h5">Create a New Game</h2>
       <v-card-text>
         <v-form @submit.prevent="submitForm">
-          <v-text-field
-              v-model="playerName"
-              label="Enter your name"
-              required
-              :error-messages="nameError"
-          />
+<!--          <v-text-field-->
+<!--              v-model="playerName"-->
+<!--              label="Enter your name"-->
+<!--              required-->
+<!--              :error-messages="nameError"-->
+<!--          />-->
           <v-btn type="submit" color="primary">Create Game</v-btn>
         </v-form>
-        <v-alert v-if="errorMessage" type="error" dismissible>{{ errorMessage }}</v-alert>
+<!--        <v-alert v-if="errorMessage" type="error" dismissible>{{ errorMessage }}</v-alert>-->
       </v-card-text>
     </v-card>
   </v-container>
@@ -27,22 +27,22 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default defineComponent({
   setup() {
-    const playerName = ref<string>('');
-    const nameError = ref<string | null>(null);
-    const errorMessage = ref<string | null>(null);
+    // const playerName = ref<string>('');
+    // const nameError = ref<string | null>(null);
+    // const errorMessage = ref<string | null>(null);
     const router = useRouter();
     const gameSetsStore = useGameSetsStore();
 
     const submitForm = async () => {
-      if (!playerName.value) {
-        nameError.value = 'Name is required';
-        return;
-      }
-      nameError.value = null;
+      // if (!playerName.value) {
+      //   nameError.value = 'Name is required';
+      //   return;
+      // }
+      // nameError.value = null;
 
       try {
         const Id = uuidv4()
-        await gameSetsStore.createGameSet(Id, playerName.value);
+        await gameSetsStore.createGameSet(Id);
         await router.push({ name: 'gameSet', params: { gameSetId: Id } });
       } catch (error) {
         console.error(error);
@@ -50,10 +50,10 @@ export default defineComponent({
     };
 
     return {
-      playerName,
-      nameError,
+      // playerName,
+      // nameError,
       submitForm,
-      errorMessage
+      //errorMessage
     };
   },
 });

@@ -27,13 +27,12 @@ import { useGameSetsStore } from '@/stores/gameSetsStore';
 import { storeToRefs } from 'pinia';
 
 export default defineComponent({
-  name: 'GamesList',
   setup() {
     const gameSetsStore = useGameSetsStore();
     const { gameSets } = storeToRefs(gameSetsStore);
 
     onMounted(() => {
-      gameSetsStore.initializeGameSets();
+      gameSetsStore.loadGameSets();
     });
 
     return {

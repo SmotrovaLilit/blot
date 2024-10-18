@@ -1,62 +1,62 @@
-// src/stores/gamesStore.ts
 import { defineStore } from 'pinia';
-import {CreateGameSetRequest} from "@/generated/blotservice/v1beta1/blotservice";
-import {BlotServiceClient} from "@/generated/blotservice/v1beta1/blotservice.client";
-import {GrpcWebFetchTransport} from "@protobuf-ts/grpcweb-transport";
-import {PROXY_URL, TIMEOUT_MILLISECS} from "@/stores/gameStore";
+import apiClient from '@/api/grpcClient';
+import { GameSet } from '@/models/gameSet';
+import { useUserStore } from './userStore';
 
-export const useGameSetsStore = defineStore('gameSetsStore', {
+export const useGameSetsStore = defineStore('gameSets', {
     state: () => ({
-        gameSets: [] as Array<any>,
-        errorMessage: '' as string | null,
-        client: new BlotServiceClient(new GrpcWebFetchTransport({baseUrl: PROXY_URL})),
-        gameSet: {},
+        gameSets: new Map<string, GameSet>(),
     }),
     actions: {
-        initializeGameSets() {
+        async loadGameSets() {
             const savedGameSets = localStorage.getItem('gameSets');
             if (savedGameSets) {
-                this.gameSets = JSON.parse(savedGameSets);
+                const parsedGameSets: { [key: string]: GameSet } = JSON.parse(savedGameSets);
+                this.gameSets = new Map(Object.entries(parsedGameSets));
             }
         },
-        saveGameSets() {
-            localStorage.setItem('gameSets', JSON.stringify(this.gameSets));
-        },
-        async createGameSetAPI(Id: string, playerName: string) {
-            this.loading = true;
-            this.error = null;
-
-            const request: CreateGameSetRequest = CreateGameSetRequest.create();
-            request.id = Id;
-            request.first_player = playerName;
+        async fetchGameSet(id: string) {
+            const userStore = useUserStore();
+            const playerName = userStore.playerName;
 
             try {
-                await this.client.createGameSet(request, {
-                    meta: {},
-                    timeout: TIMEOUT_MILLISECS,
-                });
-
-                console.log('createGameSet finished');
-            } catch (err) {
-                console.error('Error creating game set:', err);
-                this.error = 'Error creating game set';
-            } finally {
-                this.loading = false;
+                const gameSet = await apiClient.getGameSetForPlayer(id, playerName);
+                this.addOrUpdateGameSet(gameSet);
+            } catch (error) {
+                console.error('Error fetching game set:', error);
             }
         },
+        async createGameSet(id: string) {
+            const userStore = useUserStore();
+            const playerName = userStore.playerName;
 
-        async createGameSet(Id, playerName :string) {
-            await this.createGameSetAPI(Id, playerName);
-            this.gameSets.push({
-                id: Id,
-                firstPlayerName: playerName,
-                status: 'waiting_for_players',
-            })
-            this.saveGameSets();
+            try {
+                await apiClient.createGameSet(id, playerName);
+                const newGameSet: GameSet = { id, firstPlayer: playerName};
+                this.addGameSet(newGameSet);
+            } catch (error) {
+                console.error('Error creating game set:', error);
+            }
         },
+        addOrUpdateGameSet(gameSet: GameSet) {
+            this.gameSets.set(gameSet.id, gameSet);
+            this.saveGameSetsToLocalStorage();
+        },
+        addGameSet(gameSet: GameSet) {
+            this.gameSets.set(gameSet.id, gameSet);
+            this.saveGameSetsToLocalStorage();
+        },
+        saveGameSetsToLocalStorage() {
+            const gameSetsArray = Array.from(this.gameSets.entries()).reduce((acc, [key, value]) => {
+                acc[key] = value;
+                return acc;
+            }, {} as { [key: string]: GameSet });
 
-        async fetchGameSet(Id  :string) {
-            this.gameSet = this.gameSets.find((gameSet) => gameSet.id === Id);
+            localStorage.setItem('gameSets', JSON.stringify(gameSetsArray));
+        },
+        clearGameSets() {
+            this.gameSets.clear();
+            localStorage.removeItem('gameSets');
         },
     },
 });

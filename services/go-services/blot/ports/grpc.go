@@ -3,6 +3,7 @@ package ports
 import (
 	"blot/internal/blot/app"
 	"blot/internal/blot/app/command"
+	"blot/internal/blot/app/query"
 	"blot/internal/blot/domain/gameset"
 	"blot/internal/blot/domain/gameset/player"
 	blotservicepb "blot/internal/common/gen-proto/blotservice/v1beta1"
@@ -33,6 +34,41 @@ func (g GrpcServer) CreateGameSet(ctx context.Context, req *blotservicepb.Create
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
 	}
 	return &blotservicepb.CreateGameSetResponse{}, nil
+}
+
+func (g GrpcServer) GetGameSetForPlayer(ctx context.Context, req *blotservicepb.GetGameSetForPlayerRequest) (*blotservicepb.GetGameSetForPlayerResponse, error) {
+	name, err := player.NewName(req.PlayerName)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+	}
+	gameSet, err := g.app.Queries.GameSetForPlayer.Handle(ctx, query.GameSetForPlayer{
+		GameSetID:  gameset.NewID(req.Id),
+		PlayerName: name,
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
+	}
+	r := gameSetToResponse(gameSet)
+	return &blotservicepb.GetGameSetForPlayerResponse{
+		GameSet: r,
+	}, nil
+}
+
+func gameSetToResponse(set gameset.GameSet) *blotservicepb.GameSet {
+	return &blotservicepb.GameSet{
+		Id:          set.ID().String(),
+		FirstPlayer: set.FirstPlayer().String(),
+		Status:      gameSetStatusToResponse(set.Status()),
+	}
+}
+
+func gameSetStatusToResponse(status gameset.GamesetStatus) blotservicepb.GameSetStatus {
+	switch status {
+	case gameset.GamesetStatusWaitedForPlayers:
+		return blotservicepb.GameSetStatus_GAME_SET_STATUS_WAITED_FOR_PLAYERS
+	default:
+		return blotservicepb.GameSetStatus_GAME_SET_STATUS_UNSPECIFIED
+	}
 }
 
 func (g GrpcServer) GetGameForPlayer(
