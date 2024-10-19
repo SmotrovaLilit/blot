@@ -22,13 +22,13 @@ func NewGrpcServer(application app.Application) GrpcServer {
 }
 
 func (g GrpcServer) CreateGameSet(ctx context.Context, req *blotservicepb.CreateGameSetRequest) (*blotservicepb.CreateGameSetResponse, error) {
-	name, err := player.NewName(req.FirstPlayer)
+	pl, err := player.Create(req.FirstPlayerId, req.FirstPlayerName)
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
 	}
 	err = g.app.Commands.CreateGameSet.Handle(ctx, command.CreateGameSet{
-		ID:              gameset.NewID(req.Id),
-		FirstPlayerName: name,
+		ID:          gameset.NewID(req.Id),
+		FirstPlayer: pl,
 	})
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
@@ -37,13 +37,13 @@ func (g GrpcServer) CreateGameSet(ctx context.Context, req *blotservicepb.Create
 }
 
 func (g GrpcServer) GetGameSetForPlayer(ctx context.Context, req *blotservicepb.GetGameSetForPlayerRequest) (*blotservicepb.GetGameSetForPlayerResponse, error) {
-	name, err := player.NewName(req.PlayerName)
+	playerID, err := player.NewID(req.PlayerId)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
 	}
 	gameSet, err := g.app.Queries.GameSetForPlayer.Handle(ctx, query.GameSetForPlayer{
-		GameSetID:  gameset.NewID(req.Id),
-		PlayerName: name,
+		GameSetID: gameset.NewID(req.Id),
+		PlayerID:  playerID,
 	})
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
@@ -56,10 +56,22 @@ func (g GrpcServer) GetGameSetForPlayer(ctx context.Context, req *blotservicepb.
 
 func gameSetToResponse(set gameset.GameSet) *blotservicepb.GameSet {
 	return &blotservicepb.GameSet{
-		Id:          set.ID().String(),
-		FirstPlayer: set.FirstPlayer().String(),
-		Status:      gameSetStatusToResponse(set.Status()),
+		Id:            set.ID().String(),
+		FirstPlayerId: set.FirstPlayer().ID().String(),
+		Status:        gameSetStatusToResponse(set.Status()),
+		Players:       playersToResponse(set.Players()),
 	}
+}
+
+func playersToResponse(players []player.Player) []*blotservicepb.Player {
+	var res []*blotservicepb.Player
+	for _, p := range players {
+		res = append(res, &blotservicepb.Player{
+			Id:   p.ID().String(),
+			Name: p.Name().String(),
+		})
+	}
+	return res
 }
 
 func gameSetStatusToResponse(status gameset.GamesetStatus) blotservicepb.GameSetStatus {

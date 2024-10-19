@@ -9,9 +9,9 @@ import (
 )
 
 type CreateGameSet struct {
-	FirstPlayerName player.Name
-	ID              gameset.ID
-	FirstGameID     gameset.GameID
+	FirstPlayer player.Player
+	ID          gameset.ID
+	FirstGameID gameset.GameID
 }
 
 type createGameSetHandler struct {
@@ -32,7 +32,7 @@ func NewCreateGameSetHandler(gameSetRepository gameset.Repository) CreateGameSet
 func (h createGameSetHandler) Handle(ctx context.Context, cmd CreateGameSet) error {
 	set, err := gameset.NewGameSet(
 		cmd.ID,
-		cmd.FirstPlayerName,
+		cmd.FirstPlayer,
 	)
 	err = h.gameSetRepository.Create(ctx, set)
 	if err != nil {

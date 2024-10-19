@@ -27,6 +27,7 @@ const submitForm = async () => {
   try {
     await userStore.createUser(userName.value);
     nameError.value = [];
+    window.location.reload();
   } catch (error) {
     nameError.value = [error.message || 'Failed to set name'];
   }

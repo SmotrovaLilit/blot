@@ -6,7 +6,7 @@
         <CreateGameSet/>
         <v-list>
             <v-list-item
-                v-for="gameSet in typedGameSets"
+                v-for="gameSet in gameSets"
                 :key="gameSet.id"
                 @click="goToDetails(gameSet.id)"
             >
@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import {computed, onMounted} from 'vue';
-import {useGameSetsStore} from '@/stores/gameSetsStore';
+import {useMyGameSetsStore} from '@/stores/myGameSetsStore';
 import {storeToRefs} from 'pinia';
 import type {GameSet} from "@/models/gameSet";
 import CreateGameSet from "@/components/CreateGameSet.vue";
@@ -47,16 +47,20 @@ import {useRouter} from 'vue-router';
 import {useUserStore} from "@/stores/userStore";
 
 
-const gameSetsStore = useGameSetsStore();
+const gameSetsStore = useMyGameSetsStore();
 const userStore = useUserStore();
-const {gameSets} = storeToRefs(gameSetsStore);
+const {myGameSets} = storeToRefs(gameSetsStore);
 
-const typedGameSets = computed(() => gameSets.value as GameSet[]);
+const gameSets = computed(() => myGameSets.value as GameSet[]);
 const router = useRouter();
 
 const userName = computed(() => userStore.userName);
 
 onMounted(() => {
+  if (!userName.value) {
+    // TODO push to login
+    return;
+  }
   gameSetsStore.loadGameSets();
 });
 
