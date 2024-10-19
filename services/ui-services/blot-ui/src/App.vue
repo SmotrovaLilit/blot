@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import {RouterLink, RouterView} from 'vue-router'
+import UserInfo from "@/components/UserInfo.vue";
 </script>
 
 <template>
   <header>
     <div class="wrapper">
       <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/gamesets">Games</RouterLink>
+<!--        <RouterLink to="/gamesets">Games</RouterLink>-->
       </nav>
     </div>
   </header>
   <div class="dark-theme container">
+    <UserInfo />
     <RouterView />
   </div>
 </template>

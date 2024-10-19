@@ -5,6 +5,7 @@ vars:
 tasks:
   start:
     desc: Start all services
+    dir: deployment/native/mac
     cmds:
       - task start-envoy
       - task start-grpcui

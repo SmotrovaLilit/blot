@@ -7,6 +7,11 @@ export const useGameSetsStore = defineStore('gameSets', {
     state: () => ({
         gameSets: [] as Array<GameSet>
     }),
+    getters: {
+        findGameSet: (state) => {
+            return (id: string) => state.gameSets.find(gameSet => gameSet.id === id);
+        },
+    },
     actions: {
         async loadGameSets() {
             const savedGameSets = localStorage.getItem('gameSets');
@@ -16,7 +21,7 @@ export const useGameSetsStore = defineStore('gameSets', {
         },
         async fetchGameSet(id: string): Promise<GameSet> {
             const userStore = useUserStore();
-            const playerName = userStore.playerName;
+            const playerName: string = userStore.userName;
 
             const gameSet = await repository.getGameSetForPlayer(id, playerName);
             this.addOrUpdateGameSet(gameSet);
@@ -24,7 +29,7 @@ export const useGameSetsStore = defineStore('gameSets', {
         },
         async createGameSet(id: string) {
             const userStore = useUserStore();
-            const playerName = userStore.playerName;
+            const playerName = userStore.userName;
             await repository.createGameSet(id, playerName);
             await this.fetchGameSet(id);
         },
@@ -43,6 +48,10 @@ export const useGameSetsStore = defineStore('gameSets', {
         },
         saveGameSetsToLocalStorage() {
             localStorage.setItem('gameSets', JSON.stringify(this.gameSets));
+        },
+        deleteGameSet(gameSetId: string) {
+            this.gameSets = this.gameSets.filter(gameSet => gameSet.id !== gameSetId);
+            this.saveGameSetsToLocalStorage();
         },
         clearGameSets() {
             this.gameSets = [];
