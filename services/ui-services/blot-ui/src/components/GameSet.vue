@@ -1,8 +1,8 @@
 <template>
-  <v-container>
-    <v-card>
+  <v-container v-if="user">
+    <v-card v-if="gameSet">
       <v-card-title>Game Details</v-card-title>
-      <v-card-text v-if="gameSet">
+      <v-card-text>
         <v-list>
           <v-list-item>
             <v-list-item-title>Game ID: {{ gameSet.id }}</v-list-item-title>
@@ -30,23 +30,23 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
+import {computed, onMounted} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {useGameSetsStore} from '@/stores/gameSetsStore';
-import type {GameSet} from "@/models/gameSet";
-
+import {useUserStore} from "@/stores/userStore";
 
 const route = useRoute();
 const router = useRouter();
 const gameSetsStore = useGameSetsStore();
-const gameSet = ref<GameSet | null>(null);
+const userStore = useUserStore();
 
+const gameSetId = String(route.params.gameSetId)
+const gameSet = computed(() => gameSetsStore.findGameSet(gameSetId));
+const user = computed(() => userStore.userName);
 
 onMounted(async () => {
-  const gameSetId = String(route.params.gameSetId)
   await gameSetsStore.loadGameSets();
-  gameSet.value = await gameSetsStore.fetchGameSet(gameSetId);
-  console.log(gameSet.value); // должен вывести объект GameSet
+  await gameSetsStore.fetchGameSet(gameSetId);
 });
 
 const goBack = () => {

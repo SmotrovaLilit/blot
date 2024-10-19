@@ -2,6 +2,7 @@ version: 3
 includes:
   blot: services/go-services/blot/Taskfile.yml
   grpc-api: schemas/grpc/Taskfile.yml
+  deployment: deployment/native/mac/Taskfile.yml
 
 vars:
   BLOT_SERVICE_ADDRESS: '{{.BLOT_SERVICE_ADDRESS | default "127.0.0.1:8080"}}'
