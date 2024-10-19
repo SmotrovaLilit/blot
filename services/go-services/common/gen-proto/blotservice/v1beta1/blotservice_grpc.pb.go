@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	BlotService_GetGameForPlayer_FullMethodName    = "/blotservice.v1beta1.BlotService/GetGameForPlayer"
 	BlotService_CreateGameSet_FullMethodName       = "/blotservice.v1beta1.BlotService/CreateGameSet"
+	BlotService_JoinGameSet_FullMethodName         = "/blotservice.v1beta1.BlotService/JoinGameSet"
 	BlotService_GetGameSetForPlayer_FullMethodName = "/blotservice.v1beta1.BlotService/GetGameSetForPlayer"
 )
 
@@ -30,6 +31,7 @@ const (
 type BlotServiceClient interface {
 	GetGameForPlayer(ctx context.Context, in *GetGameForPlayerRequest, opts ...grpc.CallOption) (*GetGameForPlayerResponse, error)
 	CreateGameSet(ctx context.Context, in *CreateGameSetRequest, opts ...grpc.CallOption) (*CreateGameSetResponse, error)
+	JoinGameSet(ctx context.Context, in *JoinGameSetRequest, opts ...grpc.CallOption) (*JoinGameSetResponse, error)
 	GetGameSetForPlayer(ctx context.Context, in *GetGameSetForPlayerRequest, opts ...grpc.CallOption) (*GetGameSetForPlayerResponse, error)
 }
 
@@ -61,6 +63,16 @@ func (c *blotServiceClient) CreateGameSet(ctx context.Context, in *CreateGameSet
 	return out, nil
 }
 
+func (c *blotServiceClient) JoinGameSet(ctx context.Context, in *JoinGameSetRequest, opts ...grpc.CallOption) (*JoinGameSetResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(JoinGameSetResponse)
+	err := c.cc.Invoke(ctx, BlotService_JoinGameSet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *blotServiceClient) GetGameSetForPlayer(ctx context.Context, in *GetGameSetForPlayerRequest, opts ...grpc.CallOption) (*GetGameSetForPlayerResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetGameSetForPlayerResponse)
@@ -77,6 +89,7 @@ func (c *blotServiceClient) GetGameSetForPlayer(ctx context.Context, in *GetGame
 type BlotServiceServer interface {
 	GetGameForPlayer(context.Context, *GetGameForPlayerRequest) (*GetGameForPlayerResponse, error)
 	CreateGameSet(context.Context, *CreateGameSetRequest) (*CreateGameSetResponse, error)
+	JoinGameSet(context.Context, *JoinGameSetRequest) (*JoinGameSetResponse, error)
 	GetGameSetForPlayer(context.Context, *GetGameSetForPlayerRequest) (*GetGameSetForPlayerResponse, error)
 	mustEmbedUnimplementedBlotServiceServer()
 }
@@ -93,6 +106,9 @@ func (UnimplementedBlotServiceServer) GetGameForPlayer(context.Context, *GetGame
 }
 func (UnimplementedBlotServiceServer) CreateGameSet(context.Context, *CreateGameSetRequest) (*CreateGameSetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGameSet not implemented")
+}
+func (UnimplementedBlotServiceServer) JoinGameSet(context.Context, *JoinGameSetRequest) (*JoinGameSetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method JoinGameSet not implemented")
 }
 func (UnimplementedBlotServiceServer) GetGameSetForPlayer(context.Context, *GetGameSetForPlayerRequest) (*GetGameSetForPlayerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGameSetForPlayer not implemented")
@@ -154,6 +170,24 @@ func _BlotService_CreateGameSet_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BlotService_JoinGameSet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JoinGameSetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlotServiceServer).JoinGameSet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BlotService_JoinGameSet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlotServiceServer).JoinGameSet(ctx, req.(*JoinGameSetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BlotService_GetGameSetForPlayer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetGameSetForPlayerRequest)
 	if err := dec(in); err != nil {
@@ -186,6 +220,10 @@ var BlotService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateGameSet",
 			Handler:    _BlotService_CreateGameSet_Handler,
+		},
+		{
+			MethodName: "JoinGameSet",
+			Handler:    _BlotService_JoinGameSet_Handler,
 		},
 		{
 			MethodName: "GetGameSetForPlayer",

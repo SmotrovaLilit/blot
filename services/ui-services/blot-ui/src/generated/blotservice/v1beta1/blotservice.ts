@@ -12,6 +12,28 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 /**
+ * @generated from protobuf message blotservice.v1beta1.JoinGameSetRequest
+ */
+export interface JoinGameSetRequest {
+    /**
+     * @generated from protobuf field: string id = 1;
+     */
+    id: string;
+    /**
+     * @generated from protobuf field: string player_id = 2;
+     */
+    player_id: string;
+    /**
+     * @generated from protobuf field: string player_name = 3;
+     */
+    player_name: string;
+}
+/**
+ * @generated from protobuf message blotservice.v1beta1.JoinGameSetResponse
+ */
+export interface JoinGameSetResponse {
+}
+/**
  * @generated from protobuf message blotservice.v1beta1.CreateGameSetRequest
  */
 export interface CreateGameSetRequest {
@@ -269,7 +291,11 @@ export enum GameSetStatus {
     /**
      * @generated from protobuf enum value: GAME_SET_STATUS_WAITED_FOR_PLAYERS = 1;
      */
-    WAITED_FOR_PLAYERS = 1
+    WAITED_FOR_PLAYERS = 1,
+    /**
+     * @generated from protobuf enum value: GAME_SET_STATUS_READY_TO_START = 2;
+     */
+    READY_TO_START = 2
 }
 /**
  * @generated from protobuf enum blotservice.v1beta1.GameStatus
@@ -366,6 +392,94 @@ export enum Suit {
      */
     SPADES = 4
 }
+// @generated message type with reflection information, may provide speed optimized methods
+class JoinGameSetRequest$Type extends MessageType<JoinGameSetRequest> {
+    constructor() {
+        super("blotservice.v1beta1.JoinGameSetRequest", [
+            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "player_id", kind: "scalar", localName: "player_id", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "player_name", kind: "scalar", localName: "player_name", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<JoinGameSetRequest>): JoinGameSetRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = "";
+        message.player_id = "";
+        message.player_name = "";
+        if (value !== undefined)
+            reflectionMergePartial<JoinGameSetRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: JoinGameSetRequest): JoinGameSetRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string id */ 1:
+                    message.id = reader.string();
+                    break;
+                case /* string player_id */ 2:
+                    message.player_id = reader.string();
+                    break;
+                case /* string player_name */ 3:
+                    message.player_name = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: JoinGameSetRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string id = 1; */
+        if (message.id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.id);
+        /* string player_id = 2; */
+        if (message.player_id !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.player_id);
+        /* string player_name = 3; */
+        if (message.player_name !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.player_name);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message blotservice.v1beta1.JoinGameSetRequest
+ */
+export const JoinGameSetRequest = new JoinGameSetRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class JoinGameSetResponse$Type extends MessageType<JoinGameSetResponse> {
+    constructor() {
+        super("blotservice.v1beta1.JoinGameSetResponse", []);
+    }
+    create(value?: PartialMessage<JoinGameSetResponse>): JoinGameSetResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<JoinGameSetResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: JoinGameSetResponse): JoinGameSetResponse {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: JoinGameSetResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message blotservice.v1beta1.JoinGameSetResponse
+ */
+export const JoinGameSetResponse = new JoinGameSetResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class CreateGameSetRequest$Type extends MessageType<CreateGameSetRequest> {
     constructor() {
@@ -1215,5 +1329,6 @@ export const Card = new Card$Type();
 export const BlotService = new ServiceType("blotservice.v1beta1.BlotService", [
     { name: "GetGameForPlayer", options: {}, I: GetGameForPlayerRequest, O: GetGameForPlayerResponse },
     { name: "CreateGameSet", options: {}, I: CreateGameSetRequest, O: CreateGameSetResponse },
+    { name: "JoinGameSet", options: {}, I: JoinGameSetRequest, O: JoinGameSetResponse },
     { name: "GetGameSetForPlayer", options: {}, I: GetGameSetForPlayerRequest, O: GetGameSetForPlayerResponse }
 ]);

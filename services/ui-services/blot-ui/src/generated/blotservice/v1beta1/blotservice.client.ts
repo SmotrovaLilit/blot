@@ -6,6 +6,8 @@ import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { BlotService } from "./blotservice";
 import type { GetGameSetForPlayerResponse } from "./blotservice";
 import type { GetGameSetForPlayerRequest } from "./blotservice";
+import type { JoinGameSetResponse } from "./blotservice";
+import type { JoinGameSetRequest } from "./blotservice";
 import type { CreateGameSetResponse } from "./blotservice";
 import type { CreateGameSetRequest } from "./blotservice";
 import { stackIntercept } from "@protobuf-ts/runtime-rpc";
@@ -25,6 +27,10 @@ export interface IBlotServiceClient {
      * @generated from protobuf rpc: CreateGameSet(blotservice.v1beta1.CreateGameSetRequest) returns (blotservice.v1beta1.CreateGameSetResponse);
      */
     createGameSet(input: CreateGameSetRequest, options?: RpcOptions): UnaryCall<CreateGameSetRequest, CreateGameSetResponse>;
+    /**
+     * @generated from protobuf rpc: JoinGameSet(blotservice.v1beta1.JoinGameSetRequest) returns (blotservice.v1beta1.JoinGameSetResponse);
+     */
+    joinGameSet(input: JoinGameSetRequest, options?: RpcOptions): UnaryCall<JoinGameSetRequest, JoinGameSetResponse>;
     /**
      * @generated from protobuf rpc: GetGameSetForPlayer(blotservice.v1beta1.GetGameSetForPlayerRequest) returns (blotservice.v1beta1.GetGameSetForPlayerResponse);
      */
@@ -54,10 +60,17 @@ export class BlotServiceClient implements IBlotServiceClient, ServiceInfo {
         return stackIntercept<CreateGameSetRequest, CreateGameSetResponse>("unary", this._transport, method, opt, input);
     }
     /**
+     * @generated from protobuf rpc: JoinGameSet(blotservice.v1beta1.JoinGameSetRequest) returns (blotservice.v1beta1.JoinGameSetResponse);
+     */
+    joinGameSet(input: JoinGameSetRequest, options?: RpcOptions): UnaryCall<JoinGameSetRequest, JoinGameSetResponse> {
+        const method = this.methods[2], opt = this._transport.mergeOptions(options);
+        return stackIntercept<JoinGameSetRequest, JoinGameSetResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
      * @generated from protobuf rpc: GetGameSetForPlayer(blotservice.v1beta1.GetGameSetForPlayerRequest) returns (blotservice.v1beta1.GetGameSetForPlayerResponse);
      */
     getGameSetForPlayer(input: GetGameSetForPlayerRequest, options?: RpcOptions): UnaryCall<GetGameSetForPlayerRequest, GetGameSetForPlayerResponse> {
-        const method = this.methods[2], opt = this._transport.mergeOptions(options);
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetGameSetForPlayerRequest, GetGameSetForPlayerResponse>("unary", this._transport, method, opt, input);
     }
 }

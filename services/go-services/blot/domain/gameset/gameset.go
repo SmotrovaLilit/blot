@@ -9,10 +9,11 @@ import (
 )
 
 type GameSet struct {
-	id          ID
-	firstPlayer player.Player
-	lastGame    Game
-	status      GamesetStatus
+	id            ID
+	firstPlayerID player.ID
+	players       []player.Player
+	lastGame      Game
+	status        GamesetStatus
 }
 
 var ErrGameNotFinished = errors.New("last game is not finished")
@@ -22,11 +23,25 @@ func NewGameSet(id ID, pl player.Player) (*GameSet, error) {
 		panic("empty input objects, use constructor to create object")
 	}
 	s := GameSet{
-		id:          id,
-		firstPlayer: pl,
-		status:      GamesetStatusWaitedForPlayers,
+		id:            id,
+		firstPlayerID: pl.ID(),
+		players:       []player.Player{pl},
+		status:        GamesetStatusWaitedForPlayers,
 	}
 	return &s, nil
+}
+
+// UnmarshalFromDatabase unmarshals GameSet from the database.
+//
+// It should be used only for unmarshalling from the database!
+// You can't use UnmarshalFromDatabase as constructor - It may put domain into the invalid state!
+func UnmarshalFromDatabase(id ID, status GamesetStatus, firstPlayer player.ID, players []player.Player) GameSet {
+	return GameSet{
+		id:            id,
+		firstPlayerID: firstPlayer,
+		players:       players,
+		status:        status,
+	}
 }
 
 func (s GameSet) ID() ID {
@@ -47,7 +62,12 @@ func (s GameSet) PlayCard(id user.ID, card card.Card) error {
 }
 
 func (s GameSet) FirstPlayer() player.Player {
-	return s.firstPlayer
+	for _, p := range s.Players() {
+		if p.ID() == s.firstPlayerID {
+			return p
+		}
+	}
+	panic("first player not found")
 }
 
 func (s GameSet) Status() GamesetStatus {
@@ -55,7 +75,69 @@ func (s GameSet) Status() GamesetStatus {
 }
 
 func (s GameSet) Players() []player.Player {
-	return []player.Player{s.firstPlayer}
+	return s.players
+}
+
+func (s GameSet) Join(p player.Player) error {
+	err := s.CanJoin(p)
+	if err != nil {
+		return err
+	}
+	s.players = append(s.players, p)
+	if s.isFull() {
+		s.status = GamesetStatusReadyToStart
+	}
+	return nil
+}
+
+type ErrGameSetNotAllowJoin struct {
+	ID ID
+}
+
+func (e ErrGameSetNotAllowJoin) Error() string {
+	return "game set " + e.ID.String() + " not allow join"
+}
+
+type ErrGameSetFull struct {
+	ID ID
+}
+
+func (e ErrGameSetFull) Error() string {
+	return "game set " + e.ID.String() + " is full"
+}
+
+type ErrPlayerAlreadyInGameSet struct {
+	ID player.ID
+}
+
+func (e ErrPlayerAlreadyInGameSet) Error() string {
+	return "player " + e.ID.String() + " already in game set"
+}
+
+func (s GameSet) CanJoin(p player.Player) error {
+	if s.Status().CanJoin() {
+		return ErrGameSetNotAllowJoin{s.ID()}
+	}
+	if s.isFull() {
+		return ErrGameSetFull{s.ID()}
+	}
+	if s.playerInGameSet(p) {
+		return ErrPlayerAlreadyInGameSet{p.ID()}
+	}
+	return nil
+}
+
+func (s GameSet) isFull() bool {
+	return len(s.Players()) == 4
+}
+
+func (s GameSet) playerInGameSet(p player.Player) bool {
+	for _, pl := range s.Players() {
+		if pl.ID() == p.ID() {
+			return true
+		}
+	}
+	return false
 }
 
 type ID struct {

@@ -54,7 +54,7 @@ package gameset
 //	return t.players
 //}
 //
-//func (t Team) FirstPlayer() user.ID {
+//func (t Team) Player() user.ID {
 //	return t.players[0]
 //}
 //

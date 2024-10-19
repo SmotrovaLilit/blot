@@ -4,7 +4,7 @@ import {
     CreateGameSetRequest,
     GameSet as GameSetResp,
     GameSetStatus as GameSetStatusResp,
-    GetGameSetForPlayerRequest,
+    GetGameSetForPlayerRequest, JoinGameSetRequest,
     Player as PlayerResp
 } from '@/generated/blotservice/v1beta1/blotservice';
 import {GameSet, GameSetStatus} from '@/models/gameSet';
@@ -17,6 +17,7 @@ const TIMEOUT_MILLISECS: number = 5 * 1000
 export interface GameSetRepository {
     create(id: string, player: User): Promise<void>;
     get(id: string, playerId: string): Promise<GameSet>;
+    join(gameSetId: string, player: User): Promise<void>;
 }
 
 export class GrpcGameSetRepository implements GameSetRepository {
@@ -60,6 +61,20 @@ export class GrpcGameSetRepository implements GameSetRepository {
         console.log('getGameSetForPlayer ended', response.game_set);
         return convertToGameSet(response.game_set!);
     }
+
+    public async join(gameSetId: string, player: User): Promise<void> {
+        const request = JoinGameSetRequest.create();
+        request.id = gameSetId;
+        request.player_id = player.id;
+        request.player_name = player.name;
+        console.log('joinGameSet started', request);
+        await this.client.joinGameSet(request, {
+            meta: {},
+            timeout: TIMEOUT_MILLISECS,
+        });
+        // TODO: handle errors
+        console.log('joinGameSet ended');
+    }
 }
 
 function convertToGameSet(resp: GameSetResp): GameSet {
@@ -83,6 +98,8 @@ function convertToGameSetStatus(status: GameSetStatusResp): GameSetStatus {
     switch (status) {
         case GameSetStatusResp.WAITED_FOR_PLAYERS:
             return GameSetStatus.GAME_SET_STATUS_WAITED_FOR_PLAYERS;
+        case GameSetStatusResp.READY_TO_START:
+            return GameSetStatus.GAME_SET_STATUS_READY_TO_START;
         default:
             throw new Error('Unknown game set status');
     }

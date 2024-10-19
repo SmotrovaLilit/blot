@@ -2,7 +2,8 @@ package gameset
 
 var (
 	GamesetStatusWaitedForPlayers = GamesetStatus{"waited_for_players"}
-	GamesetStatuses               = []GamesetStatus{GamesetStatusWaitedForPlayers}
+	GamesetStatusReadyToStart     = GamesetStatus{"ready_to_start"}
+	GamesetStatuses               = []GamesetStatus{GamesetStatusWaitedForPlayers, GamesetStatusReadyToStart}
 )
 
 type GamesetStatus struct {
@@ -20,4 +21,8 @@ func NewGamesetStatus(value string) GamesetStatus {
 
 func (s GamesetStatus) String() string {
 	return s.value
+}
+
+func (s GamesetStatus) CanJoin() bool {
+	return s == GamesetStatusWaitedForPlayers
 }

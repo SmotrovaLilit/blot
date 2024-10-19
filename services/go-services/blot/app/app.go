@@ -14,6 +14,7 @@ type Commands struct {
 	CreateGameSet command.CreateGameSetHandler
 	StartNewGame  command.StartNewGameHandler
 	PlayCard      command.PlayCardHandler
+	JoinGameSet   command.JoinGameSetHandler
 }
 
 type Queries struct {
