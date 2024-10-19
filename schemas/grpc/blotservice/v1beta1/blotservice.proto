@@ -12,7 +12,8 @@ service BlotService {
 
 message CreateGameSetRequest {
   string id = 1;
-  string first_player = 3;
+  string first_player_id = 2;
+  string first_player_name = 3;
 }
 
 message CreateGameSetResponse {}
@@ -24,7 +25,7 @@ message GetGameForPlayerRequest {
 
 message GetGameSetForPlayerRequest {
   string id = 1;
-  string player_name = 2;
+  string player_id = 2;
 }
 
 message GetGameSetForPlayerResponse {
@@ -33,8 +34,9 @@ message GetGameSetForPlayerResponse {
 
 message GameSet {
   string id = 1;
-  string first_player = 2;
-  GameSetStatus status = 3;
+  string first_player_id = 2;
+  repeated Player players = 3;
+  GameSetStatus status = 4;
 }
 
 message GetGameForPlayerResponse {
@@ -108,6 +110,7 @@ enum GameStatus {
   GAME_STATUS_BET_PLACED = 4;
   GAME_STATUS_FINISHED = 5;
 }
+
 enum Rank {
   RANK_UNSPECIFIED = 0;
   RANK_ACE = 1;

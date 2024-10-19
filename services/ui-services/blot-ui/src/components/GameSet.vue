@@ -7,15 +7,21 @@
           <v-list-item>
             <v-list-item-title>Game ID: {{ gameSet.id }}</v-list-item-title>
           </v-list-item>
+<!--          <v-list-item>-->
+<!--            <v-list-item-title>First Player: {{-->
+<!--                gameSet.firstPlayerId === user.id ? 'You' : gameSet.firstPlayerId-->
+<!--              }}-->
+<!--            </v-list-item-title>-->
+<!--          </v-list-item>-->
           <v-list-item>
-            <v-list-item-title>First Player: {{
-                gameSet.firstPlayer
+            <v-list-item-title v-if="gameSet.players">
+              Players: {{
+                gameSet.players.map((p) => {
+                  return p.id === user.id ? 'You' : p.name
+                }).join(', ')
               }}
             </v-list-item-title>
           </v-list-item>
-          <!--          <v-list-item>-->
-          <!--            <v-list-item-title>Second Player: {{ game.secondPlayer.name }}</v-list-item-title>-->
-          <!--          </v-list-item>-->
           <v-list-item>
             <v-list-item-title>Status: {{ gameSet.status }}</v-list-item-title>
           </v-list-item>
@@ -30,23 +36,28 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
-import {useGameSetsStore} from '@/stores/gameSetsStore';
 import {useUserStore} from "@/stores/userStore";
+import {User} from "@/models/user";
+import gameSetRemoteRepository from "@/repo/repositores";
+import {GameSet} from "@/models/gameSet";
 
 const route = useRoute();
 const router = useRouter();
-const gameSetsStore = useGameSetsStore();
 const userStore = useUserStore();
 
 const gameSetId = String(route.params.gameSetId)
-const gameSet = computed(() => gameSetsStore.findGameSet(gameSetId));
-const user = computed(() => userStore.userName);
+const gameSet = ref(GameSet);
+const user = computed(() => userStore.user as User);
 
 onMounted(async () => {
-  await gameSetsStore.loadGameSets();
-  await gameSetsStore.fetchGameSet(gameSetId);
+  const playerId: string = userStore.userId;
+  if (!playerId) {
+    // TODO push to login
+    return;
+  }
+  gameSet.value = await gameSetRemoteRepository.get(gameSetId, playerId);
 });
 
 const goBack = () => {

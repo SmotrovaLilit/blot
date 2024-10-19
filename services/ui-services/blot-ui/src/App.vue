@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {RouterLink, RouterView} from 'vue-router'
 import UserInfo from "@/components/UserInfo.vue";
+
 </script>
 
 <template>

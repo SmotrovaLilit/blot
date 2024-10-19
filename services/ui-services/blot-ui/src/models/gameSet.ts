@@ -1,14 +1,21 @@
 // gameSet.ts
 
+import type {User} from "@/models/user";
+
 export class GameSet {
     id: string;
-    firstPlayer: string;
+    firstPlayerId: string;
     status: GameSetStatus;
+    players: User[] = [];
 
-    constructor(id: string, firstPlayer: string, status: GameSetStatus) {
+    constructor(id: string, firstPlayerId: string, status: GameSetStatus) {
         this.id = id;
-        this.firstPlayer = firstPlayer;
+        this.firstPlayerId = firstPlayerId;
         this.status = status;
+    }
+
+    setPlayers(players: User[]) {
+        this.players = players;
     }
 }
 

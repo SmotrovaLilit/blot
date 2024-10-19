@@ -16,7 +16,7 @@ export const useUserStore = defineStore('user', {
             }
             console.log('load user from local storage: no user found');
         },
-        createUser: function ( name: string) {
+        createUser: function (name: string) {
             const id = uuidv4()
             this.user = new User(id, name);
             localStorage.setItem('user', JSON.stringify(this.user)); // TODO move to separate function
@@ -25,6 +25,9 @@ export const useUserStore = defineStore('user', {
     getters: {
         userName(): string {
             return this.user?.name || '';
-        }
+        },
+        userId(): string {
+            return this.user?.id || '';
+        },
     }
 });

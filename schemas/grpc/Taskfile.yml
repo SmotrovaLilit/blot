@@ -41,3 +41,9 @@ tasks:
         '
       - rm -rf ../../services/ui-services/blot-ui/src/generated
       - mv generated ../../services/ui-services/blot-ui/src/
+
+  generate-all:
+    desc: Generate all code
+    cmds:
+      - task: generate
+      - task: generate-js

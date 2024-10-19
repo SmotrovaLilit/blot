@@ -6,11 +6,11 @@
 
 <script setup lang="ts">
 import {useRouter} from 'vue-router';
-import {useGameSetsStore} from '@/stores/gameSetsStore';
+import {useMyGameSetsStore} from '@/stores/myGameSetsStore';
 import {v4 as uuidv4} from 'uuid';
 
 const router = useRouter();
-const gameSetsStore = useGameSetsStore();
+const gameSetsStore = useMyGameSetsStore();
 
 const submitForm = async () => {
   const Id = uuidv4()

@@ -8,8 +8,8 @@ import (
 )
 
 type GameSetForPlayer struct {
-	GameSetID  gameset.ID
-	PlayerName player.Name
+	GameSetID gameset.ID
+	PlayerID  player.ID
 }
 
 type GameSetForPlayerQueryHandler decorator.QueryHandler[GameSetForPlayer, gameset.GameSet]
@@ -38,9 +38,9 @@ func (h *gameSetForPlayerQueryHandler) Handle(
 		return gameset.GameSet{}, err
 	}
 
-	if s.FirstPlayer() != q.PlayerName { // TODO fix it
-		return gameset.GameSet{}, gameset.NotFoundError{ID: q.GameSetID}
-	}
+	//if s.FirstPlayer() != q.PlayerID { // TODO fix it
+	//	return gameset.GameSet{}, gameset.NotFoundError{ID: q.GameSetID}
+	//}
 
 	return *s, nil
 }
