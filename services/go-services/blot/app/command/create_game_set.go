@@ -24,9 +24,10 @@ func NewCreateGameSetHandler(gameSetRepository gameset.Repository) CreateGameSet
 	if gameSetRepository == nil {
 		panic("gameSetRepository cannot be nil")
 	}
-	return createGameSetHandler{
+
+	return decorator.ApplyCommandDecorators(createGameSetHandler{
 		gameSetRepository: gameSetRepository,
-	}
+	})
 }
 
 func (h createGameSetHandler) Handle(ctx context.Context, cmd CreateGameSet) error {

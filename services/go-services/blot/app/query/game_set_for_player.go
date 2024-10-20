@@ -5,6 +5,7 @@ import (
 	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/common/decorator"
 	"context"
+	"log/slog"
 )
 
 type GameSetForPlayer struct {
@@ -12,10 +13,17 @@ type GameSetForPlayer struct {
 	PlayerID  player.ID
 }
 
-type GameSetForPlayerQueryHandler decorator.QueryHandler[GameSetForPlayer, gameset.GameSet]
+func (g GameSetForPlayer) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("game_set_id", g.GameSetID.String()),
+		slog.String("player_id", g.PlayerID.String()),
+	)
+}
+
+type GameSetForPlayerQueryHandler decorator.QueryHandler[GameSetForPlayer, *gameset.GameSet]
 
 type GameSetForPlayerReadModel interface {
-	Get(ctx context.Context, gameSetID gameset.ID) (*gameset.GameSet, error)
+	Get(ctx context.Context, id gameset.ID) (gameset.GameSet, error)
 }
 
 type gameSetForPlayerQueryHandler struct {
@@ -26,21 +34,21 @@ func NewGameSetForPlayerQueryHandler(readModel GameSetForPlayerReadModel) GameSe
 	if readModel == nil {
 		panic("nil readModel")
 	}
-	return &gameSetForPlayerQueryHandler{readModel: readModel}
+	return decorator.ApplyQueryDecorators(&gameSetForPlayerQueryHandler{readModel: readModel})
 }
 
 func (h *gameSetForPlayerQueryHandler) Handle(
 	ctx context.Context,
 	q GameSetForPlayer,
-) (gameset.GameSet, error) {
+) (*gameset.GameSet, error) {
 	s, err := h.readModel.Get(ctx, q.GameSetID)
 	if err != nil {
-		return gameset.GameSet{}, err
+		return nil, err
 	}
 
-	//if s.FirstPlayer() != q.PlayerID { // TODO fix it
+	//if s.Player() != q.PlayerID { // TODO fix it
 	//	return gameset.GameSet{}, gameset.NotFoundError{ID: q.GameSetID}
 	//}
 
-	return *s, nil
+	return &s, nil
 }

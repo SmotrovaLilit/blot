@@ -9,7 +9,7 @@ tasks:
       - |
         grpcurl -vv -plaintext -d '{
           "id": "71199AC4-DDA2-47F1-A207-2EF9E5C48498",
-          "player_name": "Lilit"
+          "player_id": "b88bb98e-0e1f-4c82-a209-9d6b4986d013"
         }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.GetGameSetForPlayer
 
   smoke-test-create-gameset:

@@ -1,6 +1,9 @@
 package player
 
-import "fmt"
+import (
+	"fmt"
+	"log/slog"
+)
 
 type Player struct {
 	id   ID
@@ -17,6 +20,13 @@ func (p Player) ID() ID {
 
 func (p Player) Name() Name {
 	return p.name
+}
+
+func (p Player) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("id", p.id.String()),
+		slog.String("name", p.name.String()),
+	)
 }
 
 func Create(idRaw, nameRaw string) (Player, error) {

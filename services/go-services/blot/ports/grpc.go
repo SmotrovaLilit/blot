@@ -36,6 +36,21 @@ func (g GrpcServer) CreateGameSet(ctx context.Context, req *blotservicepb.Create
 	return &blotservicepb.CreateGameSetResponse{}, nil
 }
 
+func (g GrpcServer) JoinGameSet(ctx context.Context, req *blotservicepb.JoinGameSetRequest) (*blotservicepb.JoinGameSetResponse, error) {
+	pl, err := player.Create(req.PlayerId, req.PlayerName)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
+	}
+	err = g.app.Commands.JoinGameSet.Handle(ctx, command.JoinGameSet{
+		ID:     gameset.NewID(req.Id),
+		Player: pl,
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
+	}
+	return &blotservicepb.JoinGameSetResponse{}, nil
+}
+
 func (g GrpcServer) GetGameSetForPlayer(ctx context.Context, req *blotservicepb.GetGameSetForPlayerRequest) (*blotservicepb.GetGameSetForPlayerResponse, error) {
 	playerID, err := player.NewID(req.PlayerId)
 	if err != nil {
@@ -48,7 +63,7 @@ func (g GrpcServer) GetGameSetForPlayer(ctx context.Context, req *blotservicepb.
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
 	}
-	r := gameSetToResponse(gameSet)
+	r := gameSetToResponse(*gameSet)
 	return &blotservicepb.GetGameSetForPlayerResponse{
 		GameSet: r,
 	}, nil
@@ -78,6 +93,8 @@ func gameSetStatusToResponse(status gameset.GamesetStatus) blotservicepb.GameSet
 	switch status {
 	case gameset.GamesetStatusWaitedForPlayers:
 		return blotservicepb.GameSetStatus_GAME_SET_STATUS_WAITED_FOR_PLAYERS
+	case gameset.GamesetStatusReadyToStart:
+		return blotservicepb.GameSetStatus_GAME_SET_STATUS_READY_TO_START
 	default:
 		return blotservicepb.GameSetStatus_GAME_SET_STATUS_UNSPECIFIED
 	}

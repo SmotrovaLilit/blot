@@ -3,6 +3,7 @@ package command
 import (
 	"blot/internal/common/decorator"
 	"context"
+	"log/slog"
 
 	"blot/internal/blot/domain/gameset"
 )
@@ -10,6 +11,13 @@ import (
 type StartNewGame struct {
 	SetID  gameset.ID
 	GameID gameset.GameID
+}
+
+func (s StartNewGame) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("set_id", s.SetID.String()),
+		slog.String("game_id", s.GameID.String()),
+	)
 }
 
 type startNewGameHandler struct {
@@ -22,9 +30,9 @@ func NewStartNewGameHandler(gameSetRepository gameset.Repository) StartNewGameHa
 	if gameSetRepository == nil {
 		panic("gameSetRepository cannot be nil")
 	}
-	return startNewGameHandler{
+	return decorator.ApplyCommandDecorators(startNewGameHandler{
 		gameSetRepository: gameSetRepository,
-	}
+	})
 }
 
 func (h startNewGameHandler) Handle(ctx context.Context, cmd StartNewGame) error {

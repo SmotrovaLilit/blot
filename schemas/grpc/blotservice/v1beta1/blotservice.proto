@@ -7,8 +7,17 @@ option go_package = "blotservice/v1beta1;blotservicepb";
 service BlotService {
   rpc GetGameForPlayer(GetGameForPlayerRequest) returns (GetGameForPlayerResponse);
   rpc CreateGameSet(CreateGameSetRequest) returns (CreateGameSetResponse);
+  rpc JoinGameSet(JoinGameSetRequest) returns (JoinGameSetResponse);
   rpc GetGameSetForPlayer(GetGameSetForPlayerRequest) returns (GetGameSetForPlayerResponse);
 }
+
+message JoinGameSetRequest {
+  string id = 1;
+  string player_id = 2;
+  string player_name = 3;
+}
+
+message JoinGameSetResponse {}
 
 message CreateGameSetRequest {
   string id = 1;
@@ -100,6 +109,7 @@ message Card {
 enum GameSetStatus {
   GAME_SET_STATUS_UNSPECIFIED = 0;
   GAME_SET_STATUS_WAITED_FOR_PLAYERS = 1;
+  GAME_SET_STATUS_READY_TO_START = 2;
 }
 
 enum GameStatus {

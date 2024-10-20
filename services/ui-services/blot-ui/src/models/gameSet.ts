@@ -21,4 +21,5 @@ export class GameSet {
 
 export enum GameSetStatus {
     GAME_SET_STATUS_WAITED_FOR_PLAYERS = "waiting_for_players",
+    GAME_SET_STATUS_READY_TO_START = "ready_to_start",
 }
