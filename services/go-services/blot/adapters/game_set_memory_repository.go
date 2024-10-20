@@ -14,10 +14,10 @@ type playerStorageModel struct {
 }
 
 type gameSetStorageModel struct {
-	ID            string
-	FirstPlayerID string
-	players       []playerStorageModel
-	status        string
+	ID      string
+	OwnerID string
+	players []playerStorageModel
+	status  string
 }
 
 type GameSetMemoryRepository struct {
@@ -50,6 +50,19 @@ func (g *GameSetMemoryRepository) Get(ctx context.Context, id gameset.ID) (games
 	return gameset.GameSet{}, gameset.NotFoundError{ID: id}
 }
 
+func (g *GameSetMemoryRepository) GetByPlayerID(ctx context.Context, playerID player.ID) ([]gameset.GameSet, error) {
+	g.mu.RLock()
+	defer g.mu.RUnlock()
+	var res []gameset.GameSet
+	for _, set := range g.data {
+		for _, p := range set.players {
+			if p.ID == playerID.String() {
+				res = append(res, toGameSet(set))
+			}
+		}
+	}
+	return res, nil
+}
 func (g *GameSetMemoryRepository) UpdateByID(ctx context.Context, setID gameset.ID, updateFn func(set *gameset.GameSet) (bool, error)) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()
@@ -71,10 +84,10 @@ func (g *GameSetMemoryRepository) UpdateByID(ctx context.Context, setID gameset.
 
 func toGameSetStorageModel(set *gameset.GameSet) *gameSetStorageModel {
 	return &gameSetStorageModel{
-		ID:            set.ID().String(),
-		FirstPlayerID: set.FirstPlayer().ID().String(),
-		players:       toPlayerStorageModel(set.Players()),
-		status:        set.Status().String(),
+		ID:      set.ID().String(),
+		OwnerID: set.OwnerID().String(),
+		players: toPlayerStorageModel(set.Players()),
+		status:  set.Status().String(),
 	}
 }
 
@@ -90,7 +103,7 @@ func toPlayerStorageModel(players []player.Player) []playerStorageModel {
 }
 
 func toGameSet(set *gameSetStorageModel) gameset.GameSet {
-	firstPlayerID, err := player.NewID(set.FirstPlayerID)
+	firstPlayerID, err := player.NewID(set.OwnerID)
 	if err != nil {
 		panic(err)
 	}

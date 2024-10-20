@@ -4,7 +4,7 @@ import {
     CreateGameSetRequest,
     GameSet as GameSetResp,
     GameSetStatus as GameSetStatusResp,
-    GetGameSetForPlayerRequest, JoinGameSetRequest,
+    GetGameSetForPlayerRequest, JoinGameSetRequest, LeaveGameSetRequest,
     Player as PlayerResp
 } from '@/generated/blotservice/v1beta1/blotservice';
 import {GameSet, GameSetStatus} from '@/models/gameSet';
@@ -15,9 +15,12 @@ const PROXY_URL: string = import.meta.env.VITE_PROXY_URL || 'http://127.0.0.1:80
 const TIMEOUT_MILLISECS: number = 5 * 1000
 
 export interface GameSetRepository {
-    create(id: string, player: User): Promise<void>;
     get(id: string, playerId: string): Promise<GameSet>;
+    getPlayerGameSets(playerId: string): Promise<GameSet[]>
+
+    create(id: string, player: User): Promise<void>;
     join(gameSetId: string, player: User): Promise<void>;
+    leave(id: string, playerId: string): Promise<void>;
 }
 
 export class GrpcGameSetRepository implements GameSetRepository {
@@ -30,8 +33,8 @@ export class GrpcGameSetRepository implements GameSetRepository {
     public async create(id: string, player: User) {
         const request = CreateGameSetRequest.create();
         request.id = id;
-        request.first_player_id = player.id;
-        request.first_player_name = player.name;
+        request.player_id = player.id;
+        request.player_name = player.name;
 
 
         console.log('createGameSet started', request);
@@ -44,6 +47,21 @@ export class GrpcGameSetRepository implements GameSetRepository {
         console.log('createGameSet ended');
 
         return;
+    }
+
+    public async getPlayerGameSets(playerId: string): Promise<GameSet[]> {
+        const request = GetGameSetForPlayerRequest.create();
+        request.player_id = playerId;
+        console.log('getGameSetsForPlayer started', request);
+        const {response} = await this.client.getGameSetsForPlayer(request, {
+            meta: {},
+            timeout: TIMEOUT_MILLISECS,
+        });
+        if (!response || !response.game_sets) {
+            throw new Error('Empty response');
+        }
+        console.log('getGameSetsForPlayer ended', response.game_sets);
+        return response.game_sets.map(convertToGameSet);
     }
 
     public async get(id: string, playerId: string): Promise<GameSet> {
@@ -62,6 +80,17 @@ export class GrpcGameSetRepository implements GameSetRepository {
         return convertToGameSet(response.game_set!);
     }
 
+    public async leave(id: string, playerId: string): Promise<void> {
+        const request = LeaveGameSetRequest.create();
+        request.id = id;
+        request.player_id = playerId;
+        console.log('leaveGameSet started', request);
+        await this.client.leaveGameSet(request, {
+            meta: {},
+            timeout: TIMEOUT_MILLISECS,
+        });
+        console.log('leaveGameSet ended');
+    }
     public async join(gameSetId: string, player: User): Promise<void> {
         const request = JoinGameSetRequest.create();
         request.id = gameSetId;
@@ -78,7 +107,7 @@ export class GrpcGameSetRepository implements GameSetRepository {
 }
 
 function convertToGameSet(resp: GameSetResp): GameSet {
-    const g = new GameSet(resp.id, resp.first_player_id, convertToGameSetStatus(resp.status));
+    const g = new GameSet(resp.id, resp.owner_id, convertToGameSetStatus(resp.status));
 
     g.setPlayers(convertToUsers(resp.players));
     console.log('convertToGameSet', g);

@@ -4,13 +4,13 @@ import type {User} from "@/models/user";
 
 export class GameSet {
     id: string;
-    firstPlayerId: string;
+    ownerId: string;
     status: GameSetStatus;
     players: User[] = [];
 
-    constructor(id: string, firstPlayerId: string, status: GameSetStatus) {
+    constructor(id: string, ownerId: string, status: GameSetStatus) {
         this.id = id;
-        this.firstPlayerId = firstPlayerId;
+        this.ownerId = ownerId;
         this.status = status;
     }
 

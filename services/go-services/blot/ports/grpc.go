@@ -22,7 +22,7 @@ func NewGrpcServer(application app.Application) GrpcServer {
 }
 
 func (g GrpcServer) CreateGameSet(ctx context.Context, req *blotservicepb.CreateGameSetRequest) (*blotservicepb.CreateGameSetResponse, error) {
-	pl, err := player.Create(req.FirstPlayerId, req.FirstPlayerName)
+	pl, err := player.Create(req.PlayerId, req.PlayerName)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
 	}
@@ -51,6 +51,21 @@ func (g GrpcServer) JoinGameSet(ctx context.Context, req *blotservicepb.JoinGame
 	return &blotservicepb.JoinGameSetResponse{}, nil
 }
 
+func (g GrpcServer) LeaveGameSet(ctx context.Context, req *blotservicepb.LeaveGameSetRequest) (*blotservicepb.LeaveGameSetResponse, error) {
+	playerID, err := player.NewID(req.PlayerId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+	}
+	err = g.app.Commands.LeaveGameSet.Handle(ctx, command.LeaveGameSet{
+		ID:       gameset.NewID(req.Id),
+		PlayerID: playerID,
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
+	}
+	return &blotservicepb.LeaveGameSetResponse{}, nil
+}
+
 func (g GrpcServer) GetGameSetForPlayer(ctx context.Context, req *blotservicepb.GetGameSetForPlayerRequest) (*blotservicepb.GetGameSetForPlayerResponse, error) {
 	playerID, err := player.NewID(req.PlayerId)
 	if err != nil {
@@ -69,12 +84,32 @@ func (g GrpcServer) GetGameSetForPlayer(ctx context.Context, req *blotservicepb.
 	}, nil
 }
 
+func (g GrpcServer) GetGameSetsForPlayer(ctx context.Context, req *blotservicepb.GetGameSetsForPlayerRequest) (*blotservicepb.GetGameSetsForPlayerResponse, error) {
+	playerID, err := player.NewID(req.PlayerId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+	}
+	gameSets, err := g.app.Queries.GameSetsForPlayer.Handle(ctx, query.GameSetsForPlayer{
+		PlayerID: playerID,
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
+	}
+	var res []*blotservicepb.GameSet
+	for _, set := range gameSets {
+		res = append(res, gameSetToResponse(set))
+	}
+	return &blotservicepb.GetGameSetsForPlayerResponse{
+		GameSets: res,
+	}, nil
+}
+
 func gameSetToResponse(set gameset.GameSet) *blotservicepb.GameSet {
 	return &blotservicepb.GameSet{
-		Id:            set.ID().String(),
-		FirstPlayerId: set.FirstPlayer().ID().String(),
-		Status:        gameSetStatusToResponse(set.Status()),
-		Players:       playersToResponse(set.Players()),
+		Id:      set.ID().String(),
+		OwnerId: set.OwnerID().String(),
+		Status:  gameSetStatusToResponse(set.Status()),
+		Players: playersToResponse(set.Players()),
 	}
 }
 

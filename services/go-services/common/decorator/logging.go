@@ -20,7 +20,7 @@ func (d commandLoggingDecorator[C]) Handle(ctx context.Context, cmd C) (err erro
 	logger.Debug("Executing command")
 	defer func() {
 		if err == nil {
-			logger.Info("Command executed successfully")
+			logger.Info("Command executed successfully") // TODO it happens even when panic inside handler
 		} else {
 			logger.Error("Failed to execute command", slog.Any("error", err))
 		}

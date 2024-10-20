@@ -11,26 +11,26 @@ import (
 )
 
 type GameSet struct {
-	id            ID
-	firstPlayerID player.ID
-	players       []player.Player
-	lastGame      Game
-	status        GamesetStatus
+	id       ID
+	ownerID  player.ID
+	players  []player.Player
+	lastGame Game
+	status   GamesetStatus
 }
 
 func (s *GameSet) LogValue() slog.Value {
-	var players []interface{}
+	var players []any
 	for i, p := range s.players {
-		players = append(players,
-			"player"+strconv.Itoa(i+1), // TODO fix it
-			p.LogValue(),
-		)
+		players = append(players, slog.Any(
+			"player"+strconv.Itoa(i+1),
+			p,
+		))
 	}
 
 	return slog.GroupValue(
 		slog.String("id", s.id.String()),
 		slog.String("status", s.status.String()),
-		slog.String("first_player_id", s.firstPlayerID.String()),
+		slog.String("owner_id", s.ownerID.String()),
 		slog.Group("players", players...),
 	)
 }
@@ -42,10 +42,10 @@ func NewGameSet(id ID, pl player.Player) (*GameSet, error) {
 		panic("empty input objects, use constructor to create object")
 	}
 	s := GameSet{
-		id:            id,
-		firstPlayerID: pl.ID(),
-		players:       []player.Player{pl},
-		status:        GamesetStatusWaitedForPlayers,
+		id:      id,
+		ownerID: pl.ID(),
+		players: []player.Player{pl},
+		status:  GamesetStatusWaitedForPlayers,
 	}
 	return &s, nil
 }
@@ -54,12 +54,12 @@ func NewGameSet(id ID, pl player.Player) (*GameSet, error) {
 //
 // It should be used only for unmarshalling from the database!
 // You can't use UnmarshalFromDatabase as constructor - It may put domain into the invalid state!
-func UnmarshalFromDatabase(id ID, status GamesetStatus, firstPlayer player.ID, players []player.Player) GameSet {
+func UnmarshalFromDatabase(id ID, status GamesetStatus, ownerID player.ID, players []player.Player) GameSet {
 	return GameSet{
-		id:            id,
-		firstPlayerID: firstPlayer,
-		players:       players,
-		status:        status,
+		id:      id,
+		ownerID: ownerID,
+		players: players,
+		status:  status,
 	}
 }
 
@@ -78,15 +78,6 @@ func (s *GameSet) StartNewGame(gameID GameID) error {
 
 func (s *GameSet) PlayCard(id user.ID, card card.Card) error {
 	return s.lastGame.PlayCard(id, card)
-}
-
-func (s *GameSet) FirstPlayer() player.Player {
-	for _, p := range s.Players() {
-		if p.ID() == s.firstPlayerID {
-			return p
-		}
-	}
-	panic("first player not found")
 }
 
 func (s *GameSet) Status() GamesetStatus {
@@ -157,6 +148,39 @@ func (s *GameSet) playerInGameSet(p player.Player) bool {
 		}
 	}
 	return false
+}
+
+type ErrPlayerIsNotInGameSet struct {
+	ID player.ID
+}
+
+func (e ErrPlayerIsNotInGameSet) Error() string {
+	return "player " + e.ID.String() + " is not in game set"
+}
+
+type ErrOwnerCanNotLeaveGameSet struct {
+	ID player.ID
+}
+
+func (e ErrOwnerCanNotLeaveGameSet) Error() string {
+	return "owner " + e.ID.String() + " can not leave game set"
+}
+
+func (s *GameSet) RemovePlayer(id player.ID) error {
+	if s.OwnerID() == id {
+		return ErrOwnerCanNotLeaveGameSet{id}
+	}
+	for i, p := range s.players {
+		if p.ID() == id {
+			s.players = append(s.players[:i], s.players[i+1:]...)
+			return nil
+		}
+	}
+	return ErrPlayerIsNotInGameSet{id}
+}
+
+func (s *GameSet) OwnerID() player.ID {
+	return s.ownerID
 }
 
 type ID struct {

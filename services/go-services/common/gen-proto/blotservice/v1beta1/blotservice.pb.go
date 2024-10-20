@@ -298,6 +298,99 @@ func (Suit) EnumDescriptor() ([]byte, []int) {
 	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{4}
 }
 
+type LeaveGameSetRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id       string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	PlayerId string `protobuf:"bytes,2,opt,name=player_id,json=playerId,proto3" json:"player_id,omitempty"`
+}
+
+func (x *LeaveGameSetRequest) Reset() {
+	*x = LeaveGameSetRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LeaveGameSetRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LeaveGameSetRequest) ProtoMessage() {}
+
+func (x *LeaveGameSetRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LeaveGameSetRequest.ProtoReflect.Descriptor instead.
+func (*LeaveGameSetRequest) Descriptor() ([]byte, []int) {
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *LeaveGameSetRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *LeaveGameSetRequest) GetPlayerId() string {
+	if x != nil {
+		return x.PlayerId
+	}
+	return ""
+}
+
+type LeaveGameSetResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *LeaveGameSetResponse) Reset() {
+	*x = LeaveGameSetResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LeaveGameSetResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LeaveGameSetResponse) ProtoMessage() {}
+
+func (x *LeaveGameSetResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LeaveGameSetResponse.ProtoReflect.Descriptor instead.
+func (*LeaveGameSetResponse) Descriptor() ([]byte, []int) {
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{1}
+}
+
 type JoinGameSetRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -311,7 +404,7 @@ type JoinGameSetRequest struct {
 func (x *JoinGameSetRequest) Reset() {
 	*x = JoinGameSetRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[0]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -324,7 +417,7 @@ func (x *JoinGameSetRequest) String() string {
 func (*JoinGameSetRequest) ProtoMessage() {}
 
 func (x *JoinGameSetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[0]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -337,7 +430,7 @@ func (x *JoinGameSetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JoinGameSetRequest.ProtoReflect.Descriptor instead.
 func (*JoinGameSetRequest) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{0}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *JoinGameSetRequest) GetId() string {
@@ -370,7 +463,7 @@ type JoinGameSetResponse struct {
 func (x *JoinGameSetResponse) Reset() {
 	*x = JoinGameSetResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[1]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -383,7 +476,7 @@ func (x *JoinGameSetResponse) String() string {
 func (*JoinGameSetResponse) ProtoMessage() {}
 
 func (x *JoinGameSetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[1]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -396,7 +489,7 @@ func (x *JoinGameSetResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JoinGameSetResponse.ProtoReflect.Descriptor instead.
 func (*JoinGameSetResponse) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{1}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{3}
 }
 
 type CreateGameSetRequest struct {
@@ -404,15 +497,15 @@ type CreateGameSetRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id              string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	FirstPlayerId   string `protobuf:"bytes,2,opt,name=first_player_id,json=firstPlayerId,proto3" json:"first_player_id,omitempty"`
-	FirstPlayerName string `protobuf:"bytes,3,opt,name=first_player_name,json=firstPlayerName,proto3" json:"first_player_name,omitempty"`
+	Id         string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	PlayerId   string `protobuf:"bytes,2,opt,name=player_id,json=playerId,proto3" json:"player_id,omitempty"`
+	PlayerName string `protobuf:"bytes,3,opt,name=player_name,json=playerName,proto3" json:"player_name,omitempty"`
 }
 
 func (x *CreateGameSetRequest) Reset() {
 	*x = CreateGameSetRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[2]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -425,7 +518,7 @@ func (x *CreateGameSetRequest) String() string {
 func (*CreateGameSetRequest) ProtoMessage() {}
 
 func (x *CreateGameSetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[2]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -438,7 +531,7 @@ func (x *CreateGameSetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGameSetRequest.ProtoReflect.Descriptor instead.
 func (*CreateGameSetRequest) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{2}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *CreateGameSetRequest) GetId() string {
@@ -448,16 +541,16 @@ func (x *CreateGameSetRequest) GetId() string {
 	return ""
 }
 
-func (x *CreateGameSetRequest) GetFirstPlayerId() string {
+func (x *CreateGameSetRequest) GetPlayerId() string {
 	if x != nil {
-		return x.FirstPlayerId
+		return x.PlayerId
 	}
 	return ""
 }
 
-func (x *CreateGameSetRequest) GetFirstPlayerName() string {
+func (x *CreateGameSetRequest) GetPlayerName() string {
 	if x != nil {
-		return x.FirstPlayerName
+		return x.PlayerName
 	}
 	return ""
 }
@@ -471,7 +564,7 @@ type CreateGameSetResponse struct {
 func (x *CreateGameSetResponse) Reset() {
 	*x = CreateGameSetResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[3]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -484,7 +577,7 @@ func (x *CreateGameSetResponse) String() string {
 func (*CreateGameSetResponse) ProtoMessage() {}
 
 func (x *CreateGameSetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[3]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -497,7 +590,7 @@ func (x *CreateGameSetResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGameSetResponse.ProtoReflect.Descriptor instead.
 func (*CreateGameSetResponse) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{3}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{5}
 }
 
 type GetGameForPlayerRequest struct {
@@ -512,7 +605,7 @@ type GetGameForPlayerRequest struct {
 func (x *GetGameForPlayerRequest) Reset() {
 	*x = GetGameForPlayerRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[4]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -525,7 +618,7 @@ func (x *GetGameForPlayerRequest) String() string {
 func (*GetGameForPlayerRequest) ProtoMessage() {}
 
 func (x *GetGameForPlayerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[4]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -538,7 +631,7 @@ func (x *GetGameForPlayerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameForPlayerRequest.ProtoReflect.Descriptor instead.
 func (*GetGameForPlayerRequest) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{4}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetGameForPlayerRequest) GetGameId() string {
@@ -567,7 +660,7 @@ type GetGameSetForPlayerRequest struct {
 func (x *GetGameSetForPlayerRequest) Reset() {
 	*x = GetGameSetForPlayerRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[5]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -580,7 +673,7 @@ func (x *GetGameSetForPlayerRequest) String() string {
 func (*GetGameSetForPlayerRequest) ProtoMessage() {}
 
 func (x *GetGameSetForPlayerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[5]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -593,7 +686,7 @@ func (x *GetGameSetForPlayerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameSetForPlayerRequest.ProtoReflect.Descriptor instead.
 func (*GetGameSetForPlayerRequest) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{5}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetGameSetForPlayerRequest) GetId() string {
@@ -621,7 +714,7 @@ type GetGameSetForPlayerResponse struct {
 func (x *GetGameSetForPlayerResponse) Reset() {
 	*x = GetGameSetForPlayerResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[6]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -634,7 +727,7 @@ func (x *GetGameSetForPlayerResponse) String() string {
 func (*GetGameSetForPlayerResponse) ProtoMessage() {}
 
 func (x *GetGameSetForPlayerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[6]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -647,7 +740,7 @@ func (x *GetGameSetForPlayerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameSetForPlayerResponse.ProtoReflect.Descriptor instead.
 func (*GetGameSetForPlayerResponse) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{6}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetGameSetForPlayerResponse) GetGameSet() *GameSet {
@@ -657,21 +750,115 @@ func (x *GetGameSetForPlayerResponse) GetGameSet() *GameSet {
 	return nil
 }
 
+type GetGameSetsForPlayerRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PlayerId string `protobuf:"bytes,1,opt,name=player_id,json=playerId,proto3" json:"player_id,omitempty"`
+}
+
+func (x *GetGameSetsForPlayerRequest) Reset() {
+	*x = GetGameSetsForPlayerRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetGameSetsForPlayerRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGameSetsForPlayerRequest) ProtoMessage() {}
+
+func (x *GetGameSetsForPlayerRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGameSetsForPlayerRequest.ProtoReflect.Descriptor instead.
+func (*GetGameSetsForPlayerRequest) Descriptor() ([]byte, []int) {
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetGameSetsForPlayerRequest) GetPlayerId() string {
+	if x != nil {
+		return x.PlayerId
+	}
+	return ""
+}
+
+type GetGameSetsForPlayerResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	GameSets []*GameSet `protobuf:"bytes,1,rep,name=game_sets,json=gameSets,proto3" json:"game_sets,omitempty"`
+}
+
+func (x *GetGameSetsForPlayerResponse) Reset() {
+	*x = GetGameSetsForPlayerResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetGameSetsForPlayerResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGameSetsForPlayerResponse) ProtoMessage() {}
+
+func (x *GetGameSetsForPlayerResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGameSetsForPlayerResponse.ProtoReflect.Descriptor instead.
+func (*GetGameSetsForPlayerResponse) Descriptor() ([]byte, []int) {
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetGameSetsForPlayerResponse) GetGameSets() []*GameSet {
+	if x != nil {
+		return x.GameSets
+	}
+	return nil
+}
+
 type GameSet struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id            string        `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	FirstPlayerId string        `protobuf:"bytes,2,opt,name=first_player_id,json=firstPlayerId,proto3" json:"first_player_id,omitempty"`
-	Players       []*Player     `protobuf:"bytes,3,rep,name=players,proto3" json:"players,omitempty"`
-	Status        GameSetStatus `protobuf:"varint,4,opt,name=status,proto3,enum=blotservice.v1beta1.GameSetStatus" json:"status,omitempty"`
+	Id      string        `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	OwnerId string        `protobuf:"bytes,2,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
+	Players []*Player     `protobuf:"bytes,3,rep,name=players,proto3" json:"players,omitempty"`
+	Status  GameSetStatus `protobuf:"varint,4,opt,name=status,proto3,enum=blotservice.v1beta1.GameSetStatus" json:"status,omitempty"`
 }
 
 func (x *GameSet) Reset() {
 	*x = GameSet{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[7]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -684,7 +871,7 @@ func (x *GameSet) String() string {
 func (*GameSet) ProtoMessage() {}
 
 func (x *GameSet) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[7]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -697,7 +884,7 @@ func (x *GameSet) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GameSet.ProtoReflect.Descriptor instead.
 func (*GameSet) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{7}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *GameSet) GetId() string {
@@ -707,9 +894,9 @@ func (x *GameSet) GetId() string {
 	return ""
 }
 
-func (x *GameSet) GetFirstPlayerId() string {
+func (x *GameSet) GetOwnerId() string {
 	if x != nil {
-		return x.FirstPlayerId
+		return x.OwnerId
 	}
 	return ""
 }
@@ -743,7 +930,7 @@ type GetGameForPlayerResponse struct {
 func (x *GetGameForPlayerResponse) Reset() {
 	*x = GetGameForPlayerResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[8]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -756,7 +943,7 @@ func (x *GetGameForPlayerResponse) String() string {
 func (*GetGameForPlayerResponse) ProtoMessage() {}
 
 func (x *GetGameForPlayerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[8]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -769,7 +956,7 @@ func (x *GetGameForPlayerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameForPlayerResponse.ProtoReflect.Descriptor instead.
 func (*GetGameForPlayerResponse) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{8}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GetGameForPlayerResponse) GetGame() *Game {
@@ -822,7 +1009,7 @@ type Game struct {
 func (x *Game) Reset() {
 	*x = Game{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[9]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -835,7 +1022,7 @@ func (x *Game) String() string {
 func (*Game) ProtoMessage() {}
 
 func (x *Game) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[9]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -848,7 +1035,7 @@ func (x *Game) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Game.ProtoReflect.Descriptor instead.
 func (*Game) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{9}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *Game) GetId() string {
@@ -899,7 +1086,7 @@ type Bet struct {
 func (x *Bet) Reset() {
 	*x = Bet{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[10]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -912,7 +1099,7 @@ func (x *Bet) String() string {
 func (*Bet) ProtoMessage() {}
 
 func (x *Bet) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[10]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -925,7 +1112,7 @@ func (x *Bet) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Bet.ProtoReflect.Descriptor instead.
 func (*Bet) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{10}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *Bet) GetTrump() Suit {
@@ -961,7 +1148,7 @@ type Team struct {
 func (x *Team) Reset() {
 	*x = Team{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[11]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -974,7 +1161,7 @@ func (x *Team) String() string {
 func (*Team) ProtoMessage() {}
 
 func (x *Team) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[11]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -987,7 +1174,7 @@ func (x *Team) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Team.ProtoReflect.Descriptor instead.
 func (*Team) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{11}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *Team) GetId() string {
@@ -1019,7 +1206,7 @@ type Player struct {
 func (x *Player) Reset() {
 	*x = Player{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[12]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1032,7 +1219,7 @@ func (x *Player) String() string {
 func (*Player) ProtoMessage() {}
 
 func (x *Player) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[12]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1045,7 +1232,7 @@ func (x *Player) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Player.ProtoReflect.Descriptor instead.
 func (*Player) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{12}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *Player) GetId() string {
@@ -1097,7 +1284,7 @@ type Round struct {
 func (x *Round) Reset() {
 	*x = Round{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[13]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1110,7 +1297,7 @@ func (x *Round) String() string {
 func (*Round) ProtoMessage() {}
 
 func (x *Round) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[13]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1123,7 +1310,7 @@ func (x *Round) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Round.ProtoReflect.Descriptor instead.
 func (*Round) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{13}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *Round) GetNumber() int32 {
@@ -1166,7 +1353,7 @@ type PlayerCard struct {
 func (x *PlayerCard) Reset() {
 	*x = PlayerCard{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[14]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1179,7 +1366,7 @@ func (x *PlayerCard) String() string {
 func (*PlayerCard) ProtoMessage() {}
 
 func (x *PlayerCard) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[14]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1192,7 +1379,7 @@ func (x *PlayerCard) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PlayerCard.ProtoReflect.Descriptor instead.
 func (*PlayerCard) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{14}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *PlayerCard) GetPlayerId() string {
@@ -1221,7 +1408,7 @@ type Card struct {
 func (x *Card) Reset() {
 	*x = Card{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[15]
+		mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1234,7 +1421,7 @@ func (x *Card) String() string {
 func (*Card) ProtoMessage() {}
 
 func (x *Card) ProtoReflect() protoreflect.Message {
-	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[15]
+	mi := &file_blotservice_v1beta1_blotservice_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1247,7 +1434,7 @@ func (x *Card) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Card.ProtoReflect.Descriptor instead.
 func (*Card) Descriptor() ([]byte, []int) {
-	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{15}
+	return file_blotservice_v1beta1_blotservice_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *Card) GetRank() Rank {
@@ -1270,43 +1457,56 @@ var file_blotservice_v1beta1_blotservice_proto_rawDesc = []byte{
 	0x0a, 0x25, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x76, 0x31,
 	0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
 	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x13, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72,
-	0x76, 0x69, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x22, 0x62, 0x0a, 0x12,
-	0x4a, 0x6f, 0x69, 0x6e, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
-	0x69, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x49, 0x64, 0x12,
-	0x1f, 0x0a, 0x0b, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x4e, 0x61, 0x6d, 0x65,
-	0x22, 0x15, 0x0a, 0x13, 0x4a, 0x6f, 0x69, 0x6e, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x7a, 0x0a, 0x14, 0x43, 0x72, 0x65, 0x61, 0x74,
-	0x65, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12,
-	0x26, 0x0a, 0x0f, 0x66, 0x69, 0x72, 0x73, 0x74, 0x5f, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x5f,
-	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x66, 0x69, 0x72, 0x73, 0x74, 0x50,
-	0x6c, 0x61, 0x79, 0x65, 0x72, 0x49, 0x64, 0x12, 0x2a, 0x0a, 0x11, 0x66, 0x69, 0x72, 0x73, 0x74,
-	0x5f, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0f, 0x66, 0x69, 0x72, 0x73, 0x74, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x4e,
-	0x61, 0x6d, 0x65, 0x22, 0x17, 0x0a, 0x15, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x47, 0x61, 0x6d,
-	0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x4f, 0x0a, 0x17,
-	0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x67, 0x61, 0x6d, 0x65, 0x5f,
-	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x67, 0x61, 0x6d, 0x65, 0x49, 0x64,
-	0x12, 0x1b, 0x0a, 0x09, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x49, 0x64, 0x22, 0x49, 0x0a,
-	0x1a, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x46, 0x6f, 0x72, 0x50, 0x6c,
-	0x61, 0x79, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x76, 0x69, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x22, 0x42, 0x0a, 0x13,
+	0x4c, 0x65, 0x61, 0x76, 0x65, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x02, 0x69, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x5f, 0x69, 0x64,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x49, 0x64,
+	0x22, 0x16, 0x0a, 0x14, 0x4c, 0x65, 0x61, 0x76, 0x65, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x62, 0x0a, 0x12, 0x4a, 0x6f, 0x69, 0x6e,
+	0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1b,
+	0x0a, 0x09, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x49, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x70,
+	0x6c, 0x61, 0x79, 0x65, 0x72, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0a, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x15, 0x0a, 0x13,
+	0x4a, 0x6f, 0x69, 0x6e, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x64, 0x0a, 0x14, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x47, 0x61, 0x6d,
+	0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69,
 	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x70,
 	0x6c, 0x61, 0x79, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
-	0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x49, 0x64, 0x22, 0x56, 0x0a, 0x1b, 0x47, 0x65, 0x74, 0x47,
-	0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x37, 0x0a, 0x08, 0x67, 0x61, 0x6d, 0x65, 0x5f,
-	0x73, 0x65, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x62, 0x6c, 0x6f, 0x74,
-	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e,
-	0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x52, 0x07, 0x67, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74,
-	0x22, 0xb4, 0x01, 0x0a, 0x07, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x12, 0x0e, 0x0a, 0x02,
-	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x26, 0x0a, 0x0f,
-	0x66, 0x69, 0x72, 0x73, 0x74, 0x5f, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x66, 0x69, 0x72, 0x73, 0x74, 0x50, 0x6c, 0x61, 0x79,
+	0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x49, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x6c, 0x61, 0x79,
+	0x65, 0x72, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x70,
+	0x6c, 0x61, 0x79, 0x65, 0x72, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x17, 0x0a, 0x15, 0x43, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x4f, 0x0a, 0x17, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x46, 0x6f, 0x72,
+	0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a,
+	0x07, 0x67, 0x61, 0x6d, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x67, 0x61, 0x6d, 0x65, 0x49, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72,
+	0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x65,
+	0x72, 0x49, 0x64, 0x22, 0x49, 0x0a, 0x1a, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65,
+	0x74, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
+	0x64, 0x12, 0x1b, 0x0a, 0x09, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x49, 0x64, 0x22, 0x56,
+	0x0a, 0x1b, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x46, 0x6f, 0x72, 0x50,
+	0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x37, 0x0a,
+	0x08, 0x67, 0x61, 0x6d, 0x65, 0x5f, 0x73, 0x65, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x1c, 0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x52, 0x07, 0x67,
+	0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x22, 0x3a, 0x0a, 0x1b, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d,
+	0x65, 0x53, 0x65, 0x74, 0x73, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72,
+	0x49, 0x64, 0x22, 0x59, 0x0a, 0x1c, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74,
+	0x73, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x39, 0x0a, 0x09, 0x67, 0x61, 0x6d, 0x65, 0x5f, 0x73, 0x65, 0x74, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x47, 0x61, 0x6d, 0x65,
+	0x53, 0x65, 0x74, 0x52, 0x08, 0x67, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x73, 0x22, 0xa7, 0x01,
+	0x0a, 0x07, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x77, 0x6e,
+	0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x77, 0x6e,
 	0x65, 0x72, 0x49, 0x64, 0x12, 0x35, 0x0a, 0x07, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x73, 0x18,
 	0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76,
 	0x69, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x6c, 0x61, 0x79,
@@ -1435,7 +1635,7 @@ var file_blotservice_v1beta1_blotservice_proto_rawDesc = []byte{
 	0x5f, 0x48, 0x45, 0x41, 0x52, 0x54, 0x53, 0x10, 0x01, 0x12, 0x11, 0x0a, 0x0d, 0x53, 0x55, 0x49,
 	0x54, 0x5f, 0x44, 0x49, 0x41, 0x4d, 0x4f, 0x4e, 0x44, 0x53, 0x10, 0x02, 0x12, 0x0e, 0x0a, 0x0a,
 	0x53, 0x55, 0x49, 0x54, 0x5f, 0x43, 0x4c, 0x55, 0x42, 0x53, 0x10, 0x03, 0x12, 0x0f, 0x0a, 0x0b,
-	0x53, 0x55, 0x49, 0x54, 0x5f, 0x53, 0x50, 0x41, 0x44, 0x45, 0x53, 0x10, 0x04, 0x32, 0xc2, 0x03,
+	0x53, 0x55, 0x49, 0x54, 0x5f, 0x53, 0x50, 0x41, 0x44, 0x45, 0x53, 0x10, 0x04, 0x32, 0xa4, 0x05,
 	0x0a, 0x0b, 0x42, 0x6c, 0x6f, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x6f, 0x0a,
 	0x10, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65,
 	0x72, 0x12, 0x2c, 0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
@@ -1456,17 +1656,32 @@ var file_blotservice_v1beta1_blotservice_proto_rawDesc = []byte{
 	0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28,
 	0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x62,
 	0x65, 0x74, 0x61, 0x31, 0x2e, 0x4a, 0x6f, 0x69, 0x6e, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x78, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x47,
-	0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x12,
-	0x2f, 0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x76, 0x31,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x63, 0x0a, 0x0c, 0x4c, 0x65, 0x61, 0x76,
+	0x65, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x12, 0x28, 0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x4c,
+	0x65, 0x61, 0x76, 0x65, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x29, 0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x4c, 0x65, 0x61, 0x76, 0x65, 0x47, 0x61,
+	0x6d, 0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x78, 0x0a,
+	0x13, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x46, 0x6f, 0x72, 0x50, 0x6c,
+	0x61, 0x79, 0x65, 0x72, 0x12, 0x2f, 0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x47, 0x61,
+	0x6d, 0x65, 0x53, 0x65, 0x74, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x30, 0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x47,
+	0x61, 0x6d, 0x65, 0x53, 0x65, 0x74, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x7b, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x47, 0x61,
+	0x6d, 0x65, 0x53, 0x65, 0x74, 0x73, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x12,
+	0x30, 0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x76, 0x31,
 	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65, 0x74,
-	0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x30, 0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x76,
-	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x65,
-	0x74, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x42, 0x23, 0x5a, 0x21, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x2f, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x3b, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65,
-	0x72, 0x76, 0x69, 0x63, 0x65, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x31, 0x2e, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
+	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x47, 0x61, 0x6d, 0x65, 0x53,
+	0x65, 0x74, 0x73, 0x46, 0x6f, 0x72, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x42, 0x23, 0x5a, 0x21, 0x62, 0x6c, 0x6f, 0x74, 0x73, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x2f, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x3b, 0x62, 0x6c, 0x6f, 0x74,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -1482,64 +1697,73 @@ func file_blotservice_v1beta1_blotservice_proto_rawDescGZIP() []byte {
 }
 
 var file_blotservice_v1beta1_blotservice_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
-var file_blotservice_v1beta1_blotservice_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_blotservice_v1beta1_blotservice_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_blotservice_v1beta1_blotservice_proto_goTypes = []any{
-	(RoundStatus)(0),                    // 0: blotservice.v1beta1.RoundStatus
-	(GameSetStatus)(0),                  // 1: blotservice.v1beta1.GameSetStatus
-	(GameStatus)(0),                     // 2: blotservice.v1beta1.GameStatus
-	(Rank)(0),                           // 3: blotservice.v1beta1.Rank
-	(Suit)(0),                           // 4: blotservice.v1beta1.Suit
-	(*JoinGameSetRequest)(nil),          // 5: blotservice.v1beta1.JoinGameSetRequest
-	(*JoinGameSetResponse)(nil),         // 6: blotservice.v1beta1.JoinGameSetResponse
-	(*CreateGameSetRequest)(nil),        // 7: blotservice.v1beta1.CreateGameSetRequest
-	(*CreateGameSetResponse)(nil),       // 8: blotservice.v1beta1.CreateGameSetResponse
-	(*GetGameForPlayerRequest)(nil),     // 9: blotservice.v1beta1.GetGameForPlayerRequest
-	(*GetGameSetForPlayerRequest)(nil),  // 10: blotservice.v1beta1.GetGameSetForPlayerRequest
-	(*GetGameSetForPlayerResponse)(nil), // 11: blotservice.v1beta1.GetGameSetForPlayerResponse
-	(*GameSet)(nil),                     // 12: blotservice.v1beta1.GameSet
-	(*GetGameForPlayerResponse)(nil),    // 13: blotservice.v1beta1.GetGameForPlayerResponse
-	(*Game)(nil),                        // 14: blotservice.v1beta1.Game
-	(*Bet)(nil),                         // 15: blotservice.v1beta1.Bet
-	(*Team)(nil),                        // 16: blotservice.v1beta1.Team
-	(*Player)(nil),                      // 17: blotservice.v1beta1.Player
-	(*Round)(nil),                       // 18: blotservice.v1beta1.Round
-	(*PlayerCard)(nil),                  // 19: blotservice.v1beta1.PlayerCard
-	(*Card)(nil),                        // 20: blotservice.v1beta1.Card
+	(RoundStatus)(0),                     // 0: blotservice.v1beta1.RoundStatus
+	(GameSetStatus)(0),                   // 1: blotservice.v1beta1.GameSetStatus
+	(GameStatus)(0),                      // 2: blotservice.v1beta1.GameStatus
+	(Rank)(0),                            // 3: blotservice.v1beta1.Rank
+	(Suit)(0),                            // 4: blotservice.v1beta1.Suit
+	(*LeaveGameSetRequest)(nil),          // 5: blotservice.v1beta1.LeaveGameSetRequest
+	(*LeaveGameSetResponse)(nil),         // 6: blotservice.v1beta1.LeaveGameSetResponse
+	(*JoinGameSetRequest)(nil),           // 7: blotservice.v1beta1.JoinGameSetRequest
+	(*JoinGameSetResponse)(nil),          // 8: blotservice.v1beta1.JoinGameSetResponse
+	(*CreateGameSetRequest)(nil),         // 9: blotservice.v1beta1.CreateGameSetRequest
+	(*CreateGameSetResponse)(nil),        // 10: blotservice.v1beta1.CreateGameSetResponse
+	(*GetGameForPlayerRequest)(nil),      // 11: blotservice.v1beta1.GetGameForPlayerRequest
+	(*GetGameSetForPlayerRequest)(nil),   // 12: blotservice.v1beta1.GetGameSetForPlayerRequest
+	(*GetGameSetForPlayerResponse)(nil),  // 13: blotservice.v1beta1.GetGameSetForPlayerResponse
+	(*GetGameSetsForPlayerRequest)(nil),  // 14: blotservice.v1beta1.GetGameSetsForPlayerRequest
+	(*GetGameSetsForPlayerResponse)(nil), // 15: blotservice.v1beta1.GetGameSetsForPlayerResponse
+	(*GameSet)(nil),                      // 16: blotservice.v1beta1.GameSet
+	(*GetGameForPlayerResponse)(nil),     // 17: blotservice.v1beta1.GetGameForPlayerResponse
+	(*Game)(nil),                         // 18: blotservice.v1beta1.Game
+	(*Bet)(nil),                          // 19: blotservice.v1beta1.Bet
+	(*Team)(nil),                         // 20: blotservice.v1beta1.Team
+	(*Player)(nil),                       // 21: blotservice.v1beta1.Player
+	(*Round)(nil),                        // 22: blotservice.v1beta1.Round
+	(*PlayerCard)(nil),                   // 23: blotservice.v1beta1.PlayerCard
+	(*Card)(nil),                         // 24: blotservice.v1beta1.Card
 }
 var file_blotservice_v1beta1_blotservice_proto_depIdxs = []int32{
-	12, // 0: blotservice.v1beta1.GetGameSetForPlayerResponse.game_set:type_name -> blotservice.v1beta1.GameSet
-	17, // 1: blotservice.v1beta1.GameSet.players:type_name -> blotservice.v1beta1.Player
-	1,  // 2: blotservice.v1beta1.GameSet.status:type_name -> blotservice.v1beta1.GameSetStatus
-	14, // 3: blotservice.v1beta1.GetGameForPlayerResponse.game:type_name -> blotservice.v1beta1.Game
-	17, // 4: blotservice.v1beta1.GetGameForPlayerResponse.current_player:type_name -> blotservice.v1beta1.Player
-	17, // 5: blotservice.v1beta1.GetGameForPlayerResponse.ally_player:type_name -> blotservice.v1beta1.Player
-	17, // 6: blotservice.v1beta1.GetGameForPlayerResponse.left_player:type_name -> blotservice.v1beta1.Player
-	17, // 7: blotservice.v1beta1.GetGameForPlayerResponse.right_player:type_name -> blotservice.v1beta1.Player
-	2,  // 8: blotservice.v1beta1.Game.status:type_name -> blotservice.v1beta1.GameStatus
-	18, // 9: blotservice.v1beta1.Game.round:type_name -> blotservice.v1beta1.Round
-	15, // 10: blotservice.v1beta1.Game.bet:type_name -> blotservice.v1beta1.Bet
-	16, // 11: blotservice.v1beta1.Game.teams:type_name -> blotservice.v1beta1.Team
-	4,  // 12: blotservice.v1beta1.Bet.trump:type_name -> blotservice.v1beta1.Suit
-	20, // 13: blotservice.v1beta1.Player.hand_cards:type_name -> blotservice.v1beta1.Card
-	20, // 14: blotservice.v1beta1.Player.discard_stack:type_name -> blotservice.v1beta1.Card
-	19, // 15: blotservice.v1beta1.Round.table_cards:type_name -> blotservice.v1beta1.PlayerCard
-	0,  // 16: blotservice.v1beta1.Round.status:type_name -> blotservice.v1beta1.RoundStatus
-	20, // 17: blotservice.v1beta1.PlayerCard.card:type_name -> blotservice.v1beta1.Card
-	3,  // 18: blotservice.v1beta1.Card.rank:type_name -> blotservice.v1beta1.Rank
-	4,  // 19: blotservice.v1beta1.Card.suit:type_name -> blotservice.v1beta1.Suit
-	9,  // 20: blotservice.v1beta1.BlotService.GetGameForPlayer:input_type -> blotservice.v1beta1.GetGameForPlayerRequest
-	7,  // 21: blotservice.v1beta1.BlotService.CreateGameSet:input_type -> blotservice.v1beta1.CreateGameSetRequest
-	5,  // 22: blotservice.v1beta1.BlotService.JoinGameSet:input_type -> blotservice.v1beta1.JoinGameSetRequest
-	10, // 23: blotservice.v1beta1.BlotService.GetGameSetForPlayer:input_type -> blotservice.v1beta1.GetGameSetForPlayerRequest
-	13, // 24: blotservice.v1beta1.BlotService.GetGameForPlayer:output_type -> blotservice.v1beta1.GetGameForPlayerResponse
-	8,  // 25: blotservice.v1beta1.BlotService.CreateGameSet:output_type -> blotservice.v1beta1.CreateGameSetResponse
-	6,  // 26: blotservice.v1beta1.BlotService.JoinGameSet:output_type -> blotservice.v1beta1.JoinGameSetResponse
-	11, // 27: blotservice.v1beta1.BlotService.GetGameSetForPlayer:output_type -> blotservice.v1beta1.GetGameSetForPlayerResponse
-	24, // [24:28] is the sub-list for method output_type
-	20, // [20:24] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	16, // 0: blotservice.v1beta1.GetGameSetForPlayerResponse.game_set:type_name -> blotservice.v1beta1.GameSet
+	16, // 1: blotservice.v1beta1.GetGameSetsForPlayerResponse.game_sets:type_name -> blotservice.v1beta1.GameSet
+	21, // 2: blotservice.v1beta1.GameSet.players:type_name -> blotservice.v1beta1.Player
+	1,  // 3: blotservice.v1beta1.GameSet.status:type_name -> blotservice.v1beta1.GameSetStatus
+	18, // 4: blotservice.v1beta1.GetGameForPlayerResponse.game:type_name -> blotservice.v1beta1.Game
+	21, // 5: blotservice.v1beta1.GetGameForPlayerResponse.current_player:type_name -> blotservice.v1beta1.Player
+	21, // 6: blotservice.v1beta1.GetGameForPlayerResponse.ally_player:type_name -> blotservice.v1beta1.Player
+	21, // 7: blotservice.v1beta1.GetGameForPlayerResponse.left_player:type_name -> blotservice.v1beta1.Player
+	21, // 8: blotservice.v1beta1.GetGameForPlayerResponse.right_player:type_name -> blotservice.v1beta1.Player
+	2,  // 9: blotservice.v1beta1.Game.status:type_name -> blotservice.v1beta1.GameStatus
+	22, // 10: blotservice.v1beta1.Game.round:type_name -> blotservice.v1beta1.Round
+	19, // 11: blotservice.v1beta1.Game.bet:type_name -> blotservice.v1beta1.Bet
+	20, // 12: blotservice.v1beta1.Game.teams:type_name -> blotservice.v1beta1.Team
+	4,  // 13: blotservice.v1beta1.Bet.trump:type_name -> blotservice.v1beta1.Suit
+	24, // 14: blotservice.v1beta1.Player.hand_cards:type_name -> blotservice.v1beta1.Card
+	24, // 15: blotservice.v1beta1.Player.discard_stack:type_name -> blotservice.v1beta1.Card
+	23, // 16: blotservice.v1beta1.Round.table_cards:type_name -> blotservice.v1beta1.PlayerCard
+	0,  // 17: blotservice.v1beta1.Round.status:type_name -> blotservice.v1beta1.RoundStatus
+	24, // 18: blotservice.v1beta1.PlayerCard.card:type_name -> blotservice.v1beta1.Card
+	3,  // 19: blotservice.v1beta1.Card.rank:type_name -> blotservice.v1beta1.Rank
+	4,  // 20: blotservice.v1beta1.Card.suit:type_name -> blotservice.v1beta1.Suit
+	11, // 21: blotservice.v1beta1.BlotService.GetGameForPlayer:input_type -> blotservice.v1beta1.GetGameForPlayerRequest
+	9,  // 22: blotservice.v1beta1.BlotService.CreateGameSet:input_type -> blotservice.v1beta1.CreateGameSetRequest
+	7,  // 23: blotservice.v1beta1.BlotService.JoinGameSet:input_type -> blotservice.v1beta1.JoinGameSetRequest
+	5,  // 24: blotservice.v1beta1.BlotService.LeaveGameSet:input_type -> blotservice.v1beta1.LeaveGameSetRequest
+	12, // 25: blotservice.v1beta1.BlotService.GetGameSetForPlayer:input_type -> blotservice.v1beta1.GetGameSetForPlayerRequest
+	14, // 26: blotservice.v1beta1.BlotService.GetGameSetsForPlayer:input_type -> blotservice.v1beta1.GetGameSetsForPlayerRequest
+	17, // 27: blotservice.v1beta1.BlotService.GetGameForPlayer:output_type -> blotservice.v1beta1.GetGameForPlayerResponse
+	10, // 28: blotservice.v1beta1.BlotService.CreateGameSet:output_type -> blotservice.v1beta1.CreateGameSetResponse
+	8,  // 29: blotservice.v1beta1.BlotService.JoinGameSet:output_type -> blotservice.v1beta1.JoinGameSetResponse
+	6,  // 30: blotservice.v1beta1.BlotService.LeaveGameSet:output_type -> blotservice.v1beta1.LeaveGameSetResponse
+	13, // 31: blotservice.v1beta1.BlotService.GetGameSetForPlayer:output_type -> blotservice.v1beta1.GetGameSetForPlayerResponse
+	15, // 32: blotservice.v1beta1.BlotService.GetGameSetsForPlayer:output_type -> blotservice.v1beta1.GetGameSetsForPlayerResponse
+	27, // [27:33] is the sub-list for method output_type
+	21, // [21:27] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_blotservice_v1beta1_blotservice_proto_init() }
@@ -1549,7 +1773,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[0].Exporter = func(v any, i int) any {
-			switch v := v.(*JoinGameSetRequest); i {
+			switch v := v.(*LeaveGameSetRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1561,7 +1785,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[1].Exporter = func(v any, i int) any {
-			switch v := v.(*JoinGameSetResponse); i {
+			switch v := v.(*LeaveGameSetResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1573,7 +1797,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[2].Exporter = func(v any, i int) any {
-			switch v := v.(*CreateGameSetRequest); i {
+			switch v := v.(*JoinGameSetRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1585,7 +1809,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[3].Exporter = func(v any, i int) any {
-			switch v := v.(*CreateGameSetResponse); i {
+			switch v := v.(*JoinGameSetResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1597,7 +1821,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[4].Exporter = func(v any, i int) any {
-			switch v := v.(*GetGameForPlayerRequest); i {
+			switch v := v.(*CreateGameSetRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1609,7 +1833,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[5].Exporter = func(v any, i int) any {
-			switch v := v.(*GetGameSetForPlayerRequest); i {
+			switch v := v.(*CreateGameSetResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1621,7 +1845,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[6].Exporter = func(v any, i int) any {
-			switch v := v.(*GetGameSetForPlayerResponse); i {
+			switch v := v.(*GetGameForPlayerRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1633,7 +1857,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[7].Exporter = func(v any, i int) any {
-			switch v := v.(*GameSet); i {
+			switch v := v.(*GetGameSetForPlayerRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1645,7 +1869,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[8].Exporter = func(v any, i int) any {
-			switch v := v.(*GetGameForPlayerResponse); i {
+			switch v := v.(*GetGameSetForPlayerResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1657,7 +1881,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[9].Exporter = func(v any, i int) any {
-			switch v := v.(*Game); i {
+			switch v := v.(*GetGameSetsForPlayerRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1669,7 +1893,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[10].Exporter = func(v any, i int) any {
-			switch v := v.(*Bet); i {
+			switch v := v.(*GetGameSetsForPlayerResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1681,7 +1905,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[11].Exporter = func(v any, i int) any {
-			switch v := v.(*Team); i {
+			switch v := v.(*GameSet); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1693,7 +1917,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[12].Exporter = func(v any, i int) any {
-			switch v := v.(*Player); i {
+			switch v := v.(*GetGameForPlayerResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1705,7 +1929,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[13].Exporter = func(v any, i int) any {
-			switch v := v.(*Round); i {
+			switch v := v.(*Game); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1717,7 +1941,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[14].Exporter = func(v any, i int) any {
-			switch v := v.(*PlayerCard); i {
+			switch v := v.(*Bet); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1729,6 +1953,54 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			}
 		}
 		file_blotservice_v1beta1_blotservice_proto_msgTypes[15].Exporter = func(v any, i int) any {
+			switch v := v.(*Team); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blotservice_v1beta1_blotservice_proto_msgTypes[16].Exporter = func(v any, i int) any {
+			switch v := v.(*Player); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blotservice_v1beta1_blotservice_proto_msgTypes[17].Exporter = func(v any, i int) any {
+			switch v := v.(*Round); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blotservice_v1beta1_blotservice_proto_msgTypes[18].Exporter = func(v any, i int) any {
+			switch v := v.(*PlayerCard); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blotservice_v1beta1_blotservice_proto_msgTypes[19].Exporter = func(v any, i int) any {
 			switch v := v.(*Card); i {
 			case 0:
 				return &v.state
@@ -1747,7 +2019,7 @@ func file_blotservice_v1beta1_blotservice_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_blotservice_v1beta1_blotservice_proto_rawDesc,
 			NumEnums:      5,
-			NumMessages:   16,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

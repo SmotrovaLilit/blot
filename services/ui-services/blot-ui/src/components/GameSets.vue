@@ -38,38 +38,38 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted} from 'vue';
-import {useMyGameSetsStore} from '@/stores/myGameSetsStore';
-import {storeToRefs} from 'pinia';
+import {computed, onMounted, ref} from 'vue';
 import type {GameSet} from "@/models/gameSet";
 import CreateGameSet from "@/components/CreateGameSet.vue";
 import {useRouter} from 'vue-router';
 import {useUserStore} from "@/stores/userStore";
+import gameSetRemoteRepository from "@/repo/repositores";
 
 
-const gameSetsStore = useMyGameSetsStore();
+
 const userStore = useUserStore();
-const {myGameSets} = storeToRefs(gameSetsStore);
+const gameSets = ref<GameSet[]>([]);
 
-const gameSets = computed(() => myGameSets.value as GameSet[]);
 const router = useRouter();
 
 const userName = computed(() => userStore.userName);
 
-onMounted(() => {
-  if (!userName.value) {
+onMounted(async () => {
+  if (!userStore.userId) {
     // TODO push to login
     return;
   }
-  gameSetsStore.loadGameSets();
+  gameSets.value = await gameSetRemoteRepository.getPlayerGameSets(userStore.userId);
 });
 
 const goToDetails = (id: string) => {
   router.push({name: 'gameSet', params: {gameSetId: id}});
 };
 
-const deleteGameSet = (id: string) => {
-  gameSetsStore.deleteGameSet(id);
+const deleteGameSet = async (id: string) => {
+  // TDOD: add confirmation
+  await gameSetRemoteRepository.leave(id, userStore.userId);
+  gameSets.value = gameSets.value.filter(gameSet => gameSet.id !== id);
 };
 </script>
 
