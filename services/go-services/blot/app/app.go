@@ -15,8 +15,10 @@ type Commands struct {
 	StartNewGame  command.StartNewGameHandler
 	PlayCard      command.PlayCardHandler
 	JoinGameSet   command.JoinGameSetHandler
+	LeaveGameSet  command.LeaveGameSetHandler
 }
 
 type Queries struct {
-	GameSetForPlayer query.GameSetForPlayerQueryHandler
+	GameSetForPlayer  query.GameSetForPlayerQueryHandler
+	GameSetsForPlayer query.GameSetsForPlayerQueryHandler
 }

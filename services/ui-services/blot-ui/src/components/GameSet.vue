@@ -95,6 +95,10 @@ const joinGameSet = async () => {
     throw new Error(validation.error!);
   }
 
+  if (!userStore.user) {
+    // TODO push to login
+    return;
+  }
   await gameSetRemoteRepository.join(gameSetId, userStore.user);
   gameSet.value = await gameSetRemoteRepository.get(gameSetId, userStore.userId);
 };

@@ -8,8 +8,18 @@ service BlotService {
   rpc GetGameForPlayer(GetGameForPlayerRequest) returns (GetGameForPlayerResponse);
   rpc CreateGameSet(CreateGameSetRequest) returns (CreateGameSetResponse);
   rpc JoinGameSet(JoinGameSetRequest) returns (JoinGameSetResponse);
+  rpc LeaveGameSet(LeaveGameSetRequest) returns (LeaveGameSetResponse);
+
   rpc GetGameSetForPlayer(GetGameSetForPlayerRequest) returns (GetGameSetForPlayerResponse);
+  rpc GetGameSetsForPlayer(GetGameSetsForPlayerRequest) returns (GetGameSetsForPlayerResponse);
 }
+
+message LeaveGameSetRequest {
+  string id = 1;
+  string player_id = 2;
+}
+
+message LeaveGameSetResponse {}
 
 message JoinGameSetRequest {
   string id = 1;
@@ -21,8 +31,8 @@ message JoinGameSetResponse {}
 
 message CreateGameSetRequest {
   string id = 1;
-  string first_player_id = 2;
-  string first_player_name = 3;
+  string player_id = 2;
+  string player_name = 3;
 }
 
 message CreateGameSetResponse {}
@@ -41,9 +51,17 @@ message GetGameSetForPlayerResponse {
   GameSet game_set = 1;
 }
 
+message GetGameSetsForPlayerRequest {
+  string player_id = 1;
+}
+
+message GetGameSetsForPlayerResponse {
+  repeated GameSet game_sets = 1;
+}
+
 message GameSet {
   string id = 1;
-  string first_player_id = 2;
+  string owner_id = 2;
   repeated Player players = 3;
   GameSetStatus status = 4;
 }

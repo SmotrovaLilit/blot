@@ -18,9 +18,11 @@ func NewApplication(ctx context.Context) app.Application {
 			StartNewGame:  command.NewStartNewGameHandler(gameSetRepository),
 			PlayCard:      command.NewPlayCardHandler(gameSetRepository),
 			JoinGameSet:   command.NewJoinGameSetHandler(gameSetRepository),
+			LeaveGameSet:  command.NewLeaveGameSetHandler(gameSetRepository),
 		},
 		Queries: app.Queries{
-			GameSetForPlayer: query.NewGameSetForPlayerQueryHandler(gameSetRepository),
+			GameSetForPlayer:  query.NewGameSetForPlayerQueryHandler(gameSetRepository),
+			GameSetsForPlayer: query.NewGameSetsForPlayerQueryHandler(gameSetRepository),
 		},
 	}
 }

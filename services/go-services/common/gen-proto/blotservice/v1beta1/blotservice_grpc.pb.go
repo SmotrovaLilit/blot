@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BlotService_GetGameForPlayer_FullMethodName    = "/blotservice.v1beta1.BlotService/GetGameForPlayer"
-	BlotService_CreateGameSet_FullMethodName       = "/blotservice.v1beta1.BlotService/CreateGameSet"
-	BlotService_JoinGameSet_FullMethodName         = "/blotservice.v1beta1.BlotService/JoinGameSet"
-	BlotService_GetGameSetForPlayer_FullMethodName = "/blotservice.v1beta1.BlotService/GetGameSetForPlayer"
+	BlotService_GetGameForPlayer_FullMethodName     = "/blotservice.v1beta1.BlotService/GetGameForPlayer"
+	BlotService_CreateGameSet_FullMethodName        = "/blotservice.v1beta1.BlotService/CreateGameSet"
+	BlotService_JoinGameSet_FullMethodName          = "/blotservice.v1beta1.BlotService/JoinGameSet"
+	BlotService_LeaveGameSet_FullMethodName         = "/blotservice.v1beta1.BlotService/LeaveGameSet"
+	BlotService_GetGameSetForPlayer_FullMethodName  = "/blotservice.v1beta1.BlotService/GetGameSetForPlayer"
+	BlotService_GetGameSetsForPlayer_FullMethodName = "/blotservice.v1beta1.BlotService/GetGameSetsForPlayer"
 )
 
 // BlotServiceClient is the client API for BlotService service.
@@ -32,7 +34,9 @@ type BlotServiceClient interface {
 	GetGameForPlayer(ctx context.Context, in *GetGameForPlayerRequest, opts ...grpc.CallOption) (*GetGameForPlayerResponse, error)
 	CreateGameSet(ctx context.Context, in *CreateGameSetRequest, opts ...grpc.CallOption) (*CreateGameSetResponse, error)
 	JoinGameSet(ctx context.Context, in *JoinGameSetRequest, opts ...grpc.CallOption) (*JoinGameSetResponse, error)
+	LeaveGameSet(ctx context.Context, in *LeaveGameSetRequest, opts ...grpc.CallOption) (*LeaveGameSetResponse, error)
 	GetGameSetForPlayer(ctx context.Context, in *GetGameSetForPlayerRequest, opts ...grpc.CallOption) (*GetGameSetForPlayerResponse, error)
+	GetGameSetsForPlayer(ctx context.Context, in *GetGameSetsForPlayerRequest, opts ...grpc.CallOption) (*GetGameSetsForPlayerResponse, error)
 }
 
 type blotServiceClient struct {
@@ -73,10 +77,30 @@ func (c *blotServiceClient) JoinGameSet(ctx context.Context, in *JoinGameSetRequ
 	return out, nil
 }
 
+func (c *blotServiceClient) LeaveGameSet(ctx context.Context, in *LeaveGameSetRequest, opts ...grpc.CallOption) (*LeaveGameSetResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LeaveGameSetResponse)
+	err := c.cc.Invoke(ctx, BlotService_LeaveGameSet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *blotServiceClient) GetGameSetForPlayer(ctx context.Context, in *GetGameSetForPlayerRequest, opts ...grpc.CallOption) (*GetGameSetForPlayerResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetGameSetForPlayerResponse)
 	err := c.cc.Invoke(ctx, BlotService_GetGameSetForPlayer_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *blotServiceClient) GetGameSetsForPlayer(ctx context.Context, in *GetGameSetsForPlayerRequest, opts ...grpc.CallOption) (*GetGameSetsForPlayerResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetGameSetsForPlayerResponse)
+	err := c.cc.Invoke(ctx, BlotService_GetGameSetsForPlayer_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +114,9 @@ type BlotServiceServer interface {
 	GetGameForPlayer(context.Context, *GetGameForPlayerRequest) (*GetGameForPlayerResponse, error)
 	CreateGameSet(context.Context, *CreateGameSetRequest) (*CreateGameSetResponse, error)
 	JoinGameSet(context.Context, *JoinGameSetRequest) (*JoinGameSetResponse, error)
+	LeaveGameSet(context.Context, *LeaveGameSetRequest) (*LeaveGameSetResponse, error)
 	GetGameSetForPlayer(context.Context, *GetGameSetForPlayerRequest) (*GetGameSetForPlayerResponse, error)
+	GetGameSetsForPlayer(context.Context, *GetGameSetsForPlayerRequest) (*GetGameSetsForPlayerResponse, error)
 	mustEmbedUnimplementedBlotServiceServer()
 }
 
@@ -110,8 +136,14 @@ func (UnimplementedBlotServiceServer) CreateGameSet(context.Context, *CreateGame
 func (UnimplementedBlotServiceServer) JoinGameSet(context.Context, *JoinGameSetRequest) (*JoinGameSetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method JoinGameSet not implemented")
 }
+func (UnimplementedBlotServiceServer) LeaveGameSet(context.Context, *LeaveGameSetRequest) (*LeaveGameSetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LeaveGameSet not implemented")
+}
 func (UnimplementedBlotServiceServer) GetGameSetForPlayer(context.Context, *GetGameSetForPlayerRequest) (*GetGameSetForPlayerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGameSetForPlayer not implemented")
+}
+func (UnimplementedBlotServiceServer) GetGameSetsForPlayer(context.Context, *GetGameSetsForPlayerRequest) (*GetGameSetsForPlayerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGameSetsForPlayer not implemented")
 }
 func (UnimplementedBlotServiceServer) mustEmbedUnimplementedBlotServiceServer() {}
 func (UnimplementedBlotServiceServer) testEmbeddedByValue()                     {}
@@ -188,6 +220,24 @@ func _BlotService_JoinGameSet_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BlotService_LeaveGameSet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LeaveGameSetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlotServiceServer).LeaveGameSet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BlotService_LeaveGameSet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlotServiceServer).LeaveGameSet(ctx, req.(*LeaveGameSetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BlotService_GetGameSetForPlayer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetGameSetForPlayerRequest)
 	if err := dec(in); err != nil {
@@ -202,6 +252,24 @@ func _BlotService_GetGameSetForPlayer_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BlotServiceServer).GetGameSetForPlayer(ctx, req.(*GetGameSetForPlayerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BlotService_GetGameSetsForPlayer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGameSetsForPlayerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlotServiceServer).GetGameSetsForPlayer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BlotService_GetGameSetsForPlayer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlotServiceServer).GetGameSetsForPlayer(ctx, req.(*GetGameSetsForPlayerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -226,8 +294,16 @@ var BlotService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BlotService_JoinGameSet_Handler,
 		},
 		{
+			MethodName: "LeaveGameSet",
+			Handler:    _BlotService_LeaveGameSet_Handler,
+		},
+		{
 			MethodName: "GetGameSetForPlayer",
 			Handler:    _BlotService_GetGameSetForPlayer_Handler,
+		},
+		{
+			MethodName: "GetGameSetsForPlayer",
+			Handler:    _BlotService_GetGameSetsForPlayer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
