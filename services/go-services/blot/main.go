@@ -7,12 +7,18 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"log/slog"
+	"os"
 
 	"blot/internal/common/server"
 )
 
 func main() {
 	ctx := context.Background()
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	}))
+	slog.SetDefault(logger)
 	app := service.NewApplication(ctx)
 
 	server.RunGRPCServer(func(server *grpc.Server) {

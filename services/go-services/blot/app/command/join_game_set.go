@@ -23,9 +23,9 @@ func NewJoinGameSetHandler(gameSetRepository gameset.Repository) JoinGameSetHand
 	if gameSetRepository == nil {
 		panic("gameSetRepository cannot be nil")
 	}
-	return joinGameSetHandler{
+	return decorator.ApplyCommandDecorators(joinGameSetHandler{
 		gameSetRepository: gameSetRepository,
-	}
+	})
 }
 
 func (h joinGameSetHandler) Handle(ctx context.Context, cmd JoinGameSet) error {

@@ -6,6 +6,8 @@ import (
 	"blot/internal/blot/domain/user"
 	"errors"
 	"github.com/google/uuid"
+	"log/slog"
+	"strconv"
 )
 
 type GameSet struct {
@@ -14,6 +16,23 @@ type GameSet struct {
 	players       []player.Player
 	lastGame      Game
 	status        GamesetStatus
+}
+
+func (s *GameSet) LogValue() slog.Value {
+	var players []interface{}
+	for i, p := range s.players {
+		players = append(players,
+			"player"+strconv.Itoa(i+1), // TODO fix it
+			p.LogValue(),
+		)
+	}
+
+	return slog.GroupValue(
+		slog.String("id", s.id.String()),
+		slog.String("status", s.status.String()),
+		slog.String("first_player_id", s.firstPlayerID.String()),
+		slog.Group("players", players...),
+	)
 }
 
 var ErrGameNotFinished = errors.New("last game is not finished")
@@ -44,11 +63,11 @@ func UnmarshalFromDatabase(id ID, status GamesetStatus, firstPlayer player.ID, p
 	}
 }
 
-func (s GameSet) ID() ID {
+func (s *GameSet) ID() ID {
 	return s.id
 }
 
-func (s GameSet) StartNewGame(gameID GameID) error {
+func (s *GameSet) StartNewGame(gameID GameID) error {
 	n, err := s.lastGame.StartNewGame(gameID)
 	if err != nil {
 		return err
@@ -57,11 +76,11 @@ func (s GameSet) StartNewGame(gameID GameID) error {
 	return nil
 }
 
-func (s GameSet) PlayCard(id user.ID, card card.Card) error {
+func (s *GameSet) PlayCard(id user.ID, card card.Card) error {
 	return s.lastGame.PlayCard(id, card)
 }
 
-func (s GameSet) FirstPlayer() player.Player {
+func (s *GameSet) FirstPlayer() player.Player {
 	for _, p := range s.Players() {
 		if p.ID() == s.firstPlayerID {
 			return p
@@ -70,15 +89,15 @@ func (s GameSet) FirstPlayer() player.Player {
 	panic("first player not found")
 }
 
-func (s GameSet) Status() GamesetStatus {
+func (s *GameSet) Status() GamesetStatus {
 	return s.status
 }
 
-func (s GameSet) Players() []player.Player {
+func (s *GameSet) Players() []player.Player {
 	return s.players
 }
 
-func (s GameSet) Join(p player.Player) error {
+func (s *GameSet) Join(p player.Player) error {
 	err := s.CanJoin(p)
 	if err != nil {
 		return err
@@ -114,8 +133,8 @@ func (e ErrPlayerAlreadyInGameSet) Error() string {
 	return "player " + e.ID.String() + " already in game set"
 }
 
-func (s GameSet) CanJoin(p player.Player) error {
-	if s.Status().CanJoin() {
+func (s *GameSet) CanJoin(p player.Player) error {
+	if !s.Status().CanJoin() {
 		return ErrGameSetNotAllowJoin{s.ID()}
 	}
 	if s.isFull() {
@@ -127,11 +146,11 @@ func (s GameSet) CanJoin(p player.Player) error {
 	return nil
 }
 
-func (s GameSet) isFull() bool {
+func (s *GameSet) isFull() bool {
 	return len(s.Players()) == 4
 }
 
-func (s GameSet) playerInGameSet(p player.Player) bool {
+func (s *GameSet) playerInGameSet(p player.Player) bool {
 	for _, pl := range s.Players() {
 		if pl.ID() == p.ID() {
 			return true

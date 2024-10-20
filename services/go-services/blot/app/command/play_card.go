@@ -25,9 +25,9 @@ func NewPlayCardHandler(gameSetRepository gameset.Repository) PlayCardHandler {
 	if gameSetRepository == nil {
 		panic("gameSetRepository cannot be nil")
 	}
-	return playCardHandler{
+	return decorator.ApplyCommandDecorators(playCardHandler{
 		gameSetRepository: gameSetRepository,
-	}
+	})
 }
 
 func (h playCardHandler) Handle(ctx context.Context, cmd PlayCard) error {
