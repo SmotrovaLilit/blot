@@ -1,17 +1,26 @@
 package command
 
 import (
+	"blot/internal/blot/domain/gameset"
+	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/common/decorator"
 	"context"
-
-	"blot/internal/blot/domain/gameset"
+	"log/slog"
 )
 
 type CreateGameSet struct {
 	FirstPlayer player.Player
 	ID          gameset.ID
-	FirstGameID gameset.GameID
+	FirstGameID game.ID
+}
+
+func (c CreateGameSet) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("id", c.ID.String()),
+		slog.String("first_player_id", c.FirstGameID.String()),
+		slog.Any("first_player", c.FirstPlayer),
+	)
 }
 
 type createGameSetHandler struct {

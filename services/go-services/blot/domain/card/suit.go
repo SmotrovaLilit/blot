@@ -1,6 +1,8 @@
 package card
 
-import "fmt"
+import (
+	"fmt"
+)
 
 var (
 	SuitClubs    = Suit{"Clubs"}
@@ -13,6 +15,10 @@ var (
 
 type Suit struct {
 	value string
+}
+
+func (s Suit) String() string {
+	return s.value
 }
 
 func NewSuit(suitString string) Suit {

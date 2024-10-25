@@ -4,6 +4,7 @@ import (
 	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/common/decorator"
 	"context"
+	"log/slog"
 
 	"blot/internal/blot/domain/gameset"
 )
@@ -11,6 +12,13 @@ import (
 type JoinGameSet struct {
 	Player player.Player
 	ID     gameset.ID
+}
+
+func (j JoinGameSet) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("id", j.ID.String()),
+		slog.Any("player", j.Player),
+	)
 }
 
 type joinGameSetHandler struct {

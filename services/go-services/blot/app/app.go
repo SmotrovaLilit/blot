@@ -12,10 +12,10 @@ type Application struct {
 
 type Commands struct {
 	CreateGameSet command.CreateGameSetHandler
-	StartNewGame  command.StartNewGameHandler
 	PlayCard      command.PlayCardHandler
 	JoinGameSet   command.JoinGameSetHandler
 	LeaveGameSet  command.LeaveGameSetHandler
+	StartGame     command.StartGameHandler
 }
 
 type Queries struct {

@@ -31,15 +31,16 @@ func NewPlayCardHandler(gameSetRepository gameset.Repository) PlayCardHandler {
 }
 
 func (h playCardHandler) Handle(ctx context.Context, cmd PlayCard) error {
-	return h.gameSetRepository.UpdateByID(
-		ctx,
-		cmd.SetID,
-		func(set *gameset.GameSet) (bool, error) {
-			err := set.PlayCard(cmd.PlayerID, cmd.Card)
-			if err != nil {
-				return false, err
-			}
-			return true, nil
-		},
-	)
+	panic("implement me")
+	//return h.gameSetRepository.UpdateByID(
+	//	ctx,
+	//	cmd.SetID,
+	//	func(set *gameset.GameSet) (bool, error) {
+	//		err := set.PlayCard(cmd.PlayerID, cmd.Card)
+	//		if err != nil {
+	//			return false, err
+	//		}
+	//		return true, nil
+	//	},
+	//)
 }

@@ -1,4 +1,4 @@
-package gameset
+package old
 
 import (
 	"blot/internal/blot/domain/card"
@@ -13,8 +13,8 @@ type Player struct {
 	discardCards []card.Card
 }
 
-func NewPlayer(user user.ID, teamID team.ID) *Player {
-	return &Player{
+func NewPlayer(user user.ID, teamID team.ID) Player {
+	return Player{
 		userID: user, handCards: []card.Card{}, discardCards: []card.Card{}, teamID: teamID,
 	}
 }

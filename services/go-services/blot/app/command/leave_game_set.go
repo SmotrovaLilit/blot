@@ -5,11 +5,19 @@ import (
 	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/common/decorator"
 	"context"
+	"log/slog"
 )
 
 type LeaveGameSet struct {
 	ID       gameset.ID
 	PlayerID player.ID
+}
+
+func (l LeaveGameSet) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("id", l.ID.String()),
+		slog.String("player_id", l.PlayerID.String()),
+	)
 }
 
 type leaveGameSetHandler struct {

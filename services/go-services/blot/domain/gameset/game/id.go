@@ -1,23 +1,23 @@
-package gameset
+package game
 
 import "github.com/google/uuid"
 
-type GameID struct {
+type ID struct {
 	value uuid.UUID
 }
 
-func (i GameID) IsZero() bool {
+func (i ID) IsZero() bool {
 	return i.value == uuid.Nil
 }
 
-func (i GameID) String() string {
+func (i ID) String() string {
 	return i.value.String()
 }
 
-func NewGameID(stringID string) GameID {
+func NewID(stringID string) ID {
 	id, err := uuid.Parse(stringID)
 	if err != nil {
 		panic(err)
 	}
-	return GameID{id}
+	return ID{id}
 }

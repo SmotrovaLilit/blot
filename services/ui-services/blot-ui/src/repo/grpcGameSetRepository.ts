@@ -5,7 +5,7 @@ import {
     GameSet as GameSetResp,
     GameSetStatus as GameSetStatusResp,
     GetGameSetForPlayerRequest, JoinGameSetRequest, LeaveGameSetRequest,
-    Player as PlayerResp
+    Player as PlayerResp, StartGameRequest
 } from '@/generated/blotservice/v1beta1/blotservice';
 import {GameSet, GameSetStatus} from '@/models/gameSet';
 import {GrpcWebFetchTransport} from "@protobuf-ts/grpcweb-transport";
@@ -19,7 +19,8 @@ export interface GameSetRepository {
     getPlayerGameSets(playerId: string): Promise<GameSet[]>
 
     create(id: string, player: User): Promise<void>;
-    join(gameSetId: string, player: User): Promise<void>;
+    startGame(id: string, playerId: string, gameId: string): Promise<void>;
+    join(id: string, player: User): Promise<void>;
     leave(id: string, playerId: string): Promise<void>;
 }
 
@@ -91,9 +92,9 @@ export class GrpcGameSetRepository implements GameSetRepository {
         });
         console.log('leaveGameSet ended');
     }
-    public async join(gameSetId: string, player: User): Promise<void> {
+    public async join(id: string, player: User): Promise<void> {
         const request = JoinGameSetRequest.create();
-        request.id = gameSetId;
+        request.id = id;
         request.player_id = player.id;
         request.player_name = player.name;
         console.log('joinGameSet started', request);
@@ -103,6 +104,18 @@ export class GrpcGameSetRepository implements GameSetRepository {
         });
         // TODO: handle errors
         console.log('joinGameSet ended');
+    }
+    public async startGame(id: string, playerId: string, gameId: string): Promise<void> {
+        const request = StartGameRequest.create();
+        request.game_set_id = id;
+        request.game_id = gameId;
+        request.player_id = playerId;
+        console.log('startGame started', request);
+        await this.client.startGame(request, {
+            meta: {},
+            timeout: TIMEOUT_MILLISECS,
+        });
+        console.log('startGame ended');
     }
 }
 
@@ -129,7 +142,9 @@ function convertToGameSetStatus(status: GameSetStatusResp): GameSetStatus {
             return GameSetStatus.GAME_SET_STATUS_WAITED_FOR_PLAYERS;
         case GameSetStatusResp.READY_TO_START:
             return GameSetStatus.GAME_SET_STATUS_READY_TO_START;
+        case GameSetStatusResp.PLAYING:
+            return GameSetStatus.GAME_SET_STATUS_PLAYING;
         default:
-            throw new Error('Unknown game set status');
+            throw new Error('Unknown game set status: ' + status);
     }
 }
