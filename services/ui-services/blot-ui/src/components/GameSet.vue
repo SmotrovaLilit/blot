@@ -33,7 +33,7 @@
       </v-card-text>
       <v-card-actions>
         <v-btn v-if="canJoinGame" color="primary" @click="joinGameSet">Join Game</v-btn>
-        <v-alert v-if="joinGameError.length!=0" type="error">{{ joinGameError }}</v-alert>
+        <v-btn v-if="canStartGame" color="primary" @click="startGame">Start Game</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -45,7 +45,8 @@ import {useRoute, useRouter} from 'vue-router';
 import {useUserStore} from "@/stores/userStore";
 import {User} from "@/models/user";
 import gameSetRemoteRepository from "@/repo/repositores";
-import {GameSet} from "@/models/gameSet";
+import {GameSet, GameSetStatus} from "@/models/gameSet";
+import {v4 as uuidv4} from 'uuid';
 
 const route = useRoute();
 const router = useRouter();
@@ -64,8 +65,6 @@ onMounted(async () => {
   gameSet.value = await gameSetRemoteRepository.get(gameSetId, playerId);
 });
 
-const joinGameError = ref<string[]>([]);
-
 interface CanUserJoinGameResult {
   canJoin: boolean;
   error: string | null;
@@ -76,7 +75,7 @@ const canUserJoinGame = (): CanUserJoinGameResult => {
   if (!playerId) return { canJoin: false, error: 'User should be logged in to join a game' };
   if (!gameSet.value) return { canJoin: false, error: 'Game not found' };
   if (gameSet.value.players.length >= 4) return { canJoin: false, error: 'Game is full' };
-  if (gameSet.value.players.find(p => p.id === playerId)) return { canJoin: false, error: 'You are already in the game' };
+  if (gameSet.value.players.find(p => p.id === playerId)) return { canJoin: false, error: 'User is already in the game' };
 
   return { canJoin: true, error: null };
 };
@@ -87,11 +86,8 @@ const canJoinGame = computed(() => {
 });
 
 const joinGameSet = async () => {
-  joinGameError.value = [];
-
   const validation = canUserJoinGame();
   if (!validation.canJoin) {
-    joinGameError.value = [validation.error!];
     throw new Error(validation.error!);
   }
 
@@ -102,6 +98,20 @@ const joinGameSet = async () => {
   await gameSetRemoteRepository.join(gameSetId, userStore.user);
   gameSet.value = await gameSetRemoteRepository.get(gameSetId, userStore.userId);
 };
+
+const canStartGame = computed(() => {
+  if (!gameSet.value) return false
+  return gameSet.value.status == GameSetStatus.GAME_SET_STATUS_READY_TO_START;
+});
+
+const startGame = async () => {
+  if (!canStartGame.value) {
+    throw new Error('Game cannot be started');
+  }
+  const gameId = uuidv4()
+  await gameSetRemoteRepository.startGame(gameSetId, userStore.userId, gameId);
+  gameSet.value = await gameSetRemoteRepository.get(gameSetId, userStore.userId);
+}
 
 
 const goBack = () => {

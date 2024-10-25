@@ -17,7 +17,22 @@ export const useUserStore = defineStore('user', {
             console.log('load user from local storage: no user found');
         },
         createUser: function (name: string) {
-            const id = uuidv4()
+            let id = uuidv4();
+            // TODO: remove this switch
+            switch (name) {
+                case 'Lilit':
+                    id = 'a88bb98e-0e1f-4c82-a209-9d6b4986d013'
+                    break;
+                case 'Dima':
+                    id = 'b88bb98e-0e1f-4c82-a209-9d6b4986d014'
+                    break;
+                case 'Anya':
+                    id = 'c88bb98e-0e1f-4c82-a209-9d6b4986d015'
+                    break;
+                case 'Armen':
+                    id = 'd88bb98e-0e1f-4c82-a209-9d6b4986d016'
+                    break;
+            }
             this.user = new User(id, name);
             localStorage.setItem('user', JSON.stringify(this.user)); // TODO move to separate function
         },

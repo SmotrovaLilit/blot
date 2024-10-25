@@ -5,14 +5,22 @@ package blotservice.v1beta1;
 option go_package = "blotservice/v1beta1;blotservicepb";
 
 service BlotService {
-  rpc GetGameForPlayer(GetGameForPlayerRequest) returns (GetGameForPlayerResponse);
   rpc CreateGameSet(CreateGameSetRequest) returns (CreateGameSetResponse);
   rpc JoinGameSet(JoinGameSetRequest) returns (JoinGameSetResponse);
   rpc LeaveGameSet(LeaveGameSetRequest) returns (LeaveGameSetResponse);
+  rpc StartGame(StartGameRequest) returns (StartGameResponse);
 
   rpc GetGameSetForPlayer(GetGameSetForPlayerRequest) returns (GetGameSetForPlayerResponse);
   rpc GetGameSetsForPlayer(GetGameSetsForPlayerRequest) returns (GetGameSetsForPlayerResponse);
 }
+
+message StartGameRequest {
+  string game_set_id = 1;
+  string game_id = 2;
+  string player_id = 3;
+}
+
+message StartGameResponse {}
 
 message LeaveGameSetRequest {
   string id = 1;
@@ -62,16 +70,10 @@ message GetGameSetsForPlayerResponse {
 message GameSet {
   string id = 1;
   string owner_id = 2;
+  // Return players how they sit at the table (clockwise)
   repeated Player players = 3;
   GameSetStatus status = 4;
-}
-
-message GetGameForPlayerResponse {
-  Game game = 1;
-  Player current_player = 2;
-  Player ally_player = 3;
-  Player left_player = 4;
-  Player right_player = 5;
+  Game game = 7;
 }
 
 message Game {
@@ -79,7 +81,9 @@ message Game {
   GameStatus status = 2;
   Round round = 3;
   Bet bet = 4;
-  repeated Team teams = 5;
+  Team team1 = 5;
+  Team team2 = 6;
+  repeated PlayerStateInGame player_states = 7;
 }
 
 message Bet {
@@ -90,25 +94,28 @@ message Bet {
 
 message Team {
   string id = 1;
-  string name = 2;
+  string player1 = 2;
+  string player2 = 3;
 }
 
 message Player {
   string id = 1;
   string name = 2;
+}
+
+message PlayerStateInGame {
+  string id = 1;
   repeated Card hand_cards = 4;
-  repeated Card discard_stack = 5;
-  string team_id = 6;
 }
 
 message Round {
   int32 number = 1;
-  repeated PlayerCard table_cards = 2;
+  repeated PlayedCard table_cards = 2;
   RoundStatus status = 3;
   string current_player_id = 4;
 }
 
-message PlayerCard {
+message PlayedCard {
   string player_id = 1;
   Card card = 2;
 }
@@ -128,15 +135,14 @@ enum GameSetStatus {
   GAME_SET_STATUS_UNSPECIFIED = 0;
   GAME_SET_STATUS_WAITED_FOR_PLAYERS = 1;
   GAME_SET_STATUS_READY_TO_START = 2;
+  GAME_SET_STATUS_PLAYING = 3;
 }
 
 enum GameStatus {
   GAME_STATUS_UNSPECIFIED = 0;
-  GAME_STATUS_CREATED = 1;
-  GAME_STATUS_STARTED = 2;
-  GAME_STATUS_TALKING = 3;
-  GAME_STATUS_BET_PLACED = 4;
-  GAME_STATUS_FINISHED = 5;
+  GAME_STATUS_BETTING = 1;
+  GAME_STATUS_PLAYING = 2;
+  GAME_STATUS_FINISHED = 3;
 }
 
 enum Rank {

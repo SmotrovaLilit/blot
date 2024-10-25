@@ -94,6 +94,7 @@ func (g *GameSetMemoryRepository) Get(ctx context.Context, id gameset.ID) (games
 			slog.Any("setEntry", existGame),
 			slog.Any("set_entry", setEntry),
 		)
+		return existGame, nil
 	}
 	slog.DebugContext(ctx, "repo: game setEntry not found")
 	return gameset.GameSet{}, gameset.NotFoundError{ID: id}

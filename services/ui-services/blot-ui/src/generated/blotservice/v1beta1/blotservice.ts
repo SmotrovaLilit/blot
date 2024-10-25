@@ -12,6 +12,28 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 /**
+ * @generated from protobuf message blotservice.v1beta1.StartGameRequest
+ */
+export interface StartGameRequest {
+    /**
+     * @generated from protobuf field: string game_set_id = 1;
+     */
+    game_set_id: string;
+    /**
+     * @generated from protobuf field: string game_id = 2;
+     */
+    game_id: string;
+    /**
+     * @generated from protobuf field: string player_id = 3;
+     */
+    player_id: string;
+}
+/**
+ * @generated from protobuf message blotservice.v1beta1.StartGameResponse
+ */
+export interface StartGameResponse {
+}
+/**
  * @generated from protobuf message blotservice.v1beta1.LeaveGameSetRequest
  */
 export interface LeaveGameSetRequest {
@@ -139,6 +161,8 @@ export interface GameSet {
      */
     owner_id: string;
     /**
+     * Return players how they sit at the table (clockwise)
+     *
      * @generated from protobuf field: repeated blotservice.v1beta1.Player players = 3;
      */
     players: Player[];
@@ -146,31 +170,10 @@ export interface GameSet {
      * @generated from protobuf field: blotservice.v1beta1.GameSetStatus status = 4;
      */
     status: GameSetStatus;
-}
-/**
- * @generated from protobuf message blotservice.v1beta1.GetGameForPlayerResponse
- */
-export interface GetGameForPlayerResponse {
     /**
-     * @generated from protobuf field: blotservice.v1beta1.Game game = 1;
+     * @generated from protobuf field: blotservice.v1beta1.Game game = 7;
      */
     game?: Game;
-    /**
-     * @generated from protobuf field: blotservice.v1beta1.Player current_player = 2;
-     */
-    current_player?: Player;
-    /**
-     * @generated from protobuf field: blotservice.v1beta1.Player ally_player = 3;
-     */
-    ally_player?: Player;
-    /**
-     * @generated from protobuf field: blotservice.v1beta1.Player left_player = 4;
-     */
-    left_player?: Player;
-    /**
-     * @generated from protobuf field: blotservice.v1beta1.Player right_player = 5;
-     */
-    right_player?: Player;
 }
 /**
  * @generated from protobuf message blotservice.v1beta1.Game
@@ -193,9 +196,17 @@ export interface Game {
      */
     bet?: Bet;
     /**
-     * @generated from protobuf field: repeated blotservice.v1beta1.Team teams = 5;
+     * @generated from protobuf field: blotservice.v1beta1.Team team1 = 5;
      */
-    teams: Team[];
+    team1?: Team;
+    /**
+     * @generated from protobuf field: blotservice.v1beta1.Team team2 = 6;
+     */
+    team2?: Team;
+    /**
+     * @generated from protobuf field: repeated blotservice.v1beta1.PlayerStateInGame player_states = 7;
+     */
+    player_states: PlayerStateInGame[];
 }
 /**
  * @generated from protobuf message blotservice.v1beta1.Bet
@@ -223,9 +234,13 @@ export interface Team {
      */
     id: string;
     /**
-     * @generated from protobuf field: string name = 2;
+     * @generated from protobuf field: string player1 = 2;
      */
-    name: string;
+    player1: string;
+    /**
+     * @generated from protobuf field: string player2 = 3;
+     */
+    player2: string;
 }
 /**
  * @generated from protobuf message blotservice.v1beta1.Player
@@ -239,18 +254,19 @@ export interface Player {
      * @generated from protobuf field: string name = 2;
      */
     name: string;
+}
+/**
+ * @generated from protobuf message blotservice.v1beta1.PlayerStateInGame
+ */
+export interface PlayerStateInGame {
+    /**
+     * @generated from protobuf field: string id = 1;
+     */
+    id: string;
     /**
      * @generated from protobuf field: repeated blotservice.v1beta1.Card hand_cards = 4;
      */
     hand_cards: Card[];
-    /**
-     * @generated from protobuf field: repeated blotservice.v1beta1.Card discard_stack = 5;
-     */
-    discard_stack: Card[];
-    /**
-     * @generated from protobuf field: string team_id = 6;
-     */
-    team_id: string;
 }
 /**
  * @generated from protobuf message blotservice.v1beta1.Round
@@ -261,9 +277,9 @@ export interface Round {
      */
     number: number;
     /**
-     * @generated from protobuf field: repeated blotservice.v1beta1.PlayerCard table_cards = 2;
+     * @generated from protobuf field: repeated blotservice.v1beta1.PlayedCard table_cards = 2;
      */
-    table_cards: PlayerCard[];
+    table_cards: PlayedCard[];
     /**
      * @generated from protobuf field: blotservice.v1beta1.RoundStatus status = 3;
      */
@@ -274,9 +290,9 @@ export interface Round {
     current_player_id: string;
 }
 /**
- * @generated from protobuf message blotservice.v1beta1.PlayerCard
+ * @generated from protobuf message blotservice.v1beta1.PlayedCard
  */
-export interface PlayerCard {
+export interface PlayedCard {
     /**
      * @generated from protobuf field: string player_id = 1;
      */
@@ -331,7 +347,11 @@ export enum GameSetStatus {
     /**
      * @generated from protobuf enum value: GAME_SET_STATUS_READY_TO_START = 2;
      */
-    READY_TO_START = 2
+    READY_TO_START = 2,
+    /**
+     * @generated from protobuf enum value: GAME_SET_STATUS_PLAYING = 3;
+     */
+    PLAYING = 3
 }
 /**
  * @generated from protobuf enum blotservice.v1beta1.GameStatus
@@ -342,25 +362,17 @@ export enum GameStatus {
      */
     UNSPECIFIED = 0,
     /**
-     * @generated from protobuf enum value: GAME_STATUS_CREATED = 1;
+     * @generated from protobuf enum value: GAME_STATUS_BETTING = 1;
      */
-    CREATED = 1,
+    BETTING = 1,
     /**
-     * @generated from protobuf enum value: GAME_STATUS_STARTED = 2;
+     * @generated from protobuf enum value: GAME_STATUS_PLAYING = 2;
      */
-    STARTED = 2,
+    PLAYING = 2,
     /**
-     * @generated from protobuf enum value: GAME_STATUS_TALKING = 3;
+     * @generated from protobuf enum value: GAME_STATUS_FINISHED = 3;
      */
-    TALKING = 3,
-    /**
-     * @generated from protobuf enum value: GAME_STATUS_BET_PLACED = 4;
-     */
-    BET_PLACED = 4,
-    /**
-     * @generated from protobuf enum value: GAME_STATUS_FINISHED = 5;
-     */
-    FINISHED = 5
+    FINISHED = 3
 }
 /**
  * @generated from protobuf enum blotservice.v1beta1.Rank
@@ -428,6 +440,94 @@ export enum Suit {
      */
     SPADES = 4
 }
+// @generated message type with reflection information, may provide speed optimized methods
+class StartGameRequest$Type extends MessageType<StartGameRequest> {
+    constructor() {
+        super("blotservice.v1beta1.StartGameRequest", [
+            { no: 1, name: "game_set_id", kind: "scalar", localName: "game_set_id", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "game_id", kind: "scalar", localName: "game_id", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "player_id", kind: "scalar", localName: "player_id", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<StartGameRequest>): StartGameRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.game_set_id = "";
+        message.game_id = "";
+        message.player_id = "";
+        if (value !== undefined)
+            reflectionMergePartial<StartGameRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: StartGameRequest): StartGameRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string game_set_id */ 1:
+                    message.game_set_id = reader.string();
+                    break;
+                case /* string game_id */ 2:
+                    message.game_id = reader.string();
+                    break;
+                case /* string player_id */ 3:
+                    message.player_id = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: StartGameRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string game_set_id = 1; */
+        if (message.game_set_id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.game_set_id);
+        /* string game_id = 2; */
+        if (message.game_id !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.game_id);
+        /* string player_id = 3; */
+        if (message.player_id !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.player_id);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message blotservice.v1beta1.StartGameRequest
+ */
+export const StartGameRequest = new StartGameRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class StartGameResponse$Type extends MessageType<StartGameResponse> {
+    constructor() {
+        super("blotservice.v1beta1.StartGameResponse", []);
+    }
+    create(value?: PartialMessage<StartGameResponse>): StartGameResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<StartGameResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: StartGameResponse): StartGameResponse {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: StartGameResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message blotservice.v1beta1.StartGameResponse
+ */
+export const StartGameResponse = new StartGameResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class LeaveGameSetRequest$Type extends MessageType<LeaveGameSetRequest> {
     constructor() {
@@ -941,7 +1041,8 @@ class GameSet$Type extends MessageType<GameSet> {
             { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "owner_id", kind: "scalar", localName: "owner_id", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "players", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Player },
-            { no: 4, name: "status", kind: "enum", T: () => ["blotservice.v1beta1.GameSetStatus", GameSetStatus, "GAME_SET_STATUS_"] }
+            { no: 4, name: "status", kind: "enum", T: () => ["blotservice.v1beta1.GameSetStatus", GameSetStatus, "GAME_SET_STATUS_"] },
+            { no: 7, name: "game", kind: "message", T: () => Game }
         ]);
     }
     create(value?: PartialMessage<GameSet>): GameSet {
@@ -971,6 +1072,9 @@ class GameSet$Type extends MessageType<GameSet> {
                 case /* blotservice.v1beta1.GameSetStatus status */ 4:
                     message.status = reader.int32();
                     break;
+                case /* blotservice.v1beta1.Game game */ 7:
+                    message.game = Game.internalBinaryRead(reader, reader.uint32(), options, message.game);
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -995,6 +1099,9 @@ class GameSet$Type extends MessageType<GameSet> {
         /* blotservice.v1beta1.GameSetStatus status = 4; */
         if (message.status !== 0)
             writer.tag(4, WireType.Varint).int32(message.status);
+        /* blotservice.v1beta1.Game game = 7; */
+        if (message.game)
+            Game.internalBinaryWrite(message.game, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1006,80 +1113,6 @@ class GameSet$Type extends MessageType<GameSet> {
  */
 export const GameSet = new GameSet$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class GetGameForPlayerResponse$Type extends MessageType<GetGameForPlayerResponse> {
-    constructor() {
-        super("blotservice.v1beta1.GetGameForPlayerResponse", [
-            { no: 1, name: "game", kind: "message", T: () => Game },
-            { no: 2, name: "current_player", kind: "message", localName: "current_player", T: () => Player },
-            { no: 3, name: "ally_player", kind: "message", localName: "ally_player", T: () => Player },
-            { no: 4, name: "left_player", kind: "message", localName: "left_player", T: () => Player },
-            { no: 5, name: "right_player", kind: "message", localName: "right_player", T: () => Player }
-        ]);
-    }
-    create(value?: PartialMessage<GetGameForPlayerResponse>): GetGameForPlayerResponse {
-        const message = globalThis.Object.create((this.messagePrototype!));
-        if (value !== undefined)
-            reflectionMergePartial<GetGameForPlayerResponse>(this, message, value);
-        return message;
-    }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetGameForPlayerResponse): GetGameForPlayerResponse {
-        let message = target ?? this.create(), end = reader.pos + length;
-        while (reader.pos < end) {
-            let [fieldNo, wireType] = reader.tag();
-            switch (fieldNo) {
-                case /* blotservice.v1beta1.Game game */ 1:
-                    message.game = Game.internalBinaryRead(reader, reader.uint32(), options, message.game);
-                    break;
-                case /* blotservice.v1beta1.Player current_player */ 2:
-                    message.current_player = Player.internalBinaryRead(reader, reader.uint32(), options, message.current_player);
-                    break;
-                case /* blotservice.v1beta1.Player ally_player */ 3:
-                    message.ally_player = Player.internalBinaryRead(reader, reader.uint32(), options, message.ally_player);
-                    break;
-                case /* blotservice.v1beta1.Player left_player */ 4:
-                    message.left_player = Player.internalBinaryRead(reader, reader.uint32(), options, message.left_player);
-                    break;
-                case /* blotservice.v1beta1.Player right_player */ 5:
-                    message.right_player = Player.internalBinaryRead(reader, reader.uint32(), options, message.right_player);
-                    break;
-                default:
-                    let u = options.readUnknownField;
-                    if (u === "throw")
-                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
-                    let d = reader.skip(wireType);
-                    if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
-            }
-        }
-        return message;
-    }
-    internalBinaryWrite(message: GetGameForPlayerResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* blotservice.v1beta1.Game game = 1; */
-        if (message.game)
-            Game.internalBinaryWrite(message.game, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
-        /* blotservice.v1beta1.Player current_player = 2; */
-        if (message.current_player)
-            Player.internalBinaryWrite(message.current_player, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
-        /* blotservice.v1beta1.Player ally_player = 3; */
-        if (message.ally_player)
-            Player.internalBinaryWrite(message.ally_player, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
-        /* blotservice.v1beta1.Player left_player = 4; */
-        if (message.left_player)
-            Player.internalBinaryWrite(message.left_player, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
-        /* blotservice.v1beta1.Player right_player = 5; */
-        if (message.right_player)
-            Player.internalBinaryWrite(message.right_player, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
-        let u = options.writeUnknownFields;
-        if (u !== false)
-            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
-        return writer;
-    }
-}
-/**
- * @generated MessageType for protobuf message blotservice.v1beta1.GetGameForPlayerResponse
- */
-export const GetGameForPlayerResponse = new GetGameForPlayerResponse$Type();
-// @generated message type with reflection information, may provide speed optimized methods
 class Game$Type extends MessageType<Game> {
     constructor() {
         super("blotservice.v1beta1.Game", [
@@ -1087,14 +1120,16 @@ class Game$Type extends MessageType<Game> {
             { no: 2, name: "status", kind: "enum", T: () => ["blotservice.v1beta1.GameStatus", GameStatus, "GAME_STATUS_"] },
             { no: 3, name: "round", kind: "message", T: () => Round },
             { no: 4, name: "bet", kind: "message", T: () => Bet },
-            { no: 5, name: "teams", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Team }
+            { no: 5, name: "team1", kind: "message", T: () => Team },
+            { no: 6, name: "team2", kind: "message", T: () => Team },
+            { no: 7, name: "player_states", kind: "message", localName: "player_states", repeat: 1 /*RepeatType.PACKED*/, T: () => PlayerStateInGame }
         ]);
     }
     create(value?: PartialMessage<Game>): Game {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.id = "";
         message.status = 0;
-        message.teams = [];
+        message.player_states = [];
         if (value !== undefined)
             reflectionMergePartial<Game>(this, message, value);
         return message;
@@ -1116,8 +1151,14 @@ class Game$Type extends MessageType<Game> {
                 case /* blotservice.v1beta1.Bet bet */ 4:
                     message.bet = Bet.internalBinaryRead(reader, reader.uint32(), options, message.bet);
                     break;
-                case /* repeated blotservice.v1beta1.Team teams */ 5:
-                    message.teams.push(Team.internalBinaryRead(reader, reader.uint32(), options));
+                case /* blotservice.v1beta1.Team team1 */ 5:
+                    message.team1 = Team.internalBinaryRead(reader, reader.uint32(), options, message.team1);
+                    break;
+                case /* blotservice.v1beta1.Team team2 */ 6:
+                    message.team2 = Team.internalBinaryRead(reader, reader.uint32(), options, message.team2);
+                    break;
+                case /* repeated blotservice.v1beta1.PlayerStateInGame player_states */ 7:
+                    message.player_states.push(PlayerStateInGame.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1143,9 +1184,15 @@ class Game$Type extends MessageType<Game> {
         /* blotservice.v1beta1.Bet bet = 4; */
         if (message.bet)
             Bet.internalBinaryWrite(message.bet, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
-        /* repeated blotservice.v1beta1.Team teams = 5; */
-        for (let i = 0; i < message.teams.length; i++)
-            Team.internalBinaryWrite(message.teams[i], writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* blotservice.v1beta1.Team team1 = 5; */
+        if (message.team1)
+            Team.internalBinaryWrite(message.team1, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* blotservice.v1beta1.Team team2 = 6; */
+        if (message.team2)
+            Team.internalBinaryWrite(message.team2, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
+        /* repeated blotservice.v1beta1.PlayerStateInGame player_states = 7; */
+        for (let i = 0; i < message.player_states.length; i++)
+            PlayerStateInGame.internalBinaryWrite(message.player_states[i], writer.tag(7, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1224,13 +1271,15 @@ class Team$Type extends MessageType<Team> {
     constructor() {
         super("blotservice.v1beta1.Team", [
             { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 2, name: "player1", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "player2", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Team>): Team {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.id = "";
-        message.name = "";
+        message.player1 = "";
+        message.player2 = "";
         if (value !== undefined)
             reflectionMergePartial<Team>(this, message, value);
         return message;
@@ -1243,8 +1292,11 @@ class Team$Type extends MessageType<Team> {
                 case /* string id */ 1:
                     message.id = reader.string();
                     break;
-                case /* string name */ 2:
-                    message.name = reader.string();
+                case /* string player1 */ 2:
+                    message.player1 = reader.string();
+                    break;
+                case /* string player2 */ 3:
+                    message.player2 = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1261,9 +1313,12 @@ class Team$Type extends MessageType<Team> {
         /* string id = 1; */
         if (message.id !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.id);
-        /* string name = 2; */
-        if (message.name !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.name);
+        /* string player1 = 2; */
+        if (message.player1 !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.player1);
+        /* string player2 = 3; */
+        if (message.player2 !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.player2);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1279,19 +1334,13 @@ class Player$Type extends MessageType<Player> {
     constructor() {
         super("blotservice.v1beta1.Player", [
             { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "hand_cards", kind: "message", localName: "hand_cards", repeat: 1 /*RepeatType.PACKED*/, T: () => Card },
-            { no: 5, name: "discard_stack", kind: "message", localName: "discard_stack", repeat: 1 /*RepeatType.PACKED*/, T: () => Card },
-            { no: 6, name: "team_id", kind: "scalar", localName: "team_id", T: 9 /*ScalarType.STRING*/ }
+            { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Player>): Player {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.id = "";
         message.name = "";
-        message.hand_cards = [];
-        message.discard_stack = [];
-        message.team_id = "";
         if (value !== undefined)
             reflectionMergePartial<Player>(this, message, value);
         return message;
@@ -1306,15 +1355,6 @@ class Player$Type extends MessageType<Player> {
                     break;
                 case /* string name */ 2:
                     message.name = reader.string();
-                    break;
-                case /* repeated blotservice.v1beta1.Card hand_cards */ 4:
-                    message.hand_cards.push(Card.internalBinaryRead(reader, reader.uint32(), options));
-                    break;
-                case /* repeated blotservice.v1beta1.Card discard_stack */ 5:
-                    message.discard_stack.push(Card.internalBinaryRead(reader, reader.uint32(), options));
-                    break;
-                case /* string team_id */ 6:
-                    message.team_id = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1334,15 +1374,6 @@ class Player$Type extends MessageType<Player> {
         /* string name = 2; */
         if (message.name !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.name);
-        /* repeated blotservice.v1beta1.Card hand_cards = 4; */
-        for (let i = 0; i < message.hand_cards.length; i++)
-            Card.internalBinaryWrite(message.hand_cards[i], writer.tag(4, WireType.LengthDelimited).fork(), options).join();
-        /* repeated blotservice.v1beta1.Card discard_stack = 5; */
-        for (let i = 0; i < message.discard_stack.length; i++)
-            Card.internalBinaryWrite(message.discard_stack[i], writer.tag(5, WireType.LengthDelimited).fork(), options).join();
-        /* string team_id = 6; */
-        if (message.team_id !== "")
-            writer.tag(6, WireType.LengthDelimited).string(message.team_id);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1354,11 +1385,66 @@ class Player$Type extends MessageType<Player> {
  */
 export const Player = new Player$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class PlayerStateInGame$Type extends MessageType<PlayerStateInGame> {
+    constructor() {
+        super("blotservice.v1beta1.PlayerStateInGame", [
+            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "hand_cards", kind: "message", localName: "hand_cards", repeat: 1 /*RepeatType.PACKED*/, T: () => Card }
+        ]);
+    }
+    create(value?: PartialMessage<PlayerStateInGame>): PlayerStateInGame {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = "";
+        message.hand_cards = [];
+        if (value !== undefined)
+            reflectionMergePartial<PlayerStateInGame>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PlayerStateInGame): PlayerStateInGame {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string id */ 1:
+                    message.id = reader.string();
+                    break;
+                case /* repeated blotservice.v1beta1.Card hand_cards */ 4:
+                    message.hand_cards.push(Card.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: PlayerStateInGame, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string id = 1; */
+        if (message.id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.id);
+        /* repeated blotservice.v1beta1.Card hand_cards = 4; */
+        for (let i = 0; i < message.hand_cards.length; i++)
+            Card.internalBinaryWrite(message.hand_cards[i], writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message blotservice.v1beta1.PlayerStateInGame
+ */
+export const PlayerStateInGame = new PlayerStateInGame$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class Round$Type extends MessageType<Round> {
     constructor() {
         super("blotservice.v1beta1.Round", [
             { no: 1, name: "number", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 2, name: "table_cards", kind: "message", localName: "table_cards", repeat: 1 /*RepeatType.PACKED*/, T: () => PlayerCard },
+            { no: 2, name: "table_cards", kind: "message", localName: "table_cards", repeat: 1 /*RepeatType.PACKED*/, T: () => PlayedCard },
             { no: 3, name: "status", kind: "enum", T: () => ["blotservice.v1beta1.RoundStatus", RoundStatus, "ROUND_STATUS_"] },
             { no: 4, name: "current_player_id", kind: "scalar", localName: "current_player_id", T: 9 /*ScalarType.STRING*/ }
         ]);
@@ -1381,8 +1467,8 @@ class Round$Type extends MessageType<Round> {
                 case /* int32 number */ 1:
                     message.number = reader.int32();
                     break;
-                case /* repeated blotservice.v1beta1.PlayerCard table_cards */ 2:
-                    message.table_cards.push(PlayerCard.internalBinaryRead(reader, reader.uint32(), options));
+                case /* repeated blotservice.v1beta1.PlayedCard table_cards */ 2:
+                    message.table_cards.push(PlayedCard.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 case /* blotservice.v1beta1.RoundStatus status */ 3:
                     message.status = reader.int32();
@@ -1405,9 +1491,9 @@ class Round$Type extends MessageType<Round> {
         /* int32 number = 1; */
         if (message.number !== 0)
             writer.tag(1, WireType.Varint).int32(message.number);
-        /* repeated blotservice.v1beta1.PlayerCard table_cards = 2; */
+        /* repeated blotservice.v1beta1.PlayedCard table_cards = 2; */
         for (let i = 0; i < message.table_cards.length; i++)
-            PlayerCard.internalBinaryWrite(message.table_cards[i], writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+            PlayedCard.internalBinaryWrite(message.table_cards[i], writer.tag(2, WireType.LengthDelimited).fork(), options).join();
         /* blotservice.v1beta1.RoundStatus status = 3; */
         if (message.status !== 0)
             writer.tag(3, WireType.Varint).int32(message.status);
@@ -1425,21 +1511,21 @@ class Round$Type extends MessageType<Round> {
  */
 export const Round = new Round$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class PlayerCard$Type extends MessageType<PlayerCard> {
+class PlayedCard$Type extends MessageType<PlayedCard> {
     constructor() {
-        super("blotservice.v1beta1.PlayerCard", [
+        super("blotservice.v1beta1.PlayedCard", [
             { no: 1, name: "player_id", kind: "scalar", localName: "player_id", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "card", kind: "message", T: () => Card }
         ]);
     }
-    create(value?: PartialMessage<PlayerCard>): PlayerCard {
+    create(value?: PartialMessage<PlayedCard>): PlayedCard {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.player_id = "";
         if (value !== undefined)
-            reflectionMergePartial<PlayerCard>(this, message, value);
+            reflectionMergePartial<PlayedCard>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PlayerCard): PlayerCard {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PlayedCard): PlayedCard {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
@@ -1461,7 +1547,7 @@ class PlayerCard$Type extends MessageType<PlayerCard> {
         }
         return message;
     }
-    internalBinaryWrite(message: PlayerCard, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+    internalBinaryWrite(message: PlayedCard, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
         /* string player_id = 1; */
         if (message.player_id !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.player_id);
@@ -1475,9 +1561,9 @@ class PlayerCard$Type extends MessageType<PlayerCard> {
     }
 }
 /**
- * @generated MessageType for protobuf message blotservice.v1beta1.PlayerCard
+ * @generated MessageType for protobuf message blotservice.v1beta1.PlayedCard
  */
-export const PlayerCard = new PlayerCard$Type();
+export const PlayedCard = new PlayedCard$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Card$Type extends MessageType<Card> {
     constructor() {
@@ -1537,10 +1623,10 @@ export const Card = new Card$Type();
  * @generated ServiceType for protobuf service blotservice.v1beta1.BlotService
  */
 export const BlotService = new ServiceType("blotservice.v1beta1.BlotService", [
-    { name: "GetGameForPlayer", options: {}, I: GetGameForPlayerRequest, O: GetGameForPlayerResponse },
     { name: "CreateGameSet", options: {}, I: CreateGameSetRequest, O: CreateGameSetResponse },
     { name: "JoinGameSet", options: {}, I: JoinGameSetRequest, O: JoinGameSetResponse },
     { name: "LeaveGameSet", options: {}, I: LeaveGameSetRequest, O: LeaveGameSetResponse },
+    { name: "StartGame", options: {}, I: StartGameRequest, O: StartGameResponse },
     { name: "GetGameSetForPlayer", options: {}, I: GetGameSetForPlayerRequest, O: GetGameSetForPlayerResponse },
     { name: "GetGameSetsForPlayer", options: {}, I: GetGameSetsForPlayerRequest, O: GetGameSetsForPlayerResponse }
 ]);
