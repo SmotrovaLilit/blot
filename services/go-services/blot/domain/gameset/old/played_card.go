@@ -1,4 +1,4 @@
-package gameset
+package old
 
 import "blot/internal/blot/domain/card"
 

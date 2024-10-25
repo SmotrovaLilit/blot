@@ -1,6 +1,8 @@
 package card
 
-import "fmt"
+import (
+	"fmt"
+)
 
 var (
 	RankSeven = Rank{"seven", NewScore(0), NewScore(0), NewScore(0)}
@@ -28,6 +30,10 @@ func (r Rank) GetTrumpScore() Score {
 
 func (r Rank) GetScore() Score {
 	return r.score
+}
+
+func (r Rank) String() string {
+	return r.value
 }
 
 func NewRank(rankString string) Rank {

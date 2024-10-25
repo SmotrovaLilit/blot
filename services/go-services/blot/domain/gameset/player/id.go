@@ -22,6 +22,10 @@ func (i ID) String() string {
 	return i.value.String()
 }
 
+func (i ID) Equal(p2 ID) bool {
+	return i.value == p2.value
+}
+
 func NewID(stringID string) (ID, error) {
 	id, err := uuid.Parse(stringID)
 	if err != nil {

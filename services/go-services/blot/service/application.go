@@ -15,7 +15,7 @@ func NewApplication(ctx context.Context) app.Application {
 	return app.Application{
 		Commands: app.Commands{
 			CreateGameSet: command.NewCreateGameSetHandler(gameSetRepository),
-			StartNewGame:  command.NewStartNewGameHandler(gameSetRepository),
+			StartGame:     command.NewStartGameHandler(gameSetRepository),
 			PlayCard:      command.NewPlayCardHandler(gameSetRepository),
 			JoinGameSet:   command.NewJoinGameSetHandler(gameSetRepository),
 			LeaveGameSet:  command.NewLeaveGameSetHandler(gameSetRepository),

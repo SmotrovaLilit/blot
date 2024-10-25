@@ -1,19 +1,14 @@
 package gameset
 
-type ErrGameSetCannotCreateGame struct {
-	GameSetID ID
-}
-
-func (e ErrGameSetCannotCreateGame) Error() string {
-	return "game set " + e.GameSetID.String() + " cannot create game"
-}
+import "errors"
 
 var (
-	StatusWaitedToStartGame = Status{"waited_to_start_game"}
-	StatusPlaying           = Status{"playing"}
-	StatusFinished          = Status{"finished"}
-	StatusCanceled          = Status{"canceled"}
-	Statuses                = []Status{StatusWaitedToStartGame, StatusPlaying, StatusFinished, StatusCanceled}
+	ErrGameSetNotReadyToStartGame = errors.New("game set is not ready to start the game")
+
+	StatusWaitedForPlayers = Status{"waited_for_players"}
+	StatusReadyToStart     = Status{"ready_to_start"}
+	StatusPlaying          = Status{"playing"}
+	Statuses               = []Status{StatusWaitedForPlayers, StatusReadyToStart, StatusPlaying}
 )
 
 type Status struct {
@@ -33,6 +28,15 @@ func (s Status) String() string {
 	return s.value
 }
 
-func (s Status) CanStartNewGame() bool {
-	return s == StatusWaitedToStartGame
+func (s Status) CanJoin() bool {
+	return s == StatusWaitedForPlayers
+}
+
+func (s Status) StartGame() (Status, error) {
+	if s != StatusReadyToStart {
+		return Status{}, ErrGameSetNotReadyToStartGame
+	}
+
+	return StatusPlaying, nil
+
 }

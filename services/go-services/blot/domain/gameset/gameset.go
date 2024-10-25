@@ -1,9 +1,9 @@
 package gameset
 
 import (
-	"blot/internal/blot/domain/card"
+	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
-	"blot/internal/blot/domain/user"
+	"blot/internal/blot/domain/gameset/team"
 	"errors"
 	"github.com/google/uuid"
 	"log/slog"
@@ -14,11 +14,11 @@ type GameSet struct {
 	id       ID
 	ownerID  player.ID
 	players  []player.Player
-	lastGame Game
-	status   GamesetStatus
+	lastGame game.Game
+	status   Status
 }
 
-func (s *GameSet) LogValue() slog.Value {
+func (s GameSet) LogValue() slog.Value {
 	var players []any
 	for i, p := range s.players {
 		players = append(players, slog.Any(
@@ -45,7 +45,7 @@ func NewGameSet(id ID, pl player.Player) (*GameSet, error) {
 		id:      id,
 		ownerID: pl.ID(),
 		players: []player.Player{pl},
-		status:  GamesetStatusWaitedForPlayers,
+		status:  StatusWaitedForPlayers,
 	}
 	return &s, nil
 }
@@ -54,12 +54,19 @@ func NewGameSet(id ID, pl player.Player) (*GameSet, error) {
 //
 // It should be used only for unmarshalling from the database!
 // You can't use UnmarshalFromDatabase as constructor - It may put domain into the invalid state!
-func UnmarshalFromDatabase(id ID, status GamesetStatus, ownerID player.ID, players []player.Player) GameSet {
+func UnmarshalFromDatabase(
+	id ID,
+	status Status,
+	ownerID player.ID,
+	players []player.Player,
+	game game.Game,
+) GameSet {
 	return GameSet{
-		id:      id,
-		ownerID: ownerID,
-		players: players,
-		status:  status,
+		id:       id,
+		ownerID:  ownerID,
+		players:  players,
+		status:   status,
+		lastGame: game,
 	}
 }
 
@@ -67,20 +74,42 @@ func (s *GameSet) ID() ID {
 	return s.id
 }
 
-func (s *GameSet) StartNewGame(gameID GameID) error {
-	n, err := s.lastGame.StartNewGame(gameID)
+func (s *GameSet) StartGame(gameID game.ID, playerID player.ID) error {
+	if gameID.IsZero() || playerID.IsZero() {
+		panic("empty input objects, use constructor to create objects")
+	}
+	if !s.PlayerInGameSet(playerID) {
+		return ErrPlayerIsNotInGameSet{playerID}
+	}
+	newStatus, err := s.status.StartGame()
 	if err != nil {
 		return err
 	}
-	s.lastGame = *n
+
+	team1, err := team.NewTeam(team.NewID("1"), s.players[0].ID(), s.players[1].ID())
+	if err != nil {
+		return err
+	}
+	team2, err := team.NewTeam(team.NewID("3"), s.players[2].ID(), s.players[3].ID())
+	if err != nil {
+		return err
+	}
+	lastGame, err := game.NewGame(gameID, team1, team2)
+	if err != nil {
+		return err
+	}
+	s.status = newStatus
+	s.lastGame = lastGame
+	// TODO deal cards
 	return nil
 }
 
-func (s *GameSet) PlayCard(id user.ID, card card.Card) error {
-	return s.lastGame.PlayCard(id, card)
-}
+//
+//func (s *GameSet) PlayCard(id user.ID, card card.Card) error {
+//	return s.lastGame.PlayCard(id, card)
+//}
 
-func (s *GameSet) Status() GamesetStatus {
+func (s *GameSet) Status() Status {
 	return s.status
 }
 
@@ -95,7 +124,7 @@ func (s *GameSet) Join(p player.Player) error {
 	}
 	s.players = append(s.players, p)
 	if s.isFull() {
-		s.status = GamesetStatusReadyToStart
+		s.status = StatusReadyToStart
 	}
 	return nil
 }
@@ -181,6 +210,20 @@ func (s *GameSet) RemovePlayer(id player.ID) error {
 
 func (s *GameSet) OwnerID() player.ID {
 	return s.ownerID
+}
+
+func (s *GameSet) PlayerInGameSet(id player.ID) bool {
+	for _, p := range s.players {
+		if p.ID() == id {
+			return true
+		}
+	}
+	return false
+}
+
+// TODO make it optional
+func (s *GameSet) LastGame() game.Game {
+	return s.lastGame
 }
 
 type ID struct {

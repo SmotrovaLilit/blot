@@ -1,6 +1,6 @@
 version: 3
 vars:
-  LOGS_DIR: 'logs'
+  LOGS_DIR: '../../logs'
 
 tasks:
   start:

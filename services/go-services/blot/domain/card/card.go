@@ -16,6 +16,18 @@ func (c Card) IsStronger(card Card, trump Suit) bool {
 	panic("not implemented")
 }
 
+func (c Card) Suit() Suit {
+	return c.suit
+}
+
+func (c Card) Rank() Rank {
+	return c.rank
+}
+
 func NewCard(rank Rank, suit Suit) Card {
+	return Card{rank, suit}
+}
+
+func UnmarshalFromDatabase(rank Rank, suit Suit) Card {
 	return Card{rank, suit}
 }

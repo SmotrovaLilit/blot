@@ -1,48 +1,82 @@
 version: '3'
+vars:
+  GAME_SET_ID: "71199AC4-DDA2-47F1-A207-2EF9E5C48498"
+  PLAYER_1: "a88bb98e-0e1f-4c82-a209-9d6b4986d013"
+  PLAYER_2: "b88bb98e-0e1f-4c82-a209-9d6b4986d014"
+  PLAYER_3: "c88bb98e-0e1f-4c82-a209-9d6b4986d015"
+  PLAYER_4: "d88bb98e-0e1f-4c82-a209-9d6b4986d016"
+  BLOT_SERVICE_ADDRESS: '{{.BLOT_SERVICE_ADDRESS | default "127.0.0.1:8081"}}'
 
 tasks:
-  smoke-test-get-gameset:
-    desc: Smoke test get game
-    vars:
-      BLOT_SERVICE_ADDRESS: '{{.BLOT_SERVICE_ADDRESS | default "127.0.0.1:8081"}}'
+  load-fixtures:
+    desc: Load fixtures
+    dir: services/go-services/blot
+    cmds:
+      - task create-game-set
+      - PLAYER_ID={{.PLAYER_2}} PLAYER_NAME="Dima" task join-game-set
+      - PLAYER_ID={{.PLAYER_3}} PLAYER_NAME="Anya" task join-game-set
+      - PLAYER_ID={{.PLAYER_4}} PLAYER_NAME="Armen" task join-game-set
+
+  join-game-set:
+    desc: Join game set
+    dir: services/go-services/blot
     cmds:
       - |
         grpcurl -vv -plaintext -d '{
-          "id": "71199AC4-DDA2-47F1-A207-2EF9E5C48498",
-          "player_id": "b88bb98e-0e1f-4c82-a209-9d6b4986d013"
+        "id": "{{.GAME_SET_ID}}",
+        "player_name": "{{.PLAYER_NAME}}",
+        "player_id": "{{.PLAYER_ID}}"
+        }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.JoinGameSet
+
+  create-game-set:
+    desc: Create game set
+    dir: services/go-services/blot
+    cmds:
+      - |
+        grpcurl -vv -plaintext -d '{
+        "id": "{{.GAME_SET_ID}}",
+        "player_name": "Lilit",
+        "player_id": "{{.PLAYER_1}}"
+        }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.CreateGameSet
+  
+  get-game-set:
+    desc: Get game set
+    dir: services/go-services/blot
+    cmds:
+      - |
+        grpcurl -vv -plaintext -d '{
+        "id": "{{.GAME_SET_ID}}",
+        "player_id": "{{.PLAYER_1}}"
         }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.GetGameSetForPlayer
+
+  smoke-test-get-game-set:
+    desc: Smoke test get game
+    dir: services/go-services/blot
+    cmds:
+      - task get-game-set
 
   smoke-test-create-gameset:
     desc: Smoke test create game
-    vars:
-      BLOT_SERVICE_ADDRESS: '{{.BLOT_SERVICE_ADDRESS | default "127.0.0.1:8081"}}'
+    dir: services/go-services/blot
     cmds:
-        - |
-            grpcurl -vv -plaintext -d '{
-                "id": "71199AC4-DDA2-47F1-A207-2EF9E5C48498",
-                "player_name": "Lilit",
-                "player_id": "b88bb98e-0e1f-4c82-a209-9d6b4986d013"
-            }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.CreateGameSet
-
+      - task create-game-set
 
   smoke-test-get-gamesets:
     desc: Smoke test create game
-    vars:
-      BLOT_SERVICE_ADDRESS: '{{.BLOT_SERVICE_ADDRESS | default "127.0.0.1:8081"}}'
+    dir: services/go-services/blot
     cmds:
-        - |
-            grpcurl -vv -plaintext -d '{
-                "player_id": "b88bb98e-0e1f-4c82-a209-9d6b4986d013"
-            }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.GetGameSetsForPlayer
+      - |
+        grpcurl -vv -plaintext -d '{
+            "player_id": "{{.PLAYER_1}}"
+        }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.GetGameSetsForPlayer
 
   smoke-test-create-wrong-gameset:
     desc: Smoke test create game
-    vars:
-      BLOT_SERVICE_ADDRESS: '{{.BLOT_SERVICE_ADDRESS | default "127.0.0.1:8081"}}'
+    dir: services/go-services/blot
     cmds:
-        - |
-            grpcurl -vv -plaintext -d '{
-                "id": "71199AC4-DDA2-47F1-A207-2EF9E5C48498",
-                "player_name": ""
-            }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.CreateGameSet
+      - |
+        grpcurl -vv -plaintext -d '{
+            "id": "{{.GAME_SET_ID}}",
+            "player_name": ""
+        }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.CreateGameSet
 
