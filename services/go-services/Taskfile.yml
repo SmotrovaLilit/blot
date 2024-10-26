@@ -1,0 +1,16 @@
+version: 3
+
+vars:
+  GOBIN: '~/go/bin'
+
+tasks:
+  install-golangci-lint:
+    desc: Install golangci-lint
+    cmds:
+      - GOBIN={{.GOBIN}} go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.61.0
+
+  format-lint:
+    desc: Format and lint the code
+    cmds:
+      - golangci-lint run --fix ./common/...
+      - golangci-lint run --fix  ./blot/...

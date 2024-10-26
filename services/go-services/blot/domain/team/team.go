@@ -2,6 +2,7 @@ package team
 
 import (
 	"blot/internal/blot/domain/user"
+
 	"github.com/google/uuid"
 )
 

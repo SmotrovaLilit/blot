@@ -1,6 +1,9 @@
 package ports
 
 import (
+	"context"
+	"fmt"
+
 	"blot/internal/blot/app"
 	"blot/internal/blot/app/command"
 	"blot/internal/blot/app/query"
@@ -10,8 +13,7 @@ import (
 	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/blot/domain/gameset/team"
 	blotservicepb "blot/internal/common/gen-proto/blotservice/v1beta1"
-	"context"
-	"fmt"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -231,7 +233,7 @@ func gameStatusToResponse(s game.Status) blotservicepb.GameStatus {
 	case game.GameStatusFinished:
 		return blotservicepb.GameStatus_GAME_STATUS_FINISHED
 	default:
-		panic(fmt.Sprintf("unknown status: %v. Add new status in convert domain model to responce function", s))
+		panic(fmt.Sprintf("unknown status: %v. Add new status in convert domain model to response function", s))
 	}
 }
 
@@ -255,6 +257,6 @@ func gameSetStatusToResponse(status gameset.Status) blotservicepb.GameSetStatus 
 	case gameset.StatusPlaying:
 		return blotservicepb.GameSetStatus_GAME_SET_STATUS_PLAYING
 	default:
-		panic(fmt.Sprintf("unknown status: %v. Add new status in convert domain model to responce function", status))
+		panic(fmt.Sprintf("unknown status: %v. Add new status in convert domain model to response function", status))
 	}
 }

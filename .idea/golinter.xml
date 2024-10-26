@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GoLinterSettings">
+    <option name="customProjectDir" value="$PROJECT_DIR$/services/go-services" />
+    <option name="enabledLinters">
+      <list>
+        <option value="noctx" />
+        <option value="goconst" />
+        <option value="errcheck" />
+        <option value="sqlclosecheck" />
+        <option value="dogsled" />
+        <option value="gocognit" />
+        <option value="nestif" />
+        <option value="ineffassign" />
+        <option value="unparam" />
+        <option value="goheader" />
+        <option value="exhaustive" />
+        <option value="nakedret" />
+        <option value="govet" />
+        <option value="sloglint" />
+        <option value="misspell" />
+        <option value="rowserrcheck" />
+        <option value="asciicheck" />
+        <option value="bodyclose" />
+        <option value="gosec" />
+        <option value="gofmt" />
+        <option value="unconvert" />
+        <option value="whitespace" />
+        <option value="goimports" />
+        <option value="gosimple" />
+        <option value="gocyclo" />
+      </list>
+    </option>
+    <option name="goLinterExe" value="$USER_HOME$/go/bin/golangci-lint" />
+    <option name="linterSelected" value="true" />
+    <option name="severity" value="Error" />
+  </component>
+</project>

@@ -1,10 +1,11 @@
 package team
 
 import (
+	"errors"
+
 	"blot/internal/blot/domain/card"
 	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/blot/domain/user"
-	"errors"
 )
 
 var ErrSamePlayer = errors.New("same player")

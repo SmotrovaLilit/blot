@@ -1,10 +1,12 @@
 package decorator
 
 import (
-	"blot/internal/common/logging"
 	"context"
-	"go.opentelemetry.io/otel"
 	"log/slog"
+
+	"blot/internal/common/logging"
+
+	"go.opentelemetry.io/otel"
 )
 
 type commandLoggingDecorator[C any] struct {

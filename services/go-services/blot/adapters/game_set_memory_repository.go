@@ -1,14 +1,16 @@
 package adapters
 
 import (
+	"context"
+	"log/slog"
+	"sync"
+
 	"blot/internal/blot/domain/card"
 	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/team"
 	"blot/internal/common/logging"
-	"context"
+
 	"go.opentelemetry.io/otel"
-	"log/slog"
-	"sync"
 
 	"blot/internal/blot/domain/gameset"
 	"blot/internal/blot/domain/gameset/player"
@@ -91,7 +93,7 @@ func (g *GameSetMemoryRepository) Get(ctx context.Context, id gameset.ID) (games
 		slog.DebugContext(
 			ctx,
 			"repo: game setEntry found",
-			slog.Any("setEntry", existGame),
+			slog.Any("set", existGame),
 			slog.Any("set_entry", setEntry),
 		)
 		return existGame, nil
@@ -242,7 +244,6 @@ func toCards(cards []storageCard) []card.Card {
 		res = append(res, card.UnmarshalFromDatabase(card.NewRank(c.rank), card.NewSuit(c.suit)))
 	}
 	return res
-
 }
 
 func toTeam(team1 teamStorageModel) team.Team {
@@ -255,6 +256,7 @@ func toTeam(team1 teamStorageModel) team.Team {
 	if err != nil {
 		panic(err)
 	}
+
 	return team.UnmarshalFromDatabase(id, p1, p2)
 }
 
