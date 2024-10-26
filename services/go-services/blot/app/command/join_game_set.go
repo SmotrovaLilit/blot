@@ -1,10 +1,11 @@
 package command
 
 import (
-	"blot/internal/blot/domain/gameset/player"
-	"blot/internal/common/decorator"
 	"context"
 	"log/slog"
+
+	"blot/internal/blot/domain/gameset/player"
+	"blot/internal/common/decorator"
 
 	"blot/internal/blot/domain/gameset"
 )

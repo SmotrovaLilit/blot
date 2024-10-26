@@ -1,12 +1,13 @@
 package command
 
 import (
+	"context"
+	"log/slog"
+
 	"blot/internal/blot/domain/gameset"
 	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/common/decorator"
-	"context"
-	"log/slog"
 )
 
 type CreateGameSet struct {
@@ -44,6 +45,9 @@ func (h createGameSetHandler) Handle(ctx context.Context, cmd CreateGameSet) err
 		cmd.ID,
 		cmd.FirstPlayer,
 	)
+	if err != nil {
+		return err
+	}
 	err = h.gameSetRepository.Create(ctx, set)
 	if err != nil {
 		return err

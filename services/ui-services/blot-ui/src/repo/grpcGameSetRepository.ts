@@ -1,13 +1,31 @@
 // grpcClient.ts
 import {BlotServiceClient} from '@/generated/blotservice/v1beta1/blotservice.client';
 import {
+    Card as CardResp,
     CreateGameSetRequest,
+    Game as GameResp,
     GameSet as GameSetResp,
     GameSetStatus as GameSetStatusResp,
-    GetGameSetForPlayerRequest, JoinGameSetRequest, LeaveGameSetRequest,
-    Player as PlayerResp, StartGameRequest
+    GameStatus as GameStatusResp,
+    GetGameSetForPlayerRequest,
+    JoinGameSetRequest,
+    LeaveGameSetRequest,
+    Player as PlayerResp,
+    PlayerStateInGame as PlayerStateResp,
+    StartGameRequest,
+    Team as TeamResp,
+    Suit as SuitResp,
+    Rank as RankResp
 } from '@/generated/blotservice/v1beta1/blotservice';
-import {GameSet, GameSetStatus} from '@/models/gameSet';
+import {
+    Card,
+    Game,
+    GameSet,
+    GameSetStatus,
+    GameStatus,
+    PlayerState,
+    Team
+} from '@/models/gameSet';
 import {GrpcWebFetchTransport} from "@protobuf-ts/grpcweb-transport";
 import {User} from "@/models/user";
 // @ts-ignore
@@ -16,11 +34,15 @@ const TIMEOUT_MILLISECS: number = 5 * 1000
 
 export interface GameSetRepository {
     get(id: string, playerId: string): Promise<GameSet>;
+
     getPlayerGameSets(playerId: string): Promise<GameSet[]>
 
     create(id: string, player: User): Promise<void>;
+
     startGame(id: string, playerId: string, gameId: string): Promise<void>;
+
     join(id: string, player: User): Promise<void>;
+
     leave(id: string, playerId: string): Promise<void>;
 }
 
@@ -92,6 +114,7 @@ export class GrpcGameSetRepository implements GameSetRepository {
         });
         console.log('leaveGameSet ended');
     }
+
     public async join(id: string, player: User): Promise<void> {
         const request = JoinGameSetRequest.create();
         request.id = id;
@@ -105,6 +128,7 @@ export class GrpcGameSetRepository implements GameSetRepository {
         // TODO: handle errors
         console.log('joinGameSet ended');
     }
+
     public async startGame(id: string, playerId: string, gameId: string): Promise<void> {
         const request = StartGameRequest.create();
         request.game_set_id = id;
@@ -123,6 +147,10 @@ function convertToGameSet(resp: GameSetResp): GameSet {
     const g = new GameSet(resp.id, resp.owner_id, convertToGameSetStatus(resp.status));
 
     g.setPlayers(convertToUsers(resp.players));
+
+    if (resp.game) {
+        g.setGame(convertToGame(resp.game));
+    }
     console.log('convertToGameSet', g);
     return g;
 }
@@ -147,4 +175,70 @@ function convertToGameSetStatus(status: GameSetStatusResp): GameSetStatus {
         default:
             throw new Error('Unknown game set status: ' + status);
     }
+}
+
+function convertToGameStatus(status: GameStatusResp): GameStatus {
+    switch (status) {
+        case GameStatusResp.BETTING:
+            return GameStatus.GAME_STATUS_BETTING;
+        default:
+            throw new Error('Unknown game status: ' + status);
+    }
+}
+
+function convertToTeam(team?: TeamResp): Team {
+    if (!team) {
+        throw Error('Team is empty');
+    }
+    return new Team(team.player1, team.player2);
+}
+
+function convertToSuit(suit: SuitResp): string {
+    switch (suit) {
+        case SuitResp.CLUBS:
+            return "clubs";
+        case SuitResp.DIAMONDS:
+            return "diamonds";
+        case SuitResp.HEARTS:
+            return "hearts";
+        case SuitResp.SPADES:
+            return "spades";
+    }
+    throw new Error('Unknown suit: ' + suit);
+}
+
+function convertToRank(rank: RankResp): string {
+    switch (rank) {
+        case RankResp.ACE:
+            return "a";
+        case RankResp.SEVEN:
+            return "7";
+        case RankResp.EIGHT:
+            return "8";
+        case RankResp.NINE:
+            return "9";
+        case RankResp.TEN:
+            return "10";
+        case RankResp.JACK:
+            return "j";
+        case RankResp.QUEEN:
+            return "q";
+        case RankResp.KING:
+            return "k";
+    }
+    throw new Error('Unknown rank: ' + rank);
+}
+
+function convertToCard(c: CardResp): Card {
+    return new Card(convertToRank(c.rank), convertToSuit(c.suit));
+}
+
+function convertToPlayerState(state: PlayerStateResp): PlayerState {
+    return new PlayerState(state.id, state.hand_cards.map(c => convertToCard(c)));
+}
+
+function convertToGame(game: GameResp): Game {
+    const g = new Game(game.id, convertToGameStatus(game.status), convertToTeam(game.team1), convertToTeam(game.team2));
+    g.playerStates = game.player_states.map(convertToPlayerState);
+    return g;
 }

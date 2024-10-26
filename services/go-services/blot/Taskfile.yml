@@ -1,6 +1,7 @@
 version: '3'
 vars:
-  GAME_SET_ID: "71199AC4-DDA2-47F1-A207-2EF9E5C48498"
+  GAME_SET_ID: "71199ac4-dda2-47f1-a207-2ef9e5c48498"
+  GAME_ID: "81199ac4-dda2-47f1-a207-2ef9e5c48499"
   PLAYER_1: "a88bb98e-0e1f-4c82-a209-9d6b4986d013"
   PLAYER_2: "b88bb98e-0e1f-4c82-a209-9d6b4986d014"
   PLAYER_3: "c88bb98e-0e1f-4c82-a209-9d6b4986d015"
@@ -16,6 +17,7 @@ tasks:
       - PLAYER_ID={{.PLAYER_2}} PLAYER_NAME="Dima" task join-game-set
       - PLAYER_ID={{.PLAYER_3}} PLAYER_NAME="Anya" task join-game-set
       - PLAYER_ID={{.PLAYER_4}} PLAYER_NAME="Armen" task join-game-set
+      - PLAYER_ID={{.PLAYER_1}} task start-game
 
   join-game-set:
     desc: Join game set
@@ -27,6 +29,21 @@ tasks:
         "player_name": "{{.PLAYER_NAME}}",
         "player_id": "{{.PLAYER_ID}}"
         }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.JoinGameSet
+
+  start-game:
+    desc: Start game
+    dir: services/go-services/blot
+    vars:
+      PLAYER_ID: "{{.PLAYER_ID}}"
+      GAME_SET_ID: "{{.GAME_SET_ID}}"
+      GAME_ID: "{{.GAME_ID}}"
+    cmds:
+      - |
+        grpcurl -vv -plaintext -d '{
+        "game_set_id": "{{.GAME_SET_ID}}",
+        "game_id": "{{.GAME_ID}}",
+        "player_id": "{{.PLAYER_ID}}"
+        }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.StartGame
 
   create-game-set:
     desc: Create game set

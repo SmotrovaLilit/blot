@@ -1,12 +1,18 @@
 package main
 
 import (
+	"context"
+	"fmt"
+	"log"
+	"log/slog"
+	"os"
+	"runtime/debug"
+
 	"blot/internal/blot/ports"
 	"blot/internal/blot/service"
 	blotservicepb "blot/internal/common/gen-proto/blotservice/v1beta1"
 	"blot/internal/common/logging"
-	"context"
-	"fmt"
+
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/propagation"
@@ -15,10 +21,6 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"log"
-	"log/slog"
-	"os"
-	"runtime/debug"
 
 	"blot/internal/common/server"
 )

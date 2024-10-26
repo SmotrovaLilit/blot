@@ -1,11 +1,12 @@
 package command
 
 import (
+	"context"
+	"log/slog"
+
 	"blot/internal/blot/domain/gameset"
 	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/common/decorator"
-	"context"
-	"log/slog"
 )
 
 type LeaveGameSet struct {

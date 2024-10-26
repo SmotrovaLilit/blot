@@ -38,5 +38,4 @@ func (s Status) StartGame() (Status, error) {
 	}
 
 	return StatusPlaying, nil
-
 }

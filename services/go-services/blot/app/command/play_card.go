@@ -1,8 +1,9 @@
 package command
 
 import (
-	"blot/internal/common/decorator"
 	"context"
+
+	"blot/internal/common/decorator"
 
 	"blot/internal/blot/domain/card"
 	"blot/internal/blot/domain/gameset"

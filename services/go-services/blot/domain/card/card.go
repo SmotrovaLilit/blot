@@ -12,7 +12,7 @@ func (c Card) GetScore(trump Suit) Score {
 	return c.rank.GetScore()
 }
 
-func (c Card) IsStronger(card Card, trump Suit) bool {
+func (c Card) IsStronger(_ Card, _ Suit) bool {
 	panic("not implemented")
 }
 

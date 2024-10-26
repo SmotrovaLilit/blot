@@ -1,13 +1,15 @@
 package gameset
 
 import (
+	"errors"
+	"log/slog"
+	"strconv"
+
 	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/blot/domain/gameset/team"
-	"errors"
+
 	"github.com/google/uuid"
-	"log/slog"
-	"strconv"
 )
 
 type GameSet struct {

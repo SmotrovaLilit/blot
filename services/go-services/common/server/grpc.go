@@ -1,17 +1,19 @@
 package server
 
 import (
-	"blot/internal/common/logging"
-	"blot/internal/common/safe"
 	"context"
 	"fmt"
+	"log/slog"
+	"net"
+	"os"
+
+	"blot/internal/common/logging"
+	"blot/internal/common/safe"
+
 	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"log/slog"
-	"net"
-	"os"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
@@ -35,7 +37,7 @@ func RunGRPCServer(
 }
 
 func newContextFactoryUnaryServerInterceptor(contextFactory contextFactory) grpc.UnaryServerInterceptor {
-	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
+	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
 		ctx = contextFactory(ctx)
 		return handler(ctx, req)
 	}
@@ -72,7 +74,7 @@ func RunGRPCServerOnAddr(
 ) {
 	grpcPanicRecoveryHandler := func(ctx context.Context, p interface{}) (err error) {
 		safe.DefaultRecover(ctx, p)
-		return status.Errorf(codes.Internal, "internal server error")
+		return status.Errorf(codes.Internal, "internal server error1")
 	}
 	grpcServer := grpc.NewServer(
 		grpc.StatsHandler(otelgrpc.NewServerHandler()),

@@ -21,12 +21,12 @@ const router = createRouter({
       component: () => import('../views/GameSetView.vue')
     },
     {
-      path: '/games/:gameId',
-      name: 'game',
+      path: '/gameSets/:gameSetId/game',
+      name: 'playing_game',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/CardsView.vue')
+      component: () => import('../views/GameView.vue')
     }
   ]
 })
