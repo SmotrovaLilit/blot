@@ -212,7 +212,10 @@ func toGameSet(set *gameSetStorageModel) gameset.GameSet {
 	if err != nil {
 		panic(err)
 	}
-	id := gameset.NewID(set.ID)
+	id, err := gameset.NewID(set.ID)
+	if err != nil {
+		panic(err)
+	}
 	return gameset.UnmarshalFromDatabase(id, gameset.NewStatus(set.Status), firstPlayerID, toPlayers(set.Players), toGame(set.Game))
 }
 
@@ -220,7 +223,10 @@ func toGame(model *gameStorageModel) game.Game {
 	if model == nil {
 		return game.Game{}
 	}
-	id := game.NewID(model.ID)
+	id, err := game.NewID(model.ID)
+	if err != nil {
+		panic(err)
+	}
 	team1 := toTeam(model.team1)
 	team2 := toTeam(model.team2)
 	return game.UnmarshalFromDatabase(id, game.NewStatus(model.Status), team1, team2, toPlayerStates(model.Players))
@@ -263,7 +269,7 @@ func toTeam(team1 teamStorageModel) team.Team {
 func toPlayers(players []playerStorageModel) []player.Player {
 	var res []player.Player
 	for _, p := range players {
-		domainPlayer, err := player.Create(p.ID, p.Name)
+		domainPlayer, err := player.UnmarshalFromDatabase(p.ID, p.Name)
 		if err != nil {
 			panic(err)
 		}

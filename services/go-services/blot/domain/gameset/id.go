@@ -1,35 +1,35 @@
-package player
+package gameset
 
-import "github.com/google/uuid"
+import (
+	"fmt"
+
+	"github.com/google/uuid"
+)
 
 type ErrInvalidID struct {
 	ID string
 }
 
 func (e ErrInvalidID) Error() string {
-	return "invalid player id: " + e.ID
+	return "invalid game set id " + e.ID
 }
 
 type ID struct {
 	value uuid.UUID
 }
 
-func (i ID) IsZero() bool {
-	return i.value == uuid.Nil
-}
-
 func (i ID) String() string {
 	return i.value.String()
 }
 
-func (i ID) Equal(p2 ID) bool {
-	return i.value == p2.value
+func (i ID) IsZero() bool {
+	return i.value == uuid.Nil
 }
 
 func NewID(stringID string) (ID, error) {
 	id, err := uuid.Parse(stringID)
 	if err != nil {
-		return ID{}, ErrInvalidID{stringID} // TODO log original error
+		return ID{}, fmt.Errorf("%w: %v", ErrInvalidID{ID: stringID}, err)
 	}
 	return ID{id}, nil
 }

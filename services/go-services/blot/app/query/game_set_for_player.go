@@ -5,19 +5,18 @@ import (
 	"log/slog"
 
 	"blot/internal/blot/domain/gameset"
-	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/common/decorator"
 )
 
 type GameSetForPlayer struct {
-	GameSetID gameset.ID
-	PlayerID  player.ID
+	GameSetID string
+	PlayerID  string
 }
 
 func (g GameSetForPlayer) LogValue() slog.Value {
 	return slog.GroupValue(
-		slog.String("game_set_id", g.GameSetID.String()),
-		slog.String("player_id", g.PlayerID.String()),
+		slog.String("game_set_id", g.GameSetID),
+		slog.String("player_id", g.PlayerID),
 	)
 }
 
@@ -42,7 +41,11 @@ func (h *gameSetForPlayerQueryHandler) Handle(
 	ctx context.Context,
 	q GameSetForPlayer,
 ) (*gameset.GameSet, error) {
-	s, err := h.readModel.Get(ctx, q.GameSetID)
+	id, err := gameset.NewID(q.GameSetID)
+	if err != nil {
+		return nil, err
+	}
+	s, err := h.readModel.Get(ctx, id)
 	if err != nil {
 		return nil, err
 	}

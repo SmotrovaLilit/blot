@@ -8,7 +8,9 @@ import (
 
 func ApplyCommandDecorators[H any](handler CommandHandler[H]) CommandHandler[H] {
 	return commandLoggingDecorator[H]{
-		base: handler,
+		base: commandTracingDecorator[H]{
+			base: handler,
+		},
 	}
 }
 

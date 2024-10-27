@@ -32,10 +32,7 @@ func main() {
 		log.Fatalf("failed to open log file: %v", err)
 	}
 	defer file.Close()
-	h := &logging.ContextHandler{Handler: slog.NewJSONHandler(file, &slog.HandlerOptions{
-		Level: slog.LevelDebug,
-	})}
-	logger := slog.New(&logging.OpenTelemetryHandler{Handler: h})
+	logger := logging.NewLogger(file, false, slog.LevelDebug)
 	buildInfo, _ := debug.ReadBuildInfo()
 	pid := os.Getpid()
 	ctx = logging.AppendCtx(

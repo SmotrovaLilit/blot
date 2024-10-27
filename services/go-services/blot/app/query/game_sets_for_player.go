@@ -10,12 +10,12 @@ import (
 )
 
 type GameSetsForPlayer struct {
-	PlayerID player.ID
+	PlayerID string
 }
 
 func (g GameSetsForPlayer) LogValue() slog.Value {
 	return slog.GroupValue(
-		slog.String("player_id", g.PlayerID.String()),
+		slog.String("player_id", g.PlayerID),
 	)
 }
 
@@ -40,7 +40,11 @@ func (h *gameSetsForPlayerQueryHandler) Handle(
 	ctx context.Context,
 	q GameSetsForPlayer,
 ) ([]gameset.GameSet, error) {
-	sets, err := h.readModel.GetByPlayerID(ctx, q.PlayerID)
+	playerID, err := player.NewID(q.PlayerID)
+	if err != nil {
+		return nil, err
+	}
+	sets, err := h.readModel.GetByPlayerID(ctx, playerID)
 	if err != nil {
 		return nil, err
 	}
