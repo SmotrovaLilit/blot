@@ -48,6 +48,7 @@ func main() {
 	}()
 
 	addr := ":8081"
+	fmt.Printf("Starting gRPC server on %s\n", addr)
 	err = grpcserver.RunServerOnAddr(
 		addr,
 		func(server *grpc.Server) {
@@ -60,5 +61,4 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to run server: %v", err)
 	}
-	fmt.Printf("Starting gRPC server on %s\n", addr)
 }

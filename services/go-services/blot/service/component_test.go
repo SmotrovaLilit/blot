@@ -19,7 +19,7 @@ import (
 	blotservicepb "blot/internal/common/gen-proto/blotservice/v1beta1"
 )
 
-const blotServiceAddr = "localhost:8081"
+const blotServiceAddr = "localhost:8091"
 
 func TestCreateGameSet(t *testing.T) {
 	t.Parallel()
