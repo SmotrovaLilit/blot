@@ -3,7 +3,7 @@ package service
 import (
 	"blot/internal/blot/ports"
 	"blot/internal/common/logging"
-	"blot/internal/common/server"
+	"blot/internal/common/server/grpcserver"
 	"blot/internal/common/tests"
 	"context"
 	"google.golang.org/grpc/credentials/insecure"
@@ -167,13 +167,18 @@ func startService() bool {
 	app := NewApplication(context.Background())
 	logger := logging.NewLogger(os.Stdout, true, slog.LevelDebug)
 	slog.SetDefault(logger)
-	go server.RunGRPCServer(func(ctx context.Context) context.Context {
-		return ctx // TODO looks strange
-	}, func(server *grpc.Server) {
-		svc := ports.NewGrpcServer(app)
-		reflection.Register(server)
-		blotservicepb.RegisterBlotServiceServer(server, svc)
-	})
+	go func() {
+		err := grpcserver.RunServerOnAddr(
+			blotServiceAddr,
+			func(server *grpc.Server) {
+				svc := ports.NewGrpcServer(app)
+				reflection.Register(server)
+				blotservicepb.RegisterBlotServiceServer(server, svc)
+			})
+		if err != nil {
+			log.Fatalf("failed to run server: %v", err)
+		}
+	}()
 
 	ok := tests.WaitForPort(blotServiceAddr)
 	if !ok {
