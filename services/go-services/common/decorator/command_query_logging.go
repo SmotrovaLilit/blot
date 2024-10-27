@@ -5,20 +5,14 @@ import (
 	"log/slog"
 
 	"blot/internal/common/logging"
-
-	"go.opentelemetry.io/otel"
 )
 
 type commandLoggingDecorator[C any] struct {
 	base CommandHandler[C]
 }
 
-var tracer = otel.Tracer("application")
-
 func (d commandLoggingDecorator[C]) Handle(ctx context.Context, cmd C) (err error) {
 	handlerType := generateActionName(cmd)
-	ctx, span := tracer.Start(ctx, "application."+handlerType)
-	defer span.End()
 	ctx = logging.AppendCtx(ctx, slog.String("command", handlerType), slog.Any("command_body", cmd))
 
 	slog.DebugContext(ctx, "Executing command")
@@ -39,8 +33,6 @@ type queryLoggingDecorator[C any, R any] struct {
 
 func (d queryLoggingDecorator[C, R]) Handle(ctx context.Context, cmd C) (result R, err error) {
 	handlerType := generateActionName(cmd)
-	ctx, span := tracer.Start(ctx, "application."+handlerType)
-	defer span.End()
 	ctx = logging.AppendCtx(ctx, slog.String("query", handlerType))
 	ctx = logging.AppendCtx(ctx, slog.Any("query_body", cmd))
 

@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"blot/internal/blot/app/command/creategameset"
+
 	"blot/internal/blot/app"
 	"blot/internal/blot/app/command"
 	"blot/internal/blot/app/query"
@@ -28,13 +30,10 @@ func NewGrpcServer(application app.Application) GrpcServer {
 }
 
 func (g GrpcServer) CreateGameSet(ctx context.Context, req *blotservicepb.CreateGameSetRequest) (*blotservicepb.CreateGameSetResponse, error) {
-	pl, err := player.Create(req.PlayerId, req.PlayerName)
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
-	}
-	err = g.app.Commands.CreateGameSet.Handle(ctx, command.CreateGameSet{
-		ID:          gameset.NewID(req.Id),
-		FirstPlayer: pl,
+	err := g.app.Commands.CreateGameSet.Handle(ctx, creategameset.CreateGameSet{
+		ID:         req.Id,
+		PlayerID:   req.PlayerId,
+		PlayerName: req.PlayerName,
 	})
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
@@ -43,13 +42,10 @@ func (g GrpcServer) CreateGameSet(ctx context.Context, req *blotservicepb.Create
 }
 
 func (g GrpcServer) JoinGameSet(ctx context.Context, req *blotservicepb.JoinGameSetRequest) (*blotservicepb.JoinGameSetResponse, error) {
-	pl, err := player.Create(req.PlayerId, req.PlayerName)
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
-	}
-	err = g.app.Commands.JoinGameSet.Handle(ctx, command.JoinGameSet{
-		ID:     gameset.NewID(req.Id),
-		Player: pl,
+	err := g.app.Commands.JoinGameSet.Handle(ctx, command.JoinGameSet{
+		ID:         req.Id,
+		PlayerID:   req.PlayerId,
+		PlayerName: req.PlayerName,
 	})
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
@@ -57,30 +53,26 @@ func (g GrpcServer) JoinGameSet(ctx context.Context, req *blotservicepb.JoinGame
 	return &blotservicepb.JoinGameSetResponse{}, nil
 }
 
-func (g GrpcServer) LeaveGameSet(ctx context.Context, req *blotservicepb.LeaveGameSetRequest) (*blotservicepb.LeaveGameSetResponse, error) {
-	playerID, err := player.NewID(req.PlayerId)
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
-	}
-	err = g.app.Commands.LeaveGameSet.Handle(ctx, command.LeaveGameSet{
-		ID:       gameset.NewID(req.Id),
-		PlayerID: playerID,
-	})
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
-	}
-	return &blotservicepb.LeaveGameSetResponse{}, nil
-}
+//func (g GrpcServer) LeaveGameSet(ctx context.Context, req *blotservicepb.LeaveGameSetRequest) (*blotservicepb.LeaveGameSetResponse, error) {
+//	playerID, err := player.NewID(req.PlayerId)
+//	if err != nil {
+//		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+//	}
+//	err = g.app.Commands.LeaveGameSet.Handle(ctx, command.LeaveGameSet{
+//		ID:       gameset.NewID(req.Id),
+//		PlayerID: playerID,
+//	})
+//	if err != nil {
+//		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
+//	}
+//	return &blotservicepb.LeaveGameSetResponse{}, nil
+//}
 
 func (g GrpcServer) StartGame(ctx context.Context, req *blotservicepb.StartGameRequest) (*blotservicepb.StartGameResponse, error) {
-	playerID, err := player.NewID(req.PlayerId)
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
-	}
-	err = g.app.Commands.StartGame.Handle(ctx, command.StartGame{
-		SetID:    gameset.NewID(req.GameSetId),
-		GameID:   game.NewID(req.GameId),
-		PlayerID: playerID,
+	err := g.app.Commands.StartGame.Handle(ctx, command.StartGame{
+		SetID:    req.GameSetId,
+		GameID:   req.GameId,
+		PlayerID: req.PlayerId,
 	})
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
@@ -89,13 +81,9 @@ func (g GrpcServer) StartGame(ctx context.Context, req *blotservicepb.StartGameR
 }
 
 func (g GrpcServer) GetGameSetForPlayer(ctx context.Context, req *blotservicepb.GetGameSetForPlayerRequest) (*blotservicepb.GetGameSetForPlayerResponse, error) {
-	playerID, err := player.NewID(req.PlayerId)
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
-	}
 	gameSet, err := g.app.Queries.GameSetForPlayer.Handle(ctx, query.GameSetForPlayer{
-		GameSetID: gameset.NewID(req.Id),
-		PlayerID:  playerID,
+		GameSetID: req.Id,
+		PlayerID:  req.PlayerId,
 	})
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
@@ -107,12 +95,8 @@ func (g GrpcServer) GetGameSetForPlayer(ctx context.Context, req *blotservicepb.
 }
 
 func (g GrpcServer) GetGameSetsForPlayer(ctx context.Context, req *blotservicepb.GetGameSetsForPlayerRequest) (*blotservicepb.GetGameSetsForPlayerResponse, error) {
-	playerID, err := player.NewID(req.PlayerId)
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
-	}
 	gameSets, err := g.app.Queries.GameSetsForPlayer.Handle(ctx, query.GameSetsForPlayer{
-		PlayerID: playerID,
+		PlayerID: req.PlayerId,
 	})
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error

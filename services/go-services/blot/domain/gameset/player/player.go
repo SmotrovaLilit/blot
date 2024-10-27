@@ -1,7 +1,6 @@
 package player
 
 import (
-	"fmt"
 	"log/slog"
 )
 
@@ -29,7 +28,7 @@ func (p Player) LogValue() slog.Value {
 	)
 }
 
-func Create(idRaw, nameRaw string) (Player, error) {
+func UnmarshalFromDatabase(idRaw, nameRaw string) (Player, error) {
 	id, err := NewID(idRaw)
 	if err != nil {
 		return Player{}, err
@@ -44,12 +43,12 @@ func Create(idRaw, nameRaw string) (Player, error) {
 	}, nil
 }
 
-func New(id ID, name Name) (Player, error) {
+func New(id ID, name Name) Player {
 	if id.IsZero() || name.IsZero() {
-		return Player{}, fmt.Errorf("empty input objects, use constructor to create object")
+		panic("empty input objects, use constructor to create object")
 	}
 	return Player{
 		id:   id,
 		name: name,
-	}, nil
+	}
 }

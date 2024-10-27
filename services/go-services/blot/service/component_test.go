@@ -2,12 +2,14 @@ package service
 
 import (
 	"blot/internal/blot/ports"
+	"blot/internal/common/logging"
 	"blot/internal/common/server"
 	"blot/internal/common/tests"
 	"context"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 	"log"
+	"log/slog"
 	"os"
 	"testing"
 
@@ -129,6 +131,7 @@ func TestStartGameSet(t *testing.T) {
 }
 
 func prepareGameSetToStart(t *testing.T, client blotservicepb.BlotServiceClient, setID string, firstPlayerID string) {
+	t.Helper()
 	_, err := client.CreateGameSet(context.Background(), &blotservicepb.CreateGameSetRequest{
 		Id:         setID,
 		PlayerId:   firstPlayerID,
@@ -162,6 +165,8 @@ func newBlotServiceClient(t *testing.T) blotservicepb.BlotServiceClient {
 
 func startService() bool {
 	app := NewApplication(context.Background())
+	logger := logging.NewLogger(os.Stdout, true, slog.LevelDebug)
+	slog.SetDefault(logger)
 	go server.RunGRPCServer(func(ctx context.Context) context.Context {
 		return ctx // TODO looks strange
 	}, func(server *grpc.Server) {

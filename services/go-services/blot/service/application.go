@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 
+	"blot/internal/blot/app/command/creategameset"
+
 	"blot/internal/blot/adapters"
 	"blot/internal/blot/app"
 	"blot/internal/blot/app/command"
@@ -14,7 +16,7 @@ func NewApplication(ctx context.Context) app.Application {
 
 	return app.Application{
 		Commands: app.Commands{
-			CreateGameSet: command.NewCreateGameSetHandler(gameSetRepository),
+			CreateGameSet: creategameset.NewHandler(gameSetRepository),
 			StartGame:     command.NewStartGameHandler(gameSetRepository),
 			PlayCard:      command.NewPlayCardHandler(gameSetRepository),
 			JoinGameSet:   command.NewJoinGameSetHandler(gameSetRepository),

@@ -4,7 +4,9 @@ import "context"
 
 func ApplyQueryDecorators[H any, R any](handler QueryHandler[H, R]) QueryHandler[H, R] {
 	return queryLoggingDecorator[H, R]{
-		base: handler,
+		base: queryTracingDecorator[H, R]{
+			base: handler,
+		},
 	}
 }
 

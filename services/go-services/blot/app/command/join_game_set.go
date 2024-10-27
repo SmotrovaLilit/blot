@@ -11,14 +11,16 @@ import (
 )
 
 type JoinGameSet struct {
-	Player player.Player
-	ID     gameset.ID
+	ID         string
+	PlayerID   string
+	PlayerName string
 }
 
 func (j JoinGameSet) LogValue() slog.Value {
 	return slog.GroupValue(
-		slog.String("id", j.ID.String()),
-		slog.Any("player", j.Player),
+		slog.String("id", j.ID),
+		slog.Any("player_id", j.PlayerID),
+		slog.Any("player_name", j.PlayerName),
 	)
 }
 
@@ -38,8 +40,21 @@ func NewJoinGameSetHandler(gameSetRepository gameset.Repository) JoinGameSetHand
 }
 
 func (h joinGameSetHandler) Handle(ctx context.Context, cmd JoinGameSet) error {
-	return h.gameSetRepository.UpdateByID(ctx, cmd.ID, func(set *gameset.GameSet) (bool, error) {
-		err := set.Join(cmd.Player)
+	id, err := gameset.NewID(cmd.ID)
+	if err != nil {
+		return err
+	}
+	playerID, err := player.NewID(cmd.PlayerID)
+	if err != nil {
+		return err
+	}
+	playerName, err := player.NewName(cmd.PlayerName)
+	if err != nil {
+		return err
+	}
+	p := player.New(playerID, playerName)
+	return h.gameSetRepository.UpdateByID(ctx, id, func(set *gameset.GameSet) (bool, error) {
+		err := set.Join(p)
 		if err != nil {
 			return false, err
 		}

@@ -2,7 +2,7 @@ package player
 
 import "errors"
 
-var ErrEmptyName = errors.New("empty name")
+var ErrEmptyName = errors.New("empty player name")
 
 type Name struct {
 	value string

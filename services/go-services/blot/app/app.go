@@ -2,6 +2,7 @@ package app
 
 import (
 	"blot/internal/blot/app/command"
+	"blot/internal/blot/app/command/creategameset"
 	"blot/internal/blot/app/query"
 )
 
@@ -11,7 +12,7 @@ type Application struct {
 }
 
 type Commands struct {
-	CreateGameSet command.CreateGameSetHandler
+	CreateGameSet creategameset.Handler
 	PlayCard      command.PlayCardHandler
 	JoinGameSet   command.JoinGameSetHandler
 	LeaveGameSet  command.LeaveGameSetHandler

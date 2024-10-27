@@ -14,10 +14,10 @@ func (i ID) String() string {
 	return i.value.String()
 }
 
-func NewID(stringID string) ID {
+func NewID(stringID string) (ID, error) {
 	id, err := uuid.Parse(stringID)
 	if err != nil {
-		panic(err)
+		return ID{}, err
 	}
-	return ID{id}
+	return ID{id}, nil
 }

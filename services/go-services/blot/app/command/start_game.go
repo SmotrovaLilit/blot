@@ -12,16 +12,16 @@ import (
 )
 
 type StartGame struct {
-	SetID    gameset.ID
-	GameID   game.ID
-	PlayerID player.ID
+	SetID    string
+	GameID   string
+	PlayerID string
 }
 
 func (s StartGame) LogValue() slog.Value {
 	return slog.GroupValue(
-		slog.String("set_id", s.SetID.String()),
-		slog.String("game_id", s.GameID.String()),
-		slog.String("player_id", s.PlayerID.String()),
+		slog.String("set_id", s.SetID),
+		slog.String("game_id", s.GameID),
+		slog.String("player_id", s.PlayerID),
 	)
 }
 
@@ -41,11 +41,23 @@ func NewStartGameHandler(gameSetRepository gameset.Repository) StartGameHandler 
 }
 
 func (h startGameHandler) Handle(ctx context.Context, cmd StartGame) error {
+	id, err := gameset.NewID(cmd.SetID)
+	if err != nil {
+		return err
+	}
+	gameID, err := game.NewID(cmd.GameID)
+	if err != nil {
+		return err
+	}
+	playerID, err := player.NewID(cmd.PlayerID)
+	if err != nil {
+		return err
+	}
 	return h.gameSetRepository.UpdateByID(
 		ctx,
-		cmd.SetID,
+		id,
 		func(set *gameset.GameSet) (bool, error) {
-			err := set.StartGame(cmd.GameID, cmd.PlayerID)
+			err := set.StartGame(gameID, playerID)
 			if err != nil {
 				return false, err
 			}

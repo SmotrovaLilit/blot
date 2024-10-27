@@ -8,8 +8,6 @@ import (
 	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/blot/domain/gameset/team"
-
-	"github.com/google/uuid"
 )
 
 type GameSet struct {
@@ -39,7 +37,7 @@ func (s GameSet) LogValue() slog.Value {
 
 var ErrGameNotFinished = errors.New("last game is not finished")
 
-func NewGameSet(id ID, pl player.Player) (*GameSet, error) {
+func NewGameSet(id ID, pl player.Player) *GameSet {
 	if id.IsZero() || pl.IsZero() {
 		panic("empty input objects, use constructor to create object")
 	}
@@ -49,7 +47,7 @@ func NewGameSet(id ID, pl player.Player) (*GameSet, error) {
 		players: []player.Player{pl},
 		status:  StatusWaitedForPlayers,
 	}
-	return &s, nil
+	return &s
 }
 
 // UnmarshalFromDatabase unmarshals GameSet from the database.
@@ -226,24 +224,4 @@ func (s *GameSet) PlayerInGameSet(id player.ID) bool {
 // TODO make it optional
 func (s *GameSet) LastGame() game.Game {
 	return s.lastGame
-}
-
-type ID struct {
-	value uuid.UUID
-}
-
-func (i ID) String() string {
-	return i.value.String()
-}
-
-func (i ID) IsZero() bool {
-	return i.value == uuid.Nil
-}
-
-func NewID(stringID string) ID {
-	id, err := uuid.Parse(stringID)
-	if err != nil {
-		panic(err)
-	}
-	return ID{id}
 }
