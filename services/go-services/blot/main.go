@@ -37,7 +37,8 @@ func main() {
 	}
 	tp, err := opentelemetry.Init(ctx, cfg)
 	if err != nil {
-		log.Fatalf("failed to initialize openTelemetry: %v", err)
+		slog.ErrorContext(ctx, "failed to initialize openTelemetry", "error", err)
+		return
 	} else {
 		slog.InfoContext(ctx, "openTelemetry initialized successfully with OLTP exporter over HTTP", "cfg", cfg)
 	}
@@ -59,6 +60,7 @@ func main() {
 		grpcserver.WithContextFactoryForRequestHandler(application.AppendCtxWithApplicationLoggingFields),
 	)
 	if err != nil {
-		log.Fatalf("failed to run server: %v", err)
+		slog.ErrorContext(ctx, "failed to run server", "error", err)
+		return
 	}
 }

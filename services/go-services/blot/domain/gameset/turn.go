@@ -4,6 +4,6 @@ import "blot/internal/blot/domain/card"
 
 type Turn struct {
 	roundNumber RoundNumber
-	//player      *Player
+	// player      *Player
 	card card.Card
 }

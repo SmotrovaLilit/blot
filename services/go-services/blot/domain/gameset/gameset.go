@@ -107,9 +107,9 @@ func (s *GameSet) StartGame(gameID game.ID, playerID player.ID) error {
 }
 
 //
-//func (s *GameSet) PlayCard(id user.ID, card card.Card) error {
+// Func (s *GameSet) PlayCard(id user.ID, card card.Card) error {
 //	return s.lastGame.PlayCard(id, card)
-//}
+// }.
 
 func (s *GameSet) Status() Status {
 	return s.status

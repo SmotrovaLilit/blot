@@ -15,10 +15,10 @@ func (b Bet) Passed(value card.Score) bool {
 	return value.Value() >= b.amount*10
 }
 
-//func (b Bet) IsFromTeam(t Team) bool {
+// Func (b Bet) IsFromTeam(t Team) bool {
 //	panic("not implemented")
 //	//return b.teamID == t.ID()
-//}
+// }.
 
 const maxBetAmount = 50
 

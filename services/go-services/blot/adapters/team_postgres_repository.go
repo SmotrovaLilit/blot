@@ -14,6 +14,6 @@ func NewTeamPostgresRepository() *TeamPostgresRepository {
 }
 
 func (t TeamPostgresRepository) Get(ctx context.Context, id team.ID) (*team.Team, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }

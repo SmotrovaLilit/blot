@@ -10,10 +10,10 @@ func requireLastPlayedCardIs(t *testing.T, _ *blotservicepb.GameSet, _ *blotserv
 	t.Helper()
 	panic("not implemented")
 	// TODO get last played card from game set
-	//lastCard := set.Game
-	//require.NotNil(t, lastCard)
-	//require.Equal(t, b.Suit, lastCard.Suit)
-	//require.Equal(t, b.Rank, lastCard.Rank)
+	// lastCard := set.Game
+	// require.NotNil(t, lastCard)
+	// require.Equal(t, b.Suit, lastCard.Suit)
+	// require.Equal(t, b.Rank, lastCard.Rank)
 }
 
 func requireNextTurnPlayerIs(t *testing.T, _ *blotservicepb.GameSet, _ string) {

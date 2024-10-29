@@ -1,20 +1,19 @@
-Логику создания value objects
+# Questions
 
-1. Transport
-   (+) домен чистый
-   (+) нет промежуточной сырой модели чтобы передать в application и он уже конвертировал это в доменные value objects
-   (+) кажется логичным что это обязанность транспорта конвертировать данные в доменные объекты
-   (-) если несколько транспортов то придется для них писать одинаковые тесты для покрытия условий когда конструкторы value objects возвращают ошибку
+## Where should we put creating valuer objects?
 
-2. Command/Query
-    (+) домен чистый
-    (+) транспорты не имеют одинаковых тестов для покрытия условий когда конструкторы value objects возвращают ошибку
-    (-) если несколько команд/запросов то придется для них писать одинаковые тесты для покрытия условий когда конструкторы value objects возвращают ошибку
+Transport (+) The domain is clean.
+(+) There is no intermediate raw model to pass to the application, which then converts it into domain value objects.
+(+) It seems logical that it is the responsibility of the transport to convert data into domain objects.
+(-) If there are multiple transports, identical tests will have to be written to cover the scenarios when the value object constructors return an error.
 
-3. Constructor с сырыми данными в домене
-   (+) в транспорте нет условия которые надо покрывать тестами в кажлм транспорте. Эти условия один раз прокроются в домене
-   (-) условия находсят внутри конструторов принимающих сырые данные. Домен не чистаый
-   (-) Иногда мы используем конструкторы чтобы создать объекты в самом домене, и в самом домене мы хотим рабоать с value objects а не с сырыми данными. Придется делать несколько конструкторов, у нас и так уже есть спец конструктор для бд
-   (-) если делать сырой конструтов в нем могут перечислены свойства с одинаковым типом например стринг, использование доменных valuye объеквто позволяет на уровене компилятора валидировать если передали не то что нужно. Сырые конструкторы ломают это
+Command/Query
+(+) The domain is clean.
+(+) Transports do not have identical tests to cover scenarios when the value object constructors return an error.
+(-) If there are multiple commands/queries, identical tests will have to be written to cover scenarios when the value object constructors return an error.
 
-Спросить у хорикова про то что геттеры у меня возвращают копии объектов это норм? 
+Constructor with Raw Data in the Domain
+(+) There are no conditions in the transport that need to be covered by tests for each transport. These conditions will be tested once in the domain.
+(-) Conditions are found within constructors that accept raw data. The domain is not clean.
+(-) Sometimes we use constructors to create objects in the domain itself, and in the domain, we want to work with value objects rather than raw data. We will have to create multiple constructors; we already have a special constructor for the database.
+(-) If we create a raw constructor, properties of the same type, such as strings, can be listed. Using domain value objects allows for validation at the compiler level to ensure the correct types are passed. Raw constructors break this.

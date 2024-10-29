@@ -31,14 +31,14 @@ func (t Team) Players() string {
 
 func (t Team) CardsScore(trump card.Suit) card.Score {
 	panic("not implemented")
-	//res := card.NewScore(0)
-	//for _, p := range t.players {
+	// res := card.NewScore(0)
+	// for _, p := range t.players {
 	//	res = res.Add(p.CalculateScore(trump))
 	//}
-	//return res
+	// return res
 }
 
-//func (t Team) TeamScore(bet Bet) int {
+// Func (t Team) TeamScore(bet Bet) int {
 //	cardsScore := t.CardsScore(bet.suit)
 //	if bet.IsFromTeam(t) {
 //		if bet.Passed(cardsScore) {
@@ -47,19 +47,19 @@ func (t Team) CardsScore(trump card.Suit) card.Score {
 //		return -bet.amount // TODO ask
 //	}
 //	return cardsScore.ConvertToTeamScore()
-//}
+// }.
 
 func (t Team) HasPlayer(u user.ID) bool {
 	panic("not implemented")
-	//for _, p := range t.players {
+	// for _, p := range t.players {
 	//	if p.userID.Equal(u) {
 	//		return true
 	//	}
 	//}
-	//return false
+	// return false
 }
 
-//func (t Team) findPlayer(u user.ID) Player {
+// Func (t Team) findPlayer(u user.ID) Player {
 //	panic("not implemented")
 //	//for _, p := range t.players {
 //	//	if p.userID.Equal(u) {
@@ -68,7 +68,7 @@ func (t Team) HasPlayer(u user.ID) bool {
 //	//}
 //	//panic("player not found")
 //
-//}
+// }.
 
 func (t Team) FirstPlayer() player.ID {
 	return t.players[0]

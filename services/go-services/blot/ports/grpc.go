@@ -55,7 +55,7 @@ func (g GrpcServer) JoinGameSet(ctx context.Context, req *blotservicepb.JoinGame
 	return &blotservicepb.JoinGameSetResponse{}, nil
 }
 
-//func (g GrpcServer) LeaveGameSet(ctx context.Context, req *blotservicepb.LeaveGameSetRequest) (*blotservicepb.LeaveGameSetResponse, error) {
+// Func (g GrpcServer) LeaveGameSet(ctx context.Context, req *blotservicepb.LeaveGameSetRequest) (*blotservicepb.LeaveGameSetResponse, error) {
 //	playerID, err := player.NewID(req.PlayerId)
 //	if err != nil {
 //		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
@@ -68,7 +68,7 @@ func (g GrpcServer) JoinGameSet(ctx context.Context, req *blotservicepb.JoinGame
 //		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
 //	}
 //	return &blotservicepb.LeaveGameSetResponse{}, nil
-//}
+// }.
 
 func (g GrpcServer) StartGame(ctx context.Context, req *blotservicepb.StartGameRequest) (*blotservicepb.StartGameResponse, error) {
 	err := g.app.Commands.StartGame.Handle(ctx, command.StartGame{

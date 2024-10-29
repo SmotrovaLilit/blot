@@ -14,7 +14,7 @@ func NewRound(number RoundNumber, turns []Turn) Round {
 	return Round{number: number, turns: turns}
 }
 
-//func (r Round) PlayCard(p Player, c card.Card) {
+// Func (r Round) PlayCard(p Player, c card.Card) {
 //	if r.Finished() {
 //		panic("round is finished")
 //	}
@@ -23,7 +23,7 @@ func NewRound(number RoundNumber, turns []Turn) Round {
 //	}
 //	p.PlayCard(c)
 //	//r.turns = append(r.turns, NewPlayedCard(c, p))
-//}
+// }.
 
 func (r Round) Number() RoundNumber {
 	return r.number
@@ -37,7 +37,7 @@ func (r Round) Finished() bool {
 	return len(r.turns) == MaxTurnsCount
 }
 
-//func (r Round) Winner(trump card.Suit) Player {
+// Func (r Round) Winner(trump card.Suit) Player {
 //	if !r.Finished() {
 //		panic("round is not finished")
 //	}
@@ -49,35 +49,35 @@ func (r Round) Finished() bool {
 //	//}
 //	//return r.playedCards[winCardNumber].Player
 //	return Player{}
-//}
+// }.
 
-//func (r Round) IsPlayerTurn(player Player) bool {
+// Func (r Round) IsPlayerTurn(player Player) bool {
 //	if r.Finished() {
 //		panic("round is finished")
 //	}
 //	return r.currentTurnPlayer().Equal(player)
 //}
 //
-//func (r Round) currentTurnPlayer() Player {
+// func (r Round) currentTurnPlayer() Player {
 //	if r.Finished() {
 //		panic("round is finished")
 //	}
 //	//return r.sittingOrder[r.currentTurnIndex()]
 //	return Player{}
-//}
+// }.
 
 // firstTurnIndex can return 0, 1, 2, 3. It is the index of the current player in the round.
 func (r Round) currentTurnIndex() int {
 	if r.Finished() {
 		panic("round is finished")
 	}
-	//playedCardsCount := len(r.playedCards)
-	//return (r.firstTurnIndex() + playedCardsCount) % MaxCardsCount
+	// playedCardsCount := len(r.playedCards)
+	// return (r.firstTurnIndex() + playedCardsCount) % MaxCardsCount
 	return 0
 }
 
 // firstTurnIndex can return 0, 1, 2, 3. It is the index of the first player in the round.
 func (r Round) firstTurnIndex() int {
-	//return (r.number.Number() - 1) % MaxCardsCount
+	// return (r.number.Number() - 1) % MaxCardsCount
 	return 0
 }

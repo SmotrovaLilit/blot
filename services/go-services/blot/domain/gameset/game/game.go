@@ -21,7 +21,7 @@ func (e ErrPlayerNotFound) Error() string {
 	return "player not found: " + e.ID.String()
 }
 
-//var ErrGameNotPlaying = errors.New("game is not playing")
+// Var ErrGameNotPlaying = errors.New("game is not playing").
 
 type Game struct {
 	id ID
@@ -30,11 +30,11 @@ type Game struct {
 	team2   team.Team
 	players []*PlayerState
 
-	//sittingOrder SittingOrder
+	// sittingOrder SittingOrder
 
 	status Status
-	//round  Round // TODO make optional
-	//bet    Bet   // TODO make optional
+	// round  Round // TODO make optional
+	// bet    Bet   // TODO make optional
 }
 
 func (g Game) ID() ID {
@@ -149,33 +149,33 @@ func NewGame(
 	}, nil
 }
 
-//func (g Game) SetBet(bet Bet) {
+// Func (g Game) SetBet(bet Bet) {
 //	if g.status != GameStatusBetting {
 //		panic("invalid game status")
 //	}
 //	//g.round = NewRound(NewRoundNumber(1), []card.Card{})
 //	g.status = GameStatusPlaying
 //	g.bet = bet
-//}
+// }.
 
-//func (g Game) GetTrump() card.Suit {
+// Func (g Game) GetTrump() card.Suit {
 //	if g.status == GameStatusBetting { // TODO remove this check when bet is made optional
 //		panic("trump is not decided yet")
 //	}
 //	return g.bet.suit
-//}
+// }.
 
-//func (g Game) PlayCard(user user.ID, card card.Card) error {
-//if !g.status.CanPlayCard() {
+// Func (g Game) PlayCard(user user.ID, card card.Card) error {
+// if !g.status.CanPlayCard() {
 //	return ErrGameNotPlaying
 //}
-//if g.team1.HasPlayer(user) || g.team2.HasPlayer(user) {
+// if g.team1.HasPlayer(user) || g.team2.HasPlayer(user) {
 //	panic("invalid player")
 //}
-//player := g.findPlayer(user)
+// player := g.findPlayer(user)
 ////player.PlayCard(card) moved into round
-//g.round.PlayCard(player, card)
-//if g.round.Finished() {
+// g.round.PlayCard(player, card)
+// if g.round.Finished() {
 //	//winner := g.round.Winner(g.GetTrump())
 //	//winner.AddDiscardCards(g.round.Cards())
 //}
@@ -185,9 +185,9 @@ func NewGame(
 //}
 //return nil
 ////g.round = g.round.NextRound()
-//}
+//}.
 
-//func (g Game) finishGame() {
+// Func (g Game) finishGame() {
 //	if g.status != GameStatusPlaying {
 //		panic("invalid game status")
 //	}
@@ -196,9 +196,9 @@ func NewGame(
 //	}
 //
 //	g.status = GameStatusFinished
-//}
+// }.
 
-//func (g Game) Opponent(team Team) team.ID {
+// Func (g Game) Opponent(team Team) team.ID {
 //	panic("not implemented")
 //	//if team.ID() == g.team1.ID() {
 //	//	return g.team2.ID()
@@ -209,7 +209,7 @@ func NewGame(
 //	//panic("invalid teamID ")
 //}
 //
-//func (g Game) findPlayer(u user.ID) Player {
+// func (g Game) findPlayer(u user.ID) Player {
 //	if g.team1.HasPlayer(u) {
 //		return g.team1.findPlayer(u)
 //	}
@@ -217,9 +217,9 @@ func NewGame(
 //		return g.team2.findPlayer(u)
 //	}
 //	panic("player not found")
-//}
+// }.
 
-//func (g Game) StartNewGame(id ID) (*Game, error) {
+// Func (g Game) StartNewGame(id ID) (*Game, error) {
 //	panic("not implemented")
 //	//if !g.status.IsFinished() {
 //	//	return nil, ErrGameNotFinished
@@ -230,7 +230,7 @@ func NewGame(
 //	//	NewTeam(g.team1.ID(), g.team1.FirstPlayer().ID(), g.team1.SecondPlayer().ID()),
 //	//	NewTeam(g.team2.ID(), g.team2.FirstPlayer().ID(), g.team2.SecondPlayer().ID()),
 //	//)
-//}
+// }.
 
 func UnmarshalFromDatabase(id ID, status Status, team1 team.Team, team2 team.Team, states []PlayerState) Game {
 	playerStates := make([]*PlayerState, len(states))

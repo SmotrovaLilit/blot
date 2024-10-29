@@ -8,8 +8,9 @@ linters:
     - ineffassign      # Finds unnecessary assignments
     - sloglint         # Checks that log messages are consistent and correct
     - unparam          # Checks that function parameters are used
-#    - godot            # Detects struct fields that can be unexported
-#    - stylecheck       # Enforces code style and conventions
+    - godot            # Check if comments end in a period.
+    - stylecheck       # Enforces code style and conventions
+    - gocritic         # Provides additional suggestions for code improvement
 # TODO return to this later
 #    - unused           # Detects unused variables, constants, and functions
 #    - revive           # Provides additional suggestions for code improvement
@@ -38,6 +39,16 @@ linters:
     - whitespace
 
 linters-settings:
+  godot:
+    # Comments to be checked: `declarations`, `toplevel`, or `all`.
+    # Default: declarations
+    scope: toplevel
+    # Check that each sentence ends with a period.
+    # Default: true
+    period: true
+    # Check that each sentence starts with a capital letter.
+    # Default: false
+    capital: true
   goimports:
     # A comma-separated list of prefixes, which, if set, checks import paths
     # with the given prefixes are grouped after 3rd-party packages.
