@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"blot/internal/blot/app/command/playcard"
+
 	"blot/internal/blot/app/command/creategameset"
 
 	"blot/internal/blot/app"
@@ -78,6 +80,84 @@ func (g GrpcServer) StartGame(ctx context.Context, req *blotservicepb.StartGameR
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
 	}
 	return &blotservicepb.StartGameResponse{}, nil
+}
+
+func (g GrpcServer) PlayCard(ctx context.Context, req *blotservicepb.PlayCardRequest) (*blotservicepb.PlayCardResponse, error) {
+	id, err := gameset.NewID(req.GameSetId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+	}
+	playerID, err := player.NewID(req.PlayerId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+	}
+	c, err := toCard(req.Card)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+	}
+	err = g.app.Commands.PlayCard.Handle(ctx, playcard.PlayCard{
+		SetID:    id,
+		PlayerID: playerID,
+		Card:     c,
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
+	}
+	return &blotservicepb.PlayCardResponse{}, nil
+}
+
+func toCard(c *blotservicepb.Card) (card.Card, error) {
+	rank, err := toRank(c.Rank)
+	if err != nil {
+		return card.Card{}, err
+	}
+	suit, err := toSuit(c.Suit)
+	if err != nil {
+		return card.Card{}, err
+	}
+	return card.NewCard(rank, suit), nil
+}
+
+func toSuit(suit blotservicepb.Suit) (card.Suit, error) {
+	switch suit {
+	case blotservicepb.Suit_SUIT_CLUBS:
+		return card.SuitClubs, nil
+	case blotservicepb.Suit_SUIT_DIAMONDS:
+		return card.SuitDiamonds, nil
+	case blotservicepb.Suit_SUIT_HEARTS:
+		return card.SuitHearts, nil
+	case blotservicepb.Suit_SUIT_SPADES:
+		return card.SuitSpades, nil
+	case blotservicepb.Suit_SUIT_UNSPECIFIED:
+		return card.Suit{}, fmt.Errorf("unspecified suit")
+	default:
+		return card.Suit{}, fmt.Errorf("unknown suit: %v", suit)
+	}
+}
+
+func toRank(rank blotservicepb.Rank) (card.Rank, error) {
+	switch rank {
+	case blotservicepb.Rank_RANK_ACE:
+		return card.RankAce, nil
+	case blotservicepb.Rank_RANK_KING:
+		return card.RankKing, nil
+	case blotservicepb.Rank_RANK_QUEEN:
+		return card.RankQueen, nil
+	case blotservicepb.Rank_RANK_JACK:
+		return card.RankJack, nil
+	case blotservicepb.Rank_RANK_TEN:
+		return card.RankTen, nil
+	case blotservicepb.Rank_RANK_NINE:
+		return card.RankNine, nil
+	case blotservicepb.Rank_RANK_EIGHT:
+		return card.RankEight, nil
+	case blotservicepb.Rank_RANK_SEVEN:
+		return card.RankSeven, nil
+	case blotservicepb.Rank_RANK_UNSPECIFIED:
+		return card.Rank{}, fmt.Errorf("unspecified rank")
+	default:
+		return card.Rank{}, fmt.Errorf("unknown rank: %v", rank)
+	}
 }
 
 func (g GrpcServer) GetGameSetForPlayer(ctx context.Context, req *blotservicepb.GetGameSetForPlayerRequest) (*blotservicepb.GetGameSetForPlayerResponse, error) {

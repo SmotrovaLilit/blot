@@ -53,7 +53,7 @@ func Test_createGameSetHandler_Handle(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.Name, func(t *testing.T) {
 			t.Parallel()
-			repo := nwGameSetRepositoryMock(nil)
+			repo := newGameSetRepositoryMock(nil)
 			h := NewHandler(repo)
 			err := h.Handle(context.Background(), CreateGameSet{
 				ID:         tt.Args.ID,
@@ -75,7 +75,7 @@ func Test_createGameSetHandler_Handle(t *testing.T) {
 	t.Run("Should fail when repository fails", func(t *testing.T) {
 		t.Parallel()
 		errSome := errors.New("some error")
-		repo := nwGameSetRepositoryMock(errSome)
+		repo := newGameSetRepositoryMock(errSome)
 		h := NewHandler(repo)
 		err := h.Handle(context.Background(), CreateGameSet{
 			ID:         "317c8f91-14ef-4582-aaa0-636b5d2ca0c2",
@@ -94,7 +94,7 @@ type gameSetRepositoryMock struct {
 	returnErr      error
 }
 
-func nwGameSetRepositoryMock(returnErr error) *gameSetRepositoryMock {
+func newGameSetRepositoryMock(returnErr error) *gameSetRepositoryMock {
 	return &gameSetRepositoryMock{
 		returnErr: returnErr,
 	}

@@ -9,10 +9,19 @@ service BlotService {
   rpc JoinGameSet(JoinGameSetRequest) returns (JoinGameSetResponse);
   rpc LeaveGameSet(LeaveGameSetRequest) returns (LeaveGameSetResponse);
   rpc StartGame(StartGameRequest) returns (StartGameResponse);
+  rpc PlayCard(PlayCardRequest) returns (PlayCardResponse);
 
   rpc GetGameSetForPlayer(GetGameSetForPlayerRequest) returns (GetGameSetForPlayerResponse);
   rpc GetGameSetsForPlayer(GetGameSetsForPlayerRequest) returns (GetGameSetsForPlayerResponse);
 }
+
+message PlayCardRequest {
+  string game_set_id = 1;
+  string player_id = 2;
+  Card card = 3;
+}
+
+message PlayCardResponse {}
 
 message StartGameRequest {
   string game_set_id = 1;

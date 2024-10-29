@@ -3,11 +3,23 @@ package game
 import (
 	"errors"
 
+	"blot/internal/blot/domain/card"
+
+	"blot/internal/blot/domain/gameset/player"
+
 	"blot/internal/blot/domain/deck"
 	"blot/internal/blot/domain/gameset/team"
 )
 
 var ErrSameTeam = errors.New("same team")
+
+type ErrPlayerNotFound struct {
+	ID player.ID
+}
+
+func (e ErrPlayerNotFound) Error() string {
+	return "player not found: " + e.ID.String()
+}
 
 //var ErrGameNotPlaying = errors.New("game is not playing")
 
@@ -16,7 +28,7 @@ type Game struct {
 
 	team1   team.Team
 	team2   team.Team
-	players []PlayerState
+	players []*PlayerState
 
 	//sittingOrder SittingOrder
 
@@ -42,11 +54,68 @@ func (g Game) SecondTeam() team.Team {
 }
 
 func (g Game) PlayerStates() []PlayerState {
-	return g.players
+	playerStates := make([]PlayerState, len(g.players))
+	for i, p := range g.players {
+		playerStates[i] = *p
+	}
+	return playerStates
 }
 
 func (g Game) IsZero() bool {
 	return g.status.IsZero()
+}
+
+func (g Game) Clone() Game {
+	playerStates := make([]*PlayerState, len(g.players))
+	for i, p := range g.players {
+		newP := p.Clone()
+		playerStates[i] = &newP
+	}
+	return Game{
+		id:      g.id,
+		team1:   g.team1,
+		team2:   g.team2,
+		players: playerStates,
+		status:  g.status,
+	}
+}
+
+func (g Game) FirstPlayerState() PlayerState {
+	return *g.players[0]
+}
+
+func (g Game) MustPlayerState(id player.ID) PlayerState {
+	p, err := g.PlayerState(id)
+	if err != nil {
+		panic(err)
+	}
+	return p
+}
+
+func (g *Game) PlayerState(id player.ID) (PlayerState, error) {
+	for _, p := range g.players {
+		if p.ID() == id {
+			return p.Clone(), nil
+		}
+	}
+	return PlayerState{}, ErrPlayerNotFound{ID: id}
+}
+
+func (g *Game) PlayCard(id player.ID, card card.Card) error {
+	err := g.RemoveCardForPlayer(id, card)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (g Game) RemoveCardForPlayer(id player.ID, c card.Card) error {
+	for i, p := range g.players { // TODO refactor to use iterator
+		if p.ID() == id {
+			return g.players[i].RemoveCard(c)
+		}
+	}
+	return ErrPlayerNotFound{ID: id}
 }
 
 func NewGame(
@@ -70,7 +139,7 @@ func NewGame(
 		team1:  team1,
 		team2:  team2,
 		status: GameStatusBetting,
-		players: []PlayerState{
+		players: []*PlayerState{
 			NewPlayerState(team1.FirstPlayer(), cards[0]),
 			NewPlayerState(team2.FirstPlayer(), cards[2]),
 			NewPlayerState(team1.SecondPlayer(), cards[1]),
@@ -164,11 +233,15 @@ func NewGame(
 //}
 
 func UnmarshalFromDatabase(id ID, status Status, team1 team.Team, team2 team.Team, states []PlayerState) Game {
+	playerStates := make([]*PlayerState, len(states))
+	for i, s := range states {
+		playerStates[i] = &s
+	}
 	return Game{
 		id:      id,
 		status:  status,
 		team1:   team1,
 		team2:   team2,
-		players: states,
+		players: playerStates,
 	}
 }

@@ -4,6 +4,8 @@ import (
 	"context"
 	"log/slog"
 
+	"blot/internal/blot/app/command/playcard"
+
 	"blot/internal/blot/app/command"
 	"blot/internal/blot/app/command/creategameset"
 	"blot/internal/blot/app/query"
@@ -26,7 +28,7 @@ type Info struct {
 
 type Commands struct {
 	CreateGameSet creategameset.Handler
-	PlayCard      command.PlayCardHandler
+	PlayCard      playcard.Handler
 	JoinGameSet   command.JoinGameSetHandler
 	LeaveGameSet  command.LeaveGameSetHandler
 	StartGame     command.StartGameHandler

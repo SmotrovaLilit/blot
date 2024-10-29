@@ -21,3 +21,11 @@ func NewID(stringID string) (ID, error) {
 	}
 	return ID{id}, nil
 }
+
+func MustNewID(s string) ID {
+	id, err := NewID(s)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}

@@ -5,6 +5,8 @@ import (
 	"log/slog"
 	"strconv"
 
+	"blot/internal/blot/domain/card"
+
 	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/blot/domain/gameset/team"
@@ -14,7 +16,7 @@ type GameSet struct {
 	id       ID
 	ownerID  player.ID
 	players  []player.Player
-	lastGame game.Game
+	lastGame *game.Game
 	status   Status
 }
 
@@ -66,7 +68,7 @@ func UnmarshalFromDatabase(
 		ownerID:  ownerID,
 		players:  players,
 		status:   status,
-		lastGame: game,
+		lastGame: &game,
 	}
 }
 
@@ -99,7 +101,7 @@ func (s *GameSet) StartGame(gameID game.ID, playerID player.ID) error {
 		return err
 	}
 	s.status = newStatus
-	s.lastGame = lastGame
+	s.lastGame = &lastGame
 	// TODO deal cards
 	return nil
 }
@@ -221,7 +223,45 @@ func (s *GameSet) PlayerInGameSet(id player.ID) bool {
 	return false
 }
 
-// TODO make it optional
-func (s *GameSet) LastGame() game.Game {
-	return s.lastGame
+// TODO make it optional.
+func (s GameSet) LastGame() game.Game {
+	if s.lastGame == nil {
+		return game.Game{} // TODO make it optional
+	}
+	return s.lastGame.Clone()
+}
+
+func (s GameSet) Clone() GameSet {
+	players := make([]player.Player, len(s.players))
+	copy(players, s.players)
+	g := s.lastGame.Clone()
+	return GameSet{
+		id:       s.id,
+		ownerID:  s.ownerID,
+		players:  players,
+		lastGame: &g,
+		status:   s.status,
+	}
+}
+
+func (s *GameSet) MustJoin(p player.Player) {
+	err := s.Join(p)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (s *GameSet) MustStartGame(id game.ID, id2 player.ID) {
+	err := s.StartGame(id, id2)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (s GameSet) PlayCard(id player.ID, card card.Card) error {
+	if !s.status.CanPlayCard() {
+		return ErrGameSetNotReadyToPlayCard{s.status.String()}
+	}
+
+	return s.lastGame.PlayCard(id, card)
 }

@@ -22,3 +22,11 @@ func NewName(stringValue string) (Name, error) {
 	}
 	return Name{stringValue}, nil
 }
+
+func MustNewName(s string) Name {
+	n, err := NewName(s)
+	if err != nil {
+		panic(err)
+	}
+	return n
+}

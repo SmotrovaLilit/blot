@@ -25,7 +25,7 @@ func GoContextWithRecover(ctx context.Context, goroutine func(), customRecover f
 // It logs the panic with the stack trace.
 // Stack trace will be in the field "stacktrace" base64 encoded.
 // To discover errors you can use the following command:
-// echo "base64 encoded stacktrace" | base64 -d
+// echo "base64 encoded stacktrace" | base64 -d.
 func DefaultRecover(ctx context.Context, p interface{}) {
 	slog.ErrorContext(ctx, fmt.Sprintf("panic recovered: %v", p), "stacktrace", debug.Stack(), "error", p)
 }

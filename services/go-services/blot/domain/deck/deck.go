@@ -4,7 +4,7 @@ import (
 	"math/rand"
 
 	"blot/internal/blot/domain/card"
-	//"blot/internal/blot/domain/game/player"
+	//"blot/internal/blot/domain/game/player".
 )
 
 type Deck struct {

@@ -16,7 +16,7 @@ type ContextHandler struct {
 }
 
 // Handle adds contextual attributes to the Record before calling the underlying
-// handler
+// handler.
 func (h ContextHandler) Handle(ctx context.Context, r slog.Record) error {
 	if attrs, ok := ctx.Value(slogFields).([]slog.Attr); ok {
 		for _, v := range attrs {
@@ -28,7 +28,7 @@ func (h ContextHandler) Handle(ctx context.Context, r slog.Record) error {
 }
 
 // AppendCtx adds a slog attribute to the provided context so that it will be
-// included in any Record created with such context
+// included in any Record created with such context.
 func AppendCtx(parent context.Context, attrs ...slog.Attr) context.Context {
 	if parent == nil {
 		parent = context.Background()

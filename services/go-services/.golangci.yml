@@ -8,6 +8,8 @@ linters:
     - ineffassign      # Finds unnecessary assignments
     - sloglint         # Checks that log messages are consistent and correct
     - unparam          # Checks that function parameters are used
+#    - godot            # Detects struct fields that can be unexported
+#    - stylecheck       # Enforces code style and conventions
 # TODO return to this later
 #    - unused           # Detects unused variables, constants, and functions
 #    - revive           # Provides additional suggestions for code improvement

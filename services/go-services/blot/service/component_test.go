@@ -130,30 +130,36 @@ func TestStartGameSet(t *testing.T) {
 	require.Len(t, re.GameSet.Game.PlayerStates[0].HandCards, 8)
 }
 
-func prepareGameSetToStart(t *testing.T, client blotservicepb.BlotServiceClient, setID string, firstPlayerID string) {
-	t.Helper()
-	_, err := client.CreateGameSet(context.Background(), &blotservicepb.CreateGameSetRequest{
-		Id:         setID,
-		PlayerId:   firstPlayerID,
-		PlayerName: "John",
+func TestPlayCard(t *testing.T) {
+	// ARRANGE
+	t.Parallel()
+	client := newBlotServiceClient(t)
+
+	gameSet := prepareGameSetToPlayCard(t, client)
+	playerID := firstPlayerID(t, gameSet)
+	card := firstPlayerCard(t, gameSet)
+	gameSetID := gameSet.Id
+
+	// ACT
+	_, err := client.PlayCard(context.Background(), &blotservicepb.PlayCardRequest{
+		GameSetId: gameSetID,
+		PlayerId:  playerID,
+		Card:      card,
+	})
+
+	// ASERT
+	require.NoError(t, err)
+
+	re, err := client.GetGameSetForPlayer(context.Background(), &blotservicepb.GetGameSetForPlayerRequest{
+		Id:       gameSetID,
+		PlayerId: playerID,
 	})
 	require.NoError(t, err)
-	players := []struct {
-		id   string
-		name string
-	}{
-		{"b9ba7e73-d777-4de0-9931-e1ef8a9aa284", "Jane"},
-		{"82607f08-99ac-4b36-b342-fe58cfb0461b", "Jack"},
-		{"5f077899-a76c-472f-8357-e892c6da6e54", "Jill"},
-	}
-	for _, p := range players {
-		_, err = client.JoinGameSet(context.Background(), &blotservicepb.JoinGameSetRequest{
-			Id:         setID,
-			PlayerId:   p.id,
-			PlayerName: p.name,
-		})
-		require.NoError(t, err)
-	}
+	require.NotNil(t, re)
+	//updatedGameSet := re.GameSet
+	//requirePlayerNotContainsCard(t, updatedGameSet, playerID, card)
+	//requireLastPlayedCardIs(t, updatedGameSet, card)
+	//requireNextTurnPlayerIs(t, updatedGameSet, playerID) // TODO Calculate next turn player
 }
 
 func newBlotServiceClient(t *testing.T) blotservicepb.BlotServiceClient {

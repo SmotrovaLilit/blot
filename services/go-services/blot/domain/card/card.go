@@ -24,6 +24,14 @@ func (c Card) Rank() Rank {
 	return c.rank
 }
 
+func (c Card) String() string {
+	return c.rank.String() + " of " + c.suit.String()
+}
+
+func (c Card) Equal(c2 Card) bool {
+	return c.rank == c2.rank && c.suit == c2.suit
+}
+
 func NewCard(rank Rank, suit Suit) Card {
 	return Card{rank, suit}
 }
