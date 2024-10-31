@@ -3,6 +3,7 @@ package gameset
 import (
 	"errors"
 	"log/slog"
+	"math/rand/v2"
 	"strconv"
 
 	"blot/internal/blot/domain/card"
@@ -20,7 +21,7 @@ type GameSet struct {
 	status   Status
 }
 
-func (s GameSet) LogValue() slog.Value {
+func (s *GameSet) LogValue() slog.Value {
 	var players []any
 	for i, p := range s.players {
 		players = append(players, slog.Any(
@@ -76,7 +77,7 @@ func (s *GameSet) ID() ID {
 	return s.id
 }
 
-func (s *GameSet) StartGame(gameID game.ID, playerID player.ID) error {
+func (s *GameSet) StartGame(gameID game.ID, playerID player.ID, randSource rand.Source) error {
 	if gameID.IsZero() || playerID.IsZero() {
 		panic("empty input objects, use constructor to create objects")
 	}
@@ -96,7 +97,7 @@ func (s *GameSet) StartGame(gameID game.ID, playerID player.ID) error {
 	if err != nil {
 		return err
 	}
-	lastGame, err := game.NewGame(gameID, team1, team2)
+	lastGame, err := game.NewGame(gameID, team1, team2, randSource)
 	if err != nil {
 		return err
 	}
@@ -224,17 +225,20 @@ func (s *GameSet) PlayerInGameSet(id player.ID) bool {
 }
 
 // TODO make it optional.
-func (s GameSet) LastGame() game.Game {
+func (s *GameSet) LastGame() game.Game {
 	if s.lastGame == nil {
 		return game.Game{} // TODO make it optional
 	}
 	return s.lastGame.Clone()
 }
 
-func (s GameSet) Clone() GameSet {
+func (s *GameSet) Clone() GameSet {
 	players := make([]player.Player, len(s.players))
 	copy(players, s.players)
-	g := s.lastGame.Clone()
+	var g game.Game
+	if s.lastGame != nil {
+		g = s.lastGame.Clone()
+	}
 	return GameSet{
 		id:       s.id,
 		ownerID:  s.ownerID,
@@ -251,14 +255,14 @@ func (s *GameSet) MustJoin(p player.Player) {
 	}
 }
 
-func (s *GameSet) MustStartGame(id game.ID, id2 player.ID) {
-	err := s.StartGame(id, id2)
+func (s *GameSet) MustStartGame(id game.ID, id2 player.ID, randSource rand.Source) {
+	err := s.StartGame(id, id2, randSource)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (s GameSet) PlayCard(id player.ID, card card.Card) error {
+func (s *GameSet) PlayCard(id player.ID, card card.Card) error {
 	if !s.status.CanPlayCard() {
 		return ErrGameSetNotReadyToPlayCard{s.status.String()}
 	}

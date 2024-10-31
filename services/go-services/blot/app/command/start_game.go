@@ -3,6 +3,7 @@ package command
 import (
 	"context"
 	"log/slog"
+	"math/rand/v2"
 
 	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
@@ -57,7 +58,12 @@ func (h startGameHandler) Handle(ctx context.Context, cmd StartGame) error {
 		ctx,
 		id,
 		func(set *gameset.GameSet) (bool, error) {
-			err := set.StartGame(gameID, playerID)
+			err := set.StartGame(
+				gameID, playerID,
+				// TODO seed should be generated one time?
+				// nolint
+				rand.NewPCG(rand.Uint64(), rand.Uint64()),
+			)
 			if err != nil {
 				return false, err
 			}

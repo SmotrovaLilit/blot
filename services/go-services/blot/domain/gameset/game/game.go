@@ -2,6 +2,7 @@ package game
 
 import (
 	"errors"
+	"math/rand/v2"
 
 	"blot/internal/blot/domain/card"
 
@@ -122,6 +123,7 @@ func NewGame(
 	id ID,
 	team1 team.Team,
 	team2 team.Team,
+	randSource rand.Source,
 ) (Game, error) {
 	if id.IsZero() || team1.IsZero() || team2.IsZero() {
 		panic("invalid arguments, create objects using constructors")
@@ -133,7 +135,7 @@ func NewGame(
 	if team1.FirstPlayer().Equal(team2.SecondPlayer()) || team1.FirstPlayer().Equal(team2.FirstPlayer()) {
 		panic("same player in different teams")
 	}
-	cards := deck.NewDeck().DealCards()
+	cards := deck.NewDeck(randSource).DealCards()
 	return Game{
 		id:     id,
 		team1:  team1,
@@ -179,13 +181,13 @@ func NewGame(
 //	//winner := g.round.Winner(g.GetTrump())
 //	//winner.AddDiscardCards(g.round.Cards())
 //}
-//if g.round.IsLastRound() {
+// if g.round.IsLastRound() {
 //	g.finishGame()
 //	return nil
 //}
-//return nil
+// return nil
 ////g.round = g.round.NextRound()
-//}.
+// }.
 
 // Func (g Game) finishGame() {
 //	if g.status != GameStatusPlaying {

@@ -1,7 +1,7 @@
 package deck
 
 import (
-	"math/rand"
+	"math/rand/v2"
 
 	"blot/internal/blot/domain/card"
 	// "blot/internal/blot/domain/game/player".
@@ -9,10 +9,14 @@ import (
 
 type Deck struct {
 	cards [32]card.Card
+	rand  *rand.Rand
 }
 
-func NewDeck() *Deck {
-	deck := Deck{}
+func NewDeck(randSource rand.Source) *Deck {
+	deck := Deck{
+		// nolint
+		rand: rand.New(randSource),
+	}
 	i := 0
 	for _, suit := range card.Suits {
 		for _, value := range card.Ranks {
@@ -25,7 +29,10 @@ func NewDeck() *Deck {
 }
 
 func (d *Deck) shuffle() {
-	rand.Shuffle(32, func(i, j int) {
+	// TODO think about domain purity and side effects
+	// https://enterprisecraftsmanship.com/posts/domain-model-purity-completeness/
+	// nolint
+	d.rand.Shuffle(32, func(i, j int) {
 		d.cards[i], d.cards[j] = d.cards[j], d.cards[i]
 	})
 }

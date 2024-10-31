@@ -5,6 +5,7 @@ import (
 	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
 	"github.com/stretchr/testify/require"
+	"math/rand/v2"
 	"testing"
 )
 
@@ -36,6 +37,7 @@ func TestPlayingGame(t *testing.T) {
 	set.MustStartGame(
 		game.MustNewID("937cc314-7cf3-4918-8c16-f1699eee89d9"),
 		firstPlayerID,
+		rand.NewPCG(0, 0),
 	)
 	require.Equal(t, StatusPlaying, set.Status())
 	pCard := set.LastGame().MustPlayerState(firstPlayerID).HandCards()[0]
@@ -44,11 +46,9 @@ func TestPlayingGame(t *testing.T) {
 	state := set.LastGame().FirstPlayerState()
 	require.Len(t, state.HandCards(), 7)
 	requreNotContainsCard(t, set.LastGame().FirstPlayerState().HandCards(), pCard)
-	// TODO check player does not have the played card
 	// TODO check table cards contain the played card
 	// TODO check next player is the next player
 	// TODO может аграгат должен быть как фасад, мы не должны обращаться к внутренним сущностям напрямую? или это нормально?
-
 }
 
 func requreNotContainsCard(t *testing.T, cards []card.Card, pCard card.Card) {

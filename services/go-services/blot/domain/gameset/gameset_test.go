@@ -5,6 +5,7 @@ import (
 	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
 	"github.com/stretchr/testify/require"
+	"math/rand/v2"
 	"testing"
 )
 
@@ -61,7 +62,7 @@ func TestGameSet_PlayCard(t *testing.T) {
 				}
 			},
 			expectedErrorSting: "card not found",
-			expectedError:      game.ErrCardNotFound{PlayerID: "4eb00c05-7f64-47b0-81bf-d0977bff0a04", Card: "ace of Diamonds"}, // TODO fix, it is flaky
+			expectedError:      game.ErrCardNotFound{PlayerID: "4eb00c05-7f64-47b0-81bf-d0977bff0a04", Card: "ace of Diamonds"},
 		},
 	}
 	for _, tt := range tests {
@@ -106,6 +107,7 @@ func prepareGameSetToPlayCard(t *testing.T) *GameSet {
 	set.MustStartGame(
 		game.MustNewID("937cc314-7cf3-4918-8c16-f1699eee89d9"),
 		firstPlayerID,
+		rand.New(rand.NewPCG(0, 0)),
 	)
 	require.Equal(t, StatusPlaying, set.Status())
 	return set

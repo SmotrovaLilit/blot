@@ -17,3 +17,7 @@ Constructor with Raw Data in the Domain
 (-) Conditions are found within constructors that accept raw data. The domain is not clean.
 (-) Sometimes we use constructors to create objects in the domain itself, and in the domain, we want to work with value objects rather than raw data. We will have to create multiple constructors; we already have a special constructor for the database.
 (-) If we create a raw constructor, properties of the same type, such as strings, can be listed. Using domain value objects allows for validation at the compiler level to ensure the correct types are passed. Raw constructors break this.
+
+## How to reach domain purity with random seeds?
+
+?

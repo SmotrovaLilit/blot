@@ -8,6 +8,7 @@ import (
 	"blot/internal/blot/domain/gameset/player"
 	"context"
 	"github.com/stretchr/testify/require"
+	"math/rand/v2"
 	"testing"
 )
 
@@ -39,7 +40,11 @@ func TestPlayCard_Handle(t *testing.T) {
 				gameSet.MustJoin(player.New(player.MustNewID("4eb00c05-7f64-47b0-81bf-d0977bff0a07"), player.MustNewName("Jill")))
 
 				// TODO how to deal predictable card in deck
-				gameSet.MustStartGame(game.MustNewID("937cc314-7cf3-4918-8c16-f1699eee89d9"), player.MustNewID("4eb00c05-7f64-47b0-81bf-d0977bff0a04"))
+				gameSet.MustStartGame(
+					game.MustNewID("937cc314-7cf3-4918-8c16-f1699eee89d9"),
+					player.MustNewID("4eb00c05-7f64-47b0-81bf-d0977bff0a04"),
+					rand.NewPCG(0, 0),
+				)
 				require.Equal(t, gameset.StatusPlaying, gameSet.Status())
 
 				err := repo.Create(context.Background(), gameSet)
