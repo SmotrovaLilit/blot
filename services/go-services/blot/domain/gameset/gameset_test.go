@@ -47,6 +47,7 @@ func TestGameSet_PlayCard(t *testing.T) {
 				set := prepareGameSetToPlayCard(t)
 				return set, args{
 					playerID: player.MustNewID("4eb00c05-7f88-47b0-8188-d0977bff0a08"),
+					card:     card.NewCard(card.RankAce, card.SuitDiamonds),
 				}
 			},
 			expectedErrorSting: "player not found",

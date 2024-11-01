@@ -139,10 +139,18 @@ func (g *Game) PlayerState(id player.ID) (PlayerState, error) {
 }
 
 func (g *Game) PlayCard(id player.ID, card card.Card) error {
-	err := g.RemoveCardForPlayer(id, card)
+	if id.IsZero() || card.IsZero() {
+		panic("invalid arguments, create objects using constructors")
+	}
+	newStatus, err := g.status.PlayCard()
 	if err != nil {
 		return err
 	}
+	err = g.RemoveCardForPlayer(id, card)
+	if err != nil {
+		return err
+	}
+	g.status = newStatus
 	return nil
 }
 

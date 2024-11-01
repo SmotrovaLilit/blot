@@ -2,6 +2,7 @@ package gameset
 
 import (
 	"blot/internal/blot/domain/card"
+	"blot/internal/blot/domain/gameset/bet"
 	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
 	"github.com/stretchr/testify/require"
@@ -39,10 +40,16 @@ func TestPlayingGame(t *testing.T) {
 		firstPlayerID,
 		rand.NewPCG(0, 0),
 	)
-	require.Equal(t, StatusPlaying, set.Status())
+
 	g := set.LastGame()
+	require.Equal(t, game.StatusBetting, g.Status())
+	err := set.SetBet(firstPlayerID, card.SuitSpades, bet.MustNewAmount(8))
+	require.NoError(t, err)
+
+	g = set.LastGame()
+	require.Equal(t, game.StatusPlaying, g.Status())
 	pCard := g.MustPlayerState(firstPlayerID).HandCards()[0]
-	err := set.PlayCard(firstPlayerID, pCard)
+	err = set.PlayCard(firstPlayerID, pCard)
 	require.NoError(t, err)
 	g = set.LastGame()
 	state := g.FirstPlayerState()

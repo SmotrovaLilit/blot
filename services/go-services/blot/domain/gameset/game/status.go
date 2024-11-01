@@ -24,10 +24,6 @@ func (s Status) IsFinished() bool {
 	return s == StatusFinished
 }
 
-func (s Status) CanPlayCard() bool {
-	return s == StatusPlaying
-}
-
 func (s Status) IsZero() bool {
 	return s.value == ""
 }
@@ -46,10 +42,28 @@ func (s Status) SetBet() (Status, error) {
 	return StatusPlaying, nil
 }
 
+func (s Status) PlayCard() (Status, error) {
+	if s != StatusPlaying {
+		return Status{}, ErrGameNotReadyToPlayCard{
+			Status: s.String(),
+		}
+	}
+
+	return StatusPlaying, nil
+}
+
 type ErrGameNotReadyToSetBet struct {
 	Status string
 }
 
 func (e ErrGameNotReadyToSetBet) Error() string {
 	return "game is not ready to set bet, current status: " + e.Status
+}
+
+type ErrGameNotReadyToPlayCard struct {
+	Status string
+}
+
+func (e ErrGameNotReadyToPlayCard) Error() string {
+	return "game is not ready to play card, current status: " + e.Status
 }

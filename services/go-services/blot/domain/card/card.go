@@ -32,6 +32,10 @@ func (c Card) Equal(c2 Card) bool {
 	return c.rank == c2.rank && c.suit == c2.suit
 }
 
+func (c Card) IsZero() bool {
+	return c.rank.IsZero() && c.suit.IsZero()
+}
+
 func NewCard(rank Rank, suit Suit) Card {
 	return Card{rank, suit}
 }

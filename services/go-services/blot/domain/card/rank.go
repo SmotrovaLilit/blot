@@ -36,6 +36,10 @@ func (r Rank) String() string {
 	return r.value
 }
 
+func (r Rank) IsZero() bool {
+	return r == Rank{}
+}
+
 func NewRank(rankString string) Rank {
 	for _, Rank := range Ranks {
 		if Rank.value == rankString {
