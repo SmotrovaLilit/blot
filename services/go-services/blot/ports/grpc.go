@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"blot/internal/blot/app/command/setbet"
+	"blot/internal/blot/domain/gameset/bet"
+
 	"blot/internal/blot/app/command/playcard"
 
 	"blot/internal/blot/app/command/creategameset"
@@ -80,6 +83,35 @@ func (g GrpcServer) StartGame(ctx context.Context, req *blotservicepb.StartGameR
 		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
 	}
 	return &blotservicepb.StartGameResponse{}, nil
+}
+
+func (g GrpcServer) SetBet(ctx context.Context, req *blotservicepb.SetBetRequest) (*blotservicepb.SetBetResponse, error) {
+	setID, err := gameset.NewID(req.GameSetId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+	}
+	playerID, err := player.NewID(req.PlayerId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+	}
+	suit, err := toSuit(req.Bet.Trump)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+	}
+	am, err := bet.NewAmount(int(req.Bet.Amount))
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
+	}
+	err = g.app.Commands.SetBet.Handle(ctx, setbet.SetBet{
+		SetID:     setID,
+		PlayerID:  playerID,
+		BetTrump:  suit,
+		BetAmount: am,
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
+	}
+	return &blotservicepb.SetBetResponse{}, nil
 }
 
 func (g GrpcServer) PlayCard(ctx context.Context, req *blotservicepb.PlayCardRequest) (*blotservicepb.PlayCardResponse, error) {
@@ -222,10 +254,21 @@ func gameToResponse(lastGame game.Game) *blotservicepb.Game {
 		Id:           lastGame.ID().String(),
 		Status:       gameStatusToResponse(lastGame.Status()),
 		Round:        nil,
-		Bet:          nil,
+		Bet:          betToResponse(lastGame.Bet()),
 		Team1:        teamToResponse(lastGame.FirstTeam()),
 		Team2:        teamToResponse(lastGame.SecondTeam()),
 		PlayerStates: playerStates,
+	}
+}
+
+func betToResponse(b bet.Bet) *blotservicepb.Bet {
+	if b.IsZero() {
+		return nil
+	}
+	return &blotservicepb.Bet{
+		Trump: suitToResponse(b.Trump()),
+		// nolint:gosec
+		Amount: int32(b.Amount().Value()),
 	}
 }
 
@@ -290,11 +333,11 @@ func teamToResponse(team team.Team) *blotservicepb.Team {
 
 func gameStatusToResponse(s game.Status) blotservicepb.GameStatus {
 	switch s {
-	case game.GameStatusBetting:
+	case game.StatusBetting:
 		return blotservicepb.GameStatus_GAME_STATUS_BETTING
-	case game.GameStatusPlaying:
+	case game.StatusPlaying:
 		return blotservicepb.GameStatus_GAME_STATUS_PLAYING
-	case game.GameStatusFinished:
+	case game.StatusFinished:
 		return blotservicepb.GameStatus_GAME_STATUS_FINISHED
 	default:
 		panic(fmt.Sprintf("unknown status: %v. Add new status in convert domain model to response function", s))

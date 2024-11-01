@@ -4,11 +4,10 @@ import (
 	"blot/internal/blot/adapters"
 	"blot/internal/blot/domain/card"
 	"blot/internal/blot/domain/gameset"
-	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
+	"blot/internal/blot/tests"
 	"context"
 	"github.com/stretchr/testify/require"
-	"math/rand/v2"
 	"testing"
 )
 
@@ -24,28 +23,15 @@ func TestPlayCard_Handle(t *testing.T) {
 		{
 			Name: "Should play card",
 			PrepareCommandArgs: func(g *gameset.GameSet) PlayCard {
+				lastGame := g.LastGame()
 				return PlayCard{
 					SetID:    g.ID(),
 					PlayerID: g.OwnerID(),
-					Card:     g.LastGame().MustPlayerState(g.OwnerID()).HandCards()[0], // TODO how to deal predictable card in deck
+					Card:     lastGame.MustPlayerState(g.OwnerID()).HandCards()[0], // TODO how to deal predictable card in deck
 				}
 			},
 			PrepareGameSet: func(repo *adapters.GameSetMemoryRepository) *gameset.GameSet {
-				gameSet := gameset.NewGameSet(
-					gameset.MustNewID("317c8f91-14ef-4582-aaa0-636b5d2ca0c2"),
-					player.New(player.MustNewID("4eb00c05-7f64-47b0-81bf-d0977bff0a04"), player.MustNewName("John")),
-				)
-				gameSet.MustJoin(player.New(player.MustNewID("4eb00c05-7f64-47b0-81bf-d0977bff0a05"), player.MustNewName("Jane")))
-				gameSet.MustJoin(player.New(player.MustNewID("4eb00c05-7f64-47b0-81bf-d0977bff0a06"), player.MustNewName("Jack")))
-				gameSet.MustJoin(player.New(player.MustNewID("4eb00c05-7f64-47b0-81bf-d0977bff0a07"), player.MustNewName("Jill")))
-
-				// TODO how to deal predictable card in deck
-				gameSet.MustStartGame(
-					game.MustNewID("937cc314-7cf3-4918-8c16-f1699eee89d9"),
-					player.MustNewID("4eb00c05-7f64-47b0-81bf-d0977bff0a04"),
-					rand.NewPCG(0, 0),
-				)
-				require.Equal(t, gameset.StatusPlaying, gameSet.Status())
+				gameSet := tests.PrepareGameSetToPlayCard(t)
 
 				err := repo.Create(context.Background(), gameSet)
 				require.NoError(t, err)

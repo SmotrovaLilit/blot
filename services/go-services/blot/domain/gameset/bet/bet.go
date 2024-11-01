@@ -2,30 +2,39 @@ package bet
 
 import (
 	"blot/internal/blot/domain/card"
-	"blot/internal/blot/domain/team"
+	"blot/internal/blot/domain/gameset/team"
 )
 
 type Bet struct {
 	teamID team.ID
-	amount int
+	amount Amount
 	suit   card.Suit
 }
 
-func (b Bet) Passed(value card.Score) bool {
-	return value.Value() >= b.amount*10
-}
+// Func (b Bet) Passed(value card.Score) bool {
+//	return value.Value() >= b.amount*10
+// }.
 
 // Func (b Bet) IsFromTeam(t Team) bool {
 //	panic("not implemented")
 //	//return b.teamID == t.ID()
 // }.
 
-const maxBetAmount = 50
+func (b Bet) Trump() card.Suit {
+	return b.suit
+}
 
-func NewBet(teamID team.ID, amount int, suit card.Suit) Bet {
-	if amount < 0 || amount > maxBetAmount {
-		panic("invalid bet amount")
+func (b Bet) Amount() Amount {
+	return b.amount
+}
+
+func NewBet(teamID team.ID, amount Amount, trump card.Suit) Bet {
+	if amount.IsZero() || trump.IsZero() || teamID.IsZero() {
+		panic("invalid arguments, create objects using constructors")
 	}
+	return Bet{teamID, amount, trump}
+}
 
-	return Bet{teamID, amount, suit}
+func (b Bet) IsZero() bool {
+	return b == Bet{}
 }

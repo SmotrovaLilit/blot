@@ -4,6 +4,8 @@ import (
 	"context"
 	"log/slog"
 
+	"blot/internal/blot/app/command/setbet"
+
 	"blot/internal/blot/app/command/playcard"
 
 	"blot/internal/blot/app/command"
@@ -32,6 +34,7 @@ type Commands struct {
 	JoinGameSet   command.JoinGameSetHandler
 	LeaveGameSet  command.LeaveGameSetHandler
 	StartGame     command.StartGameHandler
+	SetBet        setbet.Handler
 }
 
 type Queries struct {

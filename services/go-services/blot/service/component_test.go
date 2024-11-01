@@ -130,15 +130,47 @@ func TestStartGameSet(t *testing.T) {
 	require.Len(t, re.GameSet.Game.PlayerStates[0].HandCards, 8)
 }
 
+func TestSetBet(t *testing.T) {
+	// ARRANGE
+	t.Parallel()
+	client := newBlotServiceClient(t)
+	gameSetID := "99d6074f-6866-4ca1-9331-3bbfb70358ef"
+	gameSet := prepareGameSetToSetBet(t, gameSetID, client)
+	playerID := firstPlayerID(t, gameSet)
+
+	// ACT
+	_, err := client.SetBet(context.Background(), &blotservicepb.SetBetRequest{
+		GameSetId: gameSetID,
+		PlayerId:  playerID,
+		Bet: &blotservicepb.Bet{
+			Trump:  blotservicepb.Suit_SUIT_DIAMONDS,
+			Amount: 8,
+		},
+	})
+
+	// ASERT
+	require.NoError(t, err)
+	re, err := client.GetGameSetForPlayer(context.Background(), &blotservicepb.GetGameSetForPlayerRequest{
+		Id:       gameSetID,
+		PlayerId: playerID,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, re)
+	require.Equal(t, gameSetID, re.GameSet.Id)
+	require.Equal(t, blotservicepb.GameSetStatus_GAME_SET_STATUS_PLAYING, re.GameSet.Status)
+	require.Equal(t, blotservicepb.GameStatus_GAME_STATUS_PLAYING, re.GameSet.Game.Status)
+	require.Equal(t, int32(8), re.GameSet.Game.Bet.Amount)
+	require.Equal(t, blotservicepb.Suit_SUIT_DIAMONDS, re.GameSet.Game.Bet.Trump)
+}
+
 func TestPlayCard(t *testing.T) {
 	// ARRANGE
 	t.Parallel()
 	client := newBlotServiceClient(t)
-
-	gameSet := prepareGameSetToPlayCard(t, client)
+	gameSetID := "38f40c16-e8f2-4b28-ae1d-a6389071a26f"
+	gameSet := prepareGameSetToPlayCard(t, gameSetID, client)
 	playerID := firstPlayerID(t, gameSet)
 	card := firstPlayerCard(t, gameSet)
-	gameSetID := gameSet.Id
 
 	// ACT
 	_, err := client.PlayCard(context.Background(), &blotservicepb.PlayCardRequest{

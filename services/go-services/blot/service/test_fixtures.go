@@ -42,12 +42,33 @@ func prepareGameSetToStart(t *testing.T, client blotservicepb.BlotServiceClient,
 	return resp.GameSet
 }
 
-func prepareGameSetToPlayCard(t *testing.T, client blotservicepb.BlotServiceClient) *blotservicepb.GameSet {
+func prepareGameSetToPlayCard(t *testing.T, setID string, client blotservicepb.BlotServiceClient) *blotservicepb.GameSet {
 	t.Helper()
-	set := prepareGameSetToStart(t, client, "daeed6ef-e697-4fd1-9748-468e844bd110", "a9ba7e73-d777-4de0-9931-e1ef8a9aa354")
+	set := prepareGameSetToSetBet(t, setID, client)
+	_, err := client.SetBet(context.Background(), &blotservicepb.SetBetRequest{
+		GameSetId: set.Id,
+		PlayerId:  set.Players[0].Id,
+		Bet: &blotservicepb.Bet{
+			Trump:  blotservicepb.Suit_SUIT_DIAMONDS,
+			Amount: 8,
+		},
+	})
+	require.NoError(t, err)
+	resp, err := client.GetGameSetForPlayer(context.Background(), &blotservicepb.GetGameSetForPlayerRequest{
+		Id:       set.Id,
+		PlayerId: set.Players[0].Id,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	return resp.GameSet
+}
+
+func prepareGameSetToSetBet(t *testing.T, setID string, client blotservicepb.BlotServiceClient) *blotservicepb.GameSet {
+	t.Helper()
+	set := prepareGameSetToStart(t, client, setID, "a9ba7e73-d777-4de0-9931-e1ef8a9aa355")
 	_, err := client.StartGame(context.Background(), &blotservicepb.StartGameRequest{
 		GameSetId: set.Id,
-		GameId:    "b4f8b558-8576-4af2-be01-23f8a8b270b9",
+		GameId:    "b4f8b558-8576-4af2-be01-23f8a8b270b8",
 		PlayerId:  set.Players[0].Id,
 	})
 	require.NoError(t, err)

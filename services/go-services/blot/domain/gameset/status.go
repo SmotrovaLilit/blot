@@ -27,6 +27,14 @@ func (e ErrGameSetNotReadyToPlayCard) Error() string {
 	return fmt.Sprintf("game set is not ready to play card, current status: %s", e.Status)
 }
 
+type ErrGameSetNotReadyToSetBet struct {
+	Status string
+}
+
+func (e ErrGameSetNotReadyToSetBet) Error() string {
+	return fmt.Sprintf("game set is not ready to set bet, current status: %s", e.Status)
+}
+
 type Status struct {
 	value string
 }
@@ -63,5 +71,9 @@ func (s Status) IsZero() bool {
 }
 
 func (s Status) CanPlayCard() bool {
+	return s == StatusPlaying
+}
+
+func (s Status) CanSetBet() bool {
 	return s == StatusPlaying
 }

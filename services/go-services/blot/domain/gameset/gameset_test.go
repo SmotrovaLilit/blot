@@ -2,6 +2,7 @@ package gameset
 
 import (
 	"blot/internal/blot/domain/card"
+	"blot/internal/blot/domain/gameset/bet"
 	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
 	"github.com/stretchr/testify/require"
@@ -79,7 +80,36 @@ func TestGameSet_PlayCard(t *testing.T) {
 	}
 }
 
-func prepareGameSetToPlayCard(t *testing.T) *GameSet {
+func TestGameSet_SetBet(t *testing.T) {
+	testCases := []struct {
+		Name          string
+		ShouldFail    bool
+		ExpectedError error
+		GameSet       *GameSet
+	}{
+		{
+			Name:       "should set bet",
+			GameSet:    prepareGameSetToSetBet(t),
+			ShouldFail: false,
+		},
+	}
+	for _, tt := range testCases {
+		t.Run(tt.Name, func(t *testing.T) {
+			err := tt.GameSet.SetBet(tt.GameSet.ownerID, card.SuitDiamonds, bet.MustNewAmount(8))
+			if tt.ShouldFail {
+				require.Error(t, err)
+				require.Equal(t, tt.ExpectedError, err)
+				return
+			}
+			require.NoError(t, err)
+			lastGame := tt.GameSet.LastGame()
+			require.Equal(t, card.SuitDiamonds, lastGame.Bet().Trump())
+			require.Equal(t, bet.MustNewAmount(8), lastGame.Bet().Amount())
+		})
+	}
+}
+
+func prepareGameSetToStartGame(t *testing.T) *GameSet {
 	t.Helper()
 	firstPlayerID := player.MustNewID("4eb00c05-7f64-47b0-81bf-d0977bff0a04")
 	secondPlayerID := player.MustNewID("4eb00c05-7f64-47b0-81bf-d0977bff0a05")
@@ -104,11 +134,28 @@ func prepareGameSetToPlayCard(t *testing.T) *GameSet {
 		fourthPlayerID,
 		player.MustNewName("Jill"),
 	))
+	require.Equal(t, StatusReadyToStart, set.Status())
+	return set
+}
+
+func prepareGameSetToPlayCard(t *testing.T) *GameSet {
+	t.Helper()
+	set := prepareGameSetToSetBet(t)
+	set.MustSetBet(set.ownerID, card.SuitSpades, bet.MustNewAmount(8))
+	require.Equal(t, StatusPlaying, set.Status())
+	return set
+}
+
+func prepareGameSetToSetBet(t *testing.T) *GameSet {
+	t.Helper()
+	set := prepareGameSetToStartGame(t)
 	set.MustStartGame(
 		game.MustNewID("937cc314-7cf3-4918-8c16-f1699eee89d9"),
-		firstPlayerID,
+		set.ownerID,
 		rand.New(rand.NewPCG(0, 0)),
 	)
 	require.Equal(t, StatusPlaying, set.Status())
+	g := set.LastGame()
+	require.Equal(t, game.StatusBetting, g.Status())
 	return set
 }

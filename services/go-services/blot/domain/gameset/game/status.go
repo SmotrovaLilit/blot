@@ -4,12 +4,28 @@ type Status struct {
 	value string
 }
 
+var (
+	StatusBetting  = Status{"betting"}
+	StatusPlaying  = Status{"playing"}
+	StatusFinished = Status{"finished"}
+	Statuses       = []Status{StatusBetting, StatusPlaying, StatusFinished}
+)
+
+func NewStatus(statusString string) Status {
+	for _, status := range Statuses {
+		if status.value == statusString {
+			return status
+		}
+	}
+	panic("Invalid status: " + statusString)
+}
+
 func (s Status) IsFinished() bool {
-	return s == GameStatusFinished
+	return s == StatusFinished
 }
 
 func (s Status) CanPlayCard() bool {
-	return s == GameStatusPlaying
+	return s == StatusPlaying
 }
 
 func (s Status) IsZero() bool {
@@ -20,18 +36,20 @@ func (s Status) String() string {
 	return s.value
 }
 
-var (
-	GameStatusBetting  = Status{"betting"}
-	GameStatusPlaying  = Status{"playing"}
-	GameStatusFinished = Status{"finished"}
-	GameStatuses       = []Status{GameStatusBetting, GameStatusPlaying, GameStatusFinished}
-)
-
-func NewStatus(statusString string) Status {
-	for _, status := range GameStatuses {
-		if status.value == statusString {
-			return status
+func (s Status) SetBet() (Status, error) {
+	if s != StatusBetting {
+		return Status{}, ErrGameNotReadyToSetBet{
+			Status: s.String(),
 		}
 	}
-	panic("Invalid status: " + statusString)
+
+	return StatusPlaying, nil
+}
+
+type ErrGameNotReadyToSetBet struct {
+	Status string
+}
+
+func (e ErrGameNotReadyToSetBet) Error() string {
+	return "game is not ready to set bet, current status: " + e.Status
 }
