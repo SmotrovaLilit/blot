@@ -5,7 +5,6 @@ import (
 
 	"blot/internal/blot/domain/card"
 	"blot/internal/blot/domain/gameset/player"
-	"blot/internal/blot/domain/user"
 )
 
 var ErrSamePlayer = errors.New("same player")
@@ -49,14 +48,8 @@ func (t Team) CardsScore(trump card.Suit) card.Score {
 //	return cardsScore.ConvertToTeamScore()
 // }.
 
-func (t Team) HasPlayer(u user.ID) bool {
-	panic("not implemented")
-	// for _, p := range t.players {
-	//	if p.userID.Equal(u) {
-	//		return true
-	//	}
-	//}
-	// return false
+func (t Team) HasPlayer(u player.ID) bool {
+	return t.players[0].Equal(u) || t.players[1].Equal(u)
 }
 
 // Func (t Team) findPlayer(u user.ID) Player {

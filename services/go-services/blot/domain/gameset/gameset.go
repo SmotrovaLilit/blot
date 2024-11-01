@@ -6,6 +6,8 @@ import (
 	"math/rand/v2"
 	"strconv"
 
+	"blot/internal/blot/domain/gameset/bet"
+
 	"blot/internal/blot/domain/card"
 
 	"blot/internal/blot/domain/gameset/game"
@@ -93,7 +95,7 @@ func (s *GameSet) StartGame(gameID game.ID, playerID player.ID, randSource rand.
 	if err != nil {
 		return err
 	}
-	team2, err := team.NewTeam(team.NewID("3"), s.players[2].ID(), s.players[3].ID())
+	team2, err := team.NewTeam(team.NewID("2"), s.players[2].ID(), s.players[3].ID())
 	if err != nil {
 		return err
 	}
@@ -268,4 +270,19 @@ func (s *GameSet) PlayCard(id player.ID, card card.Card) error {
 	}
 
 	return s.lastGame.PlayCard(id, card)
+}
+
+func (s *GameSet) SetBet(id player.ID, trump card.Suit, amount bet.Amount) error {
+	if !s.status.CanSetBet() {
+		return ErrGameSetNotReadyToSetBet{s.status.String()}
+	}
+
+	return s.lastGame.SetBet(id, trump, amount)
+}
+
+func (s *GameSet) MustSetBet(id player.ID, trump card.Suit, amount bet.Amount) {
+	err := s.SetBet(id, trump, amount)
+	if err != nil {
+		panic(err)
+	}
 }

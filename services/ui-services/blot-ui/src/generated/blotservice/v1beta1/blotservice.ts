@@ -12,6 +12,46 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 /**
+ * @generated from protobuf message blotservice.v1beta1.AcceptBetRequest
+ */
+export interface AcceptBetRequest {
+    /**
+     * @generated from protobuf field: string game_set_id = 1;
+     */
+    game_set_id: string;
+    /**
+     * @generated from protobuf field: string player_id = 2;
+     */
+    player_id: string;
+}
+/**
+ * @generated from protobuf message blotservice.v1beta1.AcceptBetResponse
+ */
+export interface AcceptBetResponse {
+}
+/**
+ * @generated from protobuf message blotservice.v1beta1.SetBetRequest
+ */
+export interface SetBetRequest {
+    /**
+     * @generated from protobuf field: string game_set_id = 1;
+     */
+    game_set_id: string;
+    /**
+     * @generated from protobuf field: string player_id = 2;
+     */
+    player_id: string;
+    /**
+     * @generated from protobuf field: blotservice.v1beta1.Bet bet = 3;
+     */
+    bet?: Bet;
+}
+/**
+ * @generated from protobuf message blotservice.v1beta1.SetBetResponse
+ */
+export interface SetBetResponse {
+}
+/**
  * @generated from protobuf message blotservice.v1beta1.PlayCardRequest
  */
 export interface PlayCardRequest {
@@ -239,11 +279,7 @@ export interface Bet {
      */
     trump: Suit;
     /**
-     * @generated from protobuf field: string team_id = 2;
-     */
-    team_id: string;
-    /**
-     * @generated from protobuf field: int32 amount = 3;
+     * @generated from protobuf field: int32 amount = 2;
      */
     amount: number;
 }
@@ -462,6 +498,173 @@ export enum Suit {
      */
     SPADES = 4
 }
+// @generated message type with reflection information, may provide speed optimized methods
+class AcceptBetRequest$Type extends MessageType<AcceptBetRequest> {
+    constructor() {
+        super("blotservice.v1beta1.AcceptBetRequest", [
+            { no: 1, name: "game_set_id", kind: "scalar", localName: "game_set_id", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "player_id", kind: "scalar", localName: "player_id", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<AcceptBetRequest>): AcceptBetRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.game_set_id = "";
+        message.player_id = "";
+        if (value !== undefined)
+            reflectionMergePartial<AcceptBetRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: AcceptBetRequest): AcceptBetRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string game_set_id */ 1:
+                    message.game_set_id = reader.string();
+                    break;
+                case /* string player_id */ 2:
+                    message.player_id = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: AcceptBetRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string game_set_id = 1; */
+        if (message.game_set_id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.game_set_id);
+        /* string player_id = 2; */
+        if (message.player_id !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.player_id);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message blotservice.v1beta1.AcceptBetRequest
+ */
+export const AcceptBetRequest = new AcceptBetRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class AcceptBetResponse$Type extends MessageType<AcceptBetResponse> {
+    constructor() {
+        super("blotservice.v1beta1.AcceptBetResponse", []);
+    }
+    create(value?: PartialMessage<AcceptBetResponse>): AcceptBetResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<AcceptBetResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: AcceptBetResponse): AcceptBetResponse {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: AcceptBetResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message blotservice.v1beta1.AcceptBetResponse
+ */
+export const AcceptBetResponse = new AcceptBetResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class SetBetRequest$Type extends MessageType<SetBetRequest> {
+    constructor() {
+        super("blotservice.v1beta1.SetBetRequest", [
+            { no: 1, name: "game_set_id", kind: "scalar", localName: "game_set_id", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "player_id", kind: "scalar", localName: "player_id", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "bet", kind: "message", T: () => Bet }
+        ]);
+    }
+    create(value?: PartialMessage<SetBetRequest>): SetBetRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.game_set_id = "";
+        message.player_id = "";
+        if (value !== undefined)
+            reflectionMergePartial<SetBetRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SetBetRequest): SetBetRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string game_set_id */ 1:
+                    message.game_set_id = reader.string();
+                    break;
+                case /* string player_id */ 2:
+                    message.player_id = reader.string();
+                    break;
+                case /* blotservice.v1beta1.Bet bet */ 3:
+                    message.bet = Bet.internalBinaryRead(reader, reader.uint32(), options, message.bet);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: SetBetRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string game_set_id = 1; */
+        if (message.game_set_id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.game_set_id);
+        /* string player_id = 2; */
+        if (message.player_id !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.player_id);
+        /* blotservice.v1beta1.Bet bet = 3; */
+        if (message.bet)
+            Bet.internalBinaryWrite(message.bet, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message blotservice.v1beta1.SetBetRequest
+ */
+export const SetBetRequest = new SetBetRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class SetBetResponse$Type extends MessageType<SetBetResponse> {
+    constructor() {
+        super("blotservice.v1beta1.SetBetResponse", []);
+    }
+    create(value?: PartialMessage<SetBetResponse>): SetBetResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<SetBetResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SetBetResponse): SetBetResponse {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: SetBetResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message blotservice.v1beta1.SetBetResponse
+ */
+export const SetBetResponse = new SetBetResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class PlayCardRequest$Type extends MessageType<PlayCardRequest> {
     constructor() {
@@ -1317,14 +1520,12 @@ class Bet$Type extends MessageType<Bet> {
     constructor() {
         super("blotservice.v1beta1.Bet", [
             { no: 1, name: "trump", kind: "enum", T: () => ["blotservice.v1beta1.Suit", Suit, "SUIT_"] },
-            { no: 2, name: "team_id", kind: "scalar", localName: "team_id", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "amount", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 2, name: "amount", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<Bet>): Bet {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.trump = 0;
-        message.team_id = "";
         message.amount = 0;
         if (value !== undefined)
             reflectionMergePartial<Bet>(this, message, value);
@@ -1338,10 +1539,7 @@ class Bet$Type extends MessageType<Bet> {
                 case /* blotservice.v1beta1.Suit trump */ 1:
                     message.trump = reader.int32();
                     break;
-                case /* string team_id */ 2:
-                    message.team_id = reader.string();
-                    break;
-                case /* int32 amount */ 3:
+                case /* int32 amount */ 2:
                     message.amount = reader.int32();
                     break;
                 default:
@@ -1359,12 +1557,9 @@ class Bet$Type extends MessageType<Bet> {
         /* blotservice.v1beta1.Suit trump = 1; */
         if (message.trump !== 0)
             writer.tag(1, WireType.Varint).int32(message.trump);
-        /* string team_id = 2; */
-        if (message.team_id !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.team_id);
-        /* int32 amount = 3; */
+        /* int32 amount = 2; */
         if (message.amount !== 0)
-            writer.tag(3, WireType.Varint).int32(message.amount);
+            writer.tag(2, WireType.Varint).int32(message.amount);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1736,6 +1931,8 @@ export const BlotService = new ServiceType("blotservice.v1beta1.BlotService", [
     { name: "JoinGameSet", options: {}, I: JoinGameSetRequest, O: JoinGameSetResponse },
     { name: "LeaveGameSet", options: {}, I: LeaveGameSetRequest, O: LeaveGameSetResponse },
     { name: "StartGame", options: {}, I: StartGameRequest, O: StartGameResponse },
+    { name: "SetBet", options: {}, I: SetBetRequest, O: SetBetResponse },
+    { name: "AcceptBet", options: {}, I: AcceptBetRequest, O: AcceptBetResponse },
     { name: "PlayCard", options: {}, I: PlayCardRequest, O: PlayCardResponse },
     { name: "GetGameSetForPlayer", options: {}, I: GetGameSetForPlayerRequest, O: GetGameSetForPlayerResponse },
     { name: "GetGameSetsForPlayer", options: {}, I: GetGameSetsForPlayerRequest, O: GetGameSetsForPlayerResponse }

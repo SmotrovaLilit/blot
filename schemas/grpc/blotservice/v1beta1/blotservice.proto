@@ -9,11 +9,28 @@ service BlotService {
   rpc JoinGameSet(JoinGameSetRequest) returns (JoinGameSetResponse);
   rpc LeaveGameSet(LeaveGameSetRequest) returns (LeaveGameSetResponse);
   rpc StartGame(StartGameRequest) returns (StartGameResponse);
+  rpc SetBet(SetBetRequest) returns (SetBetResponse);
+  rpc AcceptBet(AcceptBetRequest) returns (AcceptBetResponse);
   rpc PlayCard(PlayCardRequest) returns (PlayCardResponse);
 
   rpc GetGameSetForPlayer(GetGameSetForPlayerRequest) returns (GetGameSetForPlayerResponse);
   rpc GetGameSetsForPlayer(GetGameSetsForPlayerRequest) returns (GetGameSetsForPlayerResponse);
 }
+
+message AcceptBetRequest {
+  string game_set_id = 1;
+  string player_id = 2;
+}
+
+message AcceptBetResponse {}
+
+message SetBetRequest {
+  string game_set_id = 1;
+  string player_id = 2;
+  Bet bet = 3;
+}
+
+message SetBetResponse {}
 
 message PlayCardRequest {
   string game_set_id = 1;
@@ -97,8 +114,7 @@ message Game {
 
 message Bet {
   Suit trump = 1;
-  string team_id = 2;
-  int32 amount = 3;
+  int32 amount = 2;
 }
 
 message Team {

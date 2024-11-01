@@ -40,12 +40,14 @@ func TestPlayingGame(t *testing.T) {
 		rand.NewPCG(0, 0),
 	)
 	require.Equal(t, StatusPlaying, set.Status())
-	pCard := set.LastGame().MustPlayerState(firstPlayerID).HandCards()[0]
+	g := set.LastGame()
+	pCard := g.MustPlayerState(firstPlayerID).HandCards()[0]
 	err := set.PlayCard(firstPlayerID, pCard)
 	require.NoError(t, err)
-	state := set.LastGame().FirstPlayerState()
+	g = set.LastGame()
+	state := g.FirstPlayerState()
 	require.Len(t, state.HandCards(), 7)
-	requreNotContainsCard(t, set.LastGame().FirstPlayerState().HandCards(), pCard)
+	requreNotContainsCard(t, g.FirstPlayerState().HandCards(), pCard)
 	// TODO check table cards contain the played card
 	// TODO check next player is the next player
 	// TODO может аграгат должен быть как фасад, мы не должны обращаться к внутренним сущностям напрямую? или это нормально?

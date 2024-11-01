@@ -5,6 +5,8 @@ import (
 	"os"
 	"runtime/debug"
 
+	"blot/internal/blot/app/command/setbet"
+
 	"blot/internal/blot/app/command/playcard"
 
 	"blot/internal/blot/app/command/creategameset"
@@ -29,6 +31,7 @@ func NewApplication(ctx context.Context) app.Application {
 			PlayCard:      playcard.NewHandler(gameSetRepository),
 			JoinGameSet:   command.NewJoinGameSetHandler(gameSetRepository),
 			LeaveGameSet:  command.NewLeaveGameSetHandler(gameSetRepository),
+			SetBet:        setbet.NewHandler(gameSetRepository),
 		},
 		Queries: app.Queries{
 			GameSetForPlayer:  query.NewGameSetForPlayerQueryHandler(gameSetRepository),
