@@ -2,8 +2,8 @@ package gameset
 
 import (
 	"blot/internal/blot/domain/card"
-	"blot/internal/blot/domain/gameset/bet"
 	"blot/internal/blot/domain/gameset/game"
+	"blot/internal/blot/domain/gameset/game/bet"
 	"blot/internal/blot/domain/gameset/player"
 	"github.com/stretchr/testify/require"
 	"math/rand/v2"

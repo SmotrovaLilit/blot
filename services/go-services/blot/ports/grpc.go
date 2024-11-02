@@ -1,13 +1,12 @@
 package ports
 
 import (
+	bet2 "blot/internal/blot/domain/gameset/game/bet"
 	"context"
 	"fmt"
 
-	"blot/internal/blot/app/command/setbet"
-	"blot/internal/blot/domain/gameset/bet"
-
 	"blot/internal/blot/app/command/playcard"
+	"blot/internal/blot/app/command/setbet"
 
 	"blot/internal/blot/app/command/creategameset"
 
@@ -98,7 +97,7 @@ func (g GrpcServer) SetBet(ctx context.Context, req *blotservicepb.SetBetRequest
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
 	}
-	am, err := bet.NewAmount(int(req.Bet.Amount))
+	am, err := bet2.NewAmount(int(req.Bet.Amount))
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
 	}
@@ -261,7 +260,7 @@ func gameToResponse(lastGame game.Game) *blotservicepb.Game {
 	}
 }
 
-func betToResponse(b bet.Bet) *blotservicepb.Bet {
+func betToResponse(b bet2.Bet) *blotservicepb.Bet {
 	if b.IsZero() {
 		return nil
 	}

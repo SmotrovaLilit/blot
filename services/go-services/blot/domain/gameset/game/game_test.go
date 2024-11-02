@@ -2,7 +2,7 @@ package game
 
 import (
 	"blot/internal/blot/domain/card"
-	"blot/internal/blot/domain/gameset/bet"
+	"blot/internal/blot/domain/gameset/game/bet"
 	"blot/internal/blot/domain/gameset/player"
 	"blot/internal/blot/domain/gameset/team"
 	"github.com/stretchr/testify/require"

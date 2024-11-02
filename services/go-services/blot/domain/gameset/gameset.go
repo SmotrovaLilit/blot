@@ -1,12 +1,11 @@
 package gameset
 
 import (
+	"blot/internal/blot/domain/gameset/game/bet"
 	"errors"
 	"log/slog"
 	"math/rand/v2"
 	"strconv"
-
-	"blot/internal/blot/domain/gameset/bet"
 
 	"blot/internal/blot/domain/card"
 

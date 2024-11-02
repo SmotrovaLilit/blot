@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"blot/internal/blot/domain/gameset/game/bet"
 	"math/rand/v2"
 	"testing"
 
@@ -8,7 +9,6 @@ import (
 
 	"blot/internal/blot/domain/card"
 	"blot/internal/blot/domain/gameset"
-	"blot/internal/blot/domain/gameset/bet"
 	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
 )

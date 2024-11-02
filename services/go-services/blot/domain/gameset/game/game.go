@@ -1,13 +1,12 @@
 package game
 
 import (
+	bet2 "blot/internal/blot/domain/gameset/game/bet"
 	"errors"
 	"math/rand/v2"
 
-	"blot/internal/blot/domain/deck"
-	"blot/internal/blot/domain/gameset/bet"
-
 	"blot/internal/blot/domain/card"
+	"blot/internal/blot/domain/deck"
 
 	"blot/internal/blot/domain/gameset/player"
 
@@ -36,7 +35,7 @@ type Game struct {
 	// sittingOrder SittingOrder
 
 	status Status
-	bet    bet.Bet
+	bet    bet2.Bet
 	// round  Round // TODO make optional
 	// bet    Bet   // TODO make optional
 }
@@ -163,7 +162,7 @@ func (g *Game) RemoveCardForPlayer(id player.ID, c card.Card) error {
 	return ErrPlayerNotFound{ID: id}
 }
 
-func (g *Game) SetBet(id player.ID, trump card.Suit, amount bet.Amount) error {
+func (g *Game) SetBet(id player.ID, trump card.Suit, amount bet2.Amount) error {
 	if id.IsZero() || trump.IsZero() || amount.IsZero() {
 		// TODO think about returning error instead of panic
 		panic("invalid arguments, create objects using constructors")
@@ -176,7 +175,7 @@ func (g *Game) SetBet(id player.ID, trump card.Suit, amount bet.Amount) error {
 	if err != nil {
 		return err
 	}
-	g.bet = bet.NewBet(teamID, amount, trump)
+	g.bet = bet2.NewBet(teamID, amount, trump)
 	g.status = newStatus
 	return nil
 }
@@ -191,7 +190,7 @@ func (g *Game) TeamByPlayerID(id player.ID) (team.ID, error) {
 	return team.ID{}, ErrPlayerNotFound{ID: id}
 }
 
-func (g *Game) Bet() bet.Bet {
+func (g *Game) Bet() bet2.Bet {
 	return g.bet
 }
 
