@@ -40,6 +40,29 @@ func (r Rank) IsZero() bool {
 	return r == Rank{}
 }
 
+var trumpRankOrder = []Rank{RankJack, RankNine, RankAce, RankTen, RankKing, RankQueen, RankEight, RankSeven}
+var nonTrumpRankOrder = []Rank{RankAce, RankTen, RankKing, RankQueen, RankJack, RankNine, RankEight, RankSeven}
+
+func (r Rank) Beats(rank Rank, isTrump bool) bool {
+	if r == rank {
+		panic("ranks are equal")
+	}
+	order := nonTrumpRankOrder
+	if isTrump {
+		order = trumpRankOrder
+	}
+	for _, orderRank := range order {
+		if r == orderRank {
+			return true
+		}
+		if rank == orderRank {
+			return false
+		}
+	}
+
+	panic(fmt.Sprintf("Rank: %s doesn't exist in %v", rank, order))
+}
+
 func NewRank(rankString string) Rank {
 	for _, Rank := range Ranks {
 		if Rank.value == rankString {

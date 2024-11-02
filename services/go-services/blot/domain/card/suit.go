@@ -33,3 +33,7 @@ func (s Suit) String() string {
 func (s Suit) IsZero() bool {
 	return Suit{} == s
 }
+
+func (s Suit) Equal(s2 Suit) bool {
+	return s.value == s2.value
+}

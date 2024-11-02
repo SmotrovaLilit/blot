@@ -14,7 +14,7 @@ func NewRound(number RoundNumber, turns []Turn) Round {
 	return Round{number: number, turns: turns}
 }
 
-// Func (r Round) PlayCard(p Player, c card.Card) {
+// Func (r Round) PlayCard(p Player, c card.card) {
 //	if r.Finished() {
 //		panic("round is finished")
 //	}

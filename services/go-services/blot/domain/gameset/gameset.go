@@ -1,11 +1,12 @@
 package gameset
 
 import (
-	"blot/internal/blot/domain/gameset/game/bet"
 	"errors"
 	"log/slog"
 	"math/rand/v2"
 	"strconv"
+
+	"blot/internal/blot/domain/gameset/game/bet"
 
 	"blot/internal/blot/domain/card"
 
@@ -90,11 +91,11 @@ func (s *GameSet) StartGame(gameID game.ID, playerID player.ID, randSource rand.
 		return err
 	}
 
-	team1, err := team.NewTeam(team.NewID("1"), s.players[0].ID(), s.players[1].ID())
+	team1, err := team.NewTeam(team.NewID("1"), s.players[0].ID(), s.players[2].ID())
 	if err != nil {
 		return err
 	}
-	team2, err := team.NewTeam(team.NewID("2"), s.players[2].ID(), s.players[3].ID())
+	team2, err := team.NewTeam(team.NewID("2"), s.players[1].ID(), s.players[3].ID())
 	if err != nil {
 		return err
 	}
@@ -109,7 +110,7 @@ func (s *GameSet) StartGame(gameID game.ID, playerID player.ID, randSource rand.
 }
 
 //
-// Func (s *GameSet) PlayCard(id user.ID, card card.Card) error {
+// Func (s *GameSet) PlayCard(id user.ID, card card.card) error {
 //	return s.lastGame.PlayCard(id, card)
 // }.
 

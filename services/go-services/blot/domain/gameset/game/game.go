@@ -1,9 +1,11 @@
 package game
 
 import (
-	bet2 "blot/internal/blot/domain/gameset/game/bet"
 	"errors"
+	"fmt"
 	"math/rand/v2"
+
+	"blot/internal/blot/domain/gameset/game/bet"
 
 	"blot/internal/blot/domain/card"
 	"blot/internal/blot/domain/deck"
@@ -35,8 +37,9 @@ type Game struct {
 	// sittingOrder SittingOrder
 
 	status Status
-	bet    bet2.Bet
-	// round  Round // TODO make optional
+	bet    bet.Bet
+	rounds []Round
+	// rounds  Round // TODO make optional
 	// bet    Bet   // TODO make optional
 }
 
@@ -64,8 +67,8 @@ func NewGame(
 		status: StatusBetting,
 		players: []*PlayerState{
 			NewPlayerState(team1.FirstPlayer(), cards[0]),
-			NewPlayerState(team2.FirstPlayer(), cards[2]),
-			NewPlayerState(team1.SecondPlayer(), cards[1]),
+			NewPlayerState(team2.FirstPlayer(), cards[1]),
+			NewPlayerState(team1.SecondPlayer(), cards[2]),
 			NewPlayerState(team2.SecondPlayer(), cards[3]),
 		},
 		//sittingOrder: NewPlayersSittingOrder(team1.FirstPlayer(), team2.FirstPlayer(), team1.SecondPlayer(), team2.SecondPlayer()),
@@ -106,6 +109,10 @@ func (g *Game) Clone() Game {
 		newP := p.Clone()
 		playerStates[i] = &newP
 	}
+	rounds := make([]Round, len(g.rounds))
+	for i, r := range g.rounds {
+		rounds[i] = r.Clone()
+	}
 	return Game{
 		id:      g.id,
 		team1:   g.team1,
@@ -113,11 +120,20 @@ func (g *Game) Clone() Game {
 		players: playerStates,
 		status:  g.status,
 		bet:     g.bet,
+		rounds:  rounds,
 	}
 }
 
 func (g *Game) FirstPlayerState() PlayerState {
 	return *g.players[0]
+}
+
+func (g *Game) SecondPlayerState() PlayerState {
+	return *g.players[1]
+}
+
+func (g *Game) ThirdPlayerState() PlayerState {
+	return *g.players[2]
 }
 
 func (g *Game) MustPlayerState(id player.ID) PlayerState {
@@ -141,19 +157,45 @@ func (g *Game) PlayCard(id player.ID, card card.Card) error {
 	if id.IsZero() || card.IsZero() {
 		panic("invalid arguments, create objects using constructors")
 	}
-	newStatus, err := g.status.PlayCard()
+	err := g.status.CanPlayCard()
 	if err != nil {
 		return err
 	}
-	err = g.RemoveCardForPlayer(id, card)
+	if !g.players[g.currentTurn()].ID().Equal(id) {
+		return ErrNotPlayerTurn{
+			PlayerID:            id.String(),
+			CurrentTurnIndex:    g.currentTurn(),
+			CurrentTurnPlayerID: g.players[g.currentTurn()].ID().String(),
+			Players:             g.players,
+		}
+	}
+	if len(g.rounds) == 0 {
+		panic("rounds not initialized, SetBet maybe works incorrectly")
+	}
+	round, err := g.rounds[len(g.rounds)-1].PlayCard(NewPlayerCard(id, card))
 	if err != nil {
 		return err
 	}
-	g.status = newStatus
+	err = g.removeCardForPlayer(id, card)
+	if err != nil {
+		return err
+	}
+	g.rounds[len(g.rounds)-1] = round
+	if round.Finished() {
+		number, err := round.Number().Next()
+		if err != nil {
+			if errors.Is(err, ErrLastRound) {
+				g.status = StatusFinished
+				return nil
+			}
+			panic(fmt.Sprintf("unexpected error: %v", err))
+		}
+		g.rounds = append(g.rounds, NewRound(number, NewTableCards([]PlayerCard{})))
+	}
 	return nil
 }
 
-func (g *Game) RemoveCardForPlayer(id player.ID, c card.Card) error {
+func (g *Game) removeCardForPlayer(id player.ID, c card.Card) error {
 	for i, p := range g.players { // TODO refactor to use iterator
 		if p.ID() == id {
 			return g.players[i].RemoveCard(c)
@@ -162,7 +204,7 @@ func (g *Game) RemoveCardForPlayer(id player.ID, c card.Card) error {
 	return ErrPlayerNotFound{ID: id}
 }
 
-func (g *Game) SetBet(id player.ID, trump card.Suit, amount bet2.Amount) error {
+func (g *Game) SetBet(id player.ID, trump card.Suit, amount bet.Amount) error {
 	if id.IsZero() || trump.IsZero() || amount.IsZero() {
 		// TODO think about returning error instead of panic
 		panic("invalid arguments, create objects using constructors")
@@ -175,7 +217,9 @@ func (g *Game) SetBet(id player.ID, trump card.Suit, amount bet2.Amount) error {
 	if err != nil {
 		return err
 	}
-	g.bet = bet2.NewBet(teamID, amount, trump)
+	g.bet = bet.NewBet(teamID, amount, trump)
+	r := NewRound(RoundNumber1, NewTableCards([]PlayerCard{}))
+	g.rounds = []Round{r}
 	g.status = newStatus
 	return nil
 }
@@ -190,15 +234,51 @@ func (g *Game) TeamByPlayerID(id player.ID) (team.ID, error) {
 	return team.ID{}, ErrPlayerNotFound{ID: id}
 }
 
-func (g *Game) Bet() bet2.Bet {
+func (g *Game) Bet() bet.Bet {
 	return g.bet
+}
+
+func (g *Game) LastRound() (Round, error) {
+	if len(g.rounds) == 0 {
+		return Round{}, errors.New("no rounds")
+	}
+	return g.rounds[len(g.rounds)-1], nil
+}
+
+func (g *Game) currentTurn() int {
+	if len(g.rounds) == 0 {
+		return 0
+	}
+	lastRound := g.rounds[len(g.rounds)-1]
+	lastRoundNumber := lastRound.Number().Value()
+	return calculateTurn(lastRoundNumber, lastRound.Table().Len())
+}
+
+func (g *Game) CurrentTurnPlayerID() player.ID {
+	return g.players[g.currentTurn()].ID()
+}
+
+func (g *Game) Round(number int) (Round, error) {
+	if len(g.rounds) < number {
+		return Round{}, errors.New("round not found")
+	}
+	return g.rounds[number-1], nil
+}
+
+func (g *Game) Rounds() []Round {
+	return g.rounds
+}
+
+func calculateTurn(lastRoundNumber, playedTurnsInLastRound int) int {
+	firstPlayerIndexInRound := (lastRoundNumber - 1) % 4
+	return (firstPlayerIndexInRound + playedTurnsInLastRound) % 4
 }
 
 // Func (g Game) SetBet(bet Bet) {
 //	if g.status != StatusBetting {
 //		panic("invalid game status")
 //	}
-//	//g.round = NewRound(NewRoundNumber(1), []card.Card{})
+//	//g.rounds = NewRound(NewRoundNumber(1), []card.card{})
 //	g.status = StatusPlaying
 //	g.bet = bet
 // }.
@@ -210,7 +290,7 @@ func (g *Game) Bet() bet2.Bet {
 //	return g.bet.suit
 // }.
 
-// Func (g Game) PlayCard(user user.ID, card card.Card) error {
+// Func (g Game) PlayCard(user user.ID, card card.card) error {
 // if !g.status.CanPlayCard() {
 //	return ErrGameNotPlaying
 //}
@@ -218,25 +298,25 @@ func (g *Game) Bet() bet2.Bet {
 //	panic("invalid player")
 //}
 // player := g.findPlayer(user)
-////player.PlayCard(card) moved into round
-// g.round.PlayCard(player, card)
-// if g.round.Finished() {
-//	//winner := g.round.Winner(g.GetTrump())
-//	//winner.AddDiscardCards(g.round.Cards())
+////player.PlayCard(card) moved into rounds
+// g.rounds.PlayCard(player, card)
+// if g.rounds.Finished() {
+//	//winner := g.rounds.Winner(g.GetTrump())
+//	//winner.AddDiscardCards(g.rounds.Cards())
 //}
-// if g.round.IsLastRound() {
+// if g.rounds.IsLastRound() {
 //	g.finishGame()
 //	return nil
 //}
 // return nil
-////g.round = g.round.NextRound()
+////g.rounds = g.rounds.NextRound()
 // }.
 
 // Func (g Game) finishGame() {
 //	if g.status != StatusPlaying {
 //		panic("invalid game status")
 //	}
-//	if !g.round.IsLastRound() {
+//	if !g.rounds.IsLastRound() {
 //		panic("game is not finished yet")
 //	}
 //
@@ -289,4 +369,21 @@ func UnmarshalFromDatabase(id ID, status Status, team1 team.Team, team2 team.Tea
 		team2:   team2,
 		players: playerStates,
 	}
+}
+
+type ErrNotPlayerTurn struct {
+	PlayerID            string
+	CurrentTurnIndex    int
+	CurrentTurnPlayerID string
+	Players             []*PlayerState
+}
+
+func (e ErrNotPlayerTurn) Error() string {
+	players := ""
+	for _, p := range e.Players {
+		players += p.ID().String() + " "
+	}
+	return fmt.Sprintf("player %s is not in turn, current turn index: %d, current turn player id: %s, players: %s",
+		e.PlayerID, e.CurrentTurnIndex, e.CurrentTurnPlayerID, players,
+	)
 }

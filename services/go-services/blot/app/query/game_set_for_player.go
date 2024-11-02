@@ -50,7 +50,7 @@ func (h *gameSetForPlayerQueryHandler) Handle(
 		return nil, err
 	}
 
-	// if s.Player() != q.PlayerID { // TODO fix it
+	// if s.Player() != q.playerID { // TODO fix it
 	//	return gameset.GameSet{}, gameset.NotFoundError{ID: q.GameSetID}
 	//}
 

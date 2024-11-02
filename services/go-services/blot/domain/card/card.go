@@ -36,6 +36,16 @@ func (c Card) IsZero() bool {
 	return c.rank.IsZero() && c.suit.IsZero()
 }
 
+func (c Card) Beats(winner Card, trump Suit) bool {
+	if c.suit.Equal(winner.suit) {
+		return c.rank.Beats(winner.rank, trump.Equal(c.suit))
+	}
+	if c.suit.Equal(trump) {
+		return true
+	}
+	return false
+}
+
 func NewCard(rank Rank, suit Suit) Card {
 	return Card{rank, suit}
 }

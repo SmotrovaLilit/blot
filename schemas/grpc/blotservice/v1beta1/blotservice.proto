@@ -99,17 +99,18 @@ message GameSet {
   // Return players how they sit at the table (clockwise)
   repeated Player players = 3;
   GameSetStatus status = 4;
-  Game game = 7;
+  Game game = 5;
 }
 
 message Game {
   string id = 1;
   GameStatus status = 2;
-  Round round = 3;
-  Bet bet = 4;
+  repeated Round rounds = 3;
+  optional Bet bet = 4;
   Team team1 = 5;
   Team team2 = 6;
   repeated PlayerStateInGame player_states = 7;
+  string current_turn_player_id = 8;
 }
 
 message Bet {
@@ -136,19 +137,13 @@ message PlayerStateInGame {
 message Round {
   int32 number = 1;
   repeated PlayedCard table_cards = 2;
-  RoundStatus status = 3;
-  string current_player_id = 4;
+  string winner_id = 3;
+  int32 score = 4;
 }
 
 message PlayedCard {
   string player_id = 1;
   Card card = 2;
-}
-
-enum RoundStatus {
-  ROUND_STATUS_UNSPECIFIED = 0;
-  ROUND_STATUS_STARTED = 1;
-  ROUND_STATUS_FINISHED = 2;
 }
 
 message Card {

@@ -47,6 +47,15 @@ func (s *PlayerState) RemoveCard(c card.Card) error {
 	return ErrCardNotFound{Card: c.String(), PlayerID: s.id.String()}
 }
 
+func (s *PlayerState) CanRemoveCard(c card.Card) error {
+	for _, ca := range s.handCards {
+		if ca.Equal(c) {
+			return nil
+		}
+	}
+	return ErrCardNotFound{Card: c.String(), PlayerID: s.id.String()}
+}
+
 func UnmarshalFromDatabasePlayerState(id player.ID, cards []card.Card) PlayerState {
 	return PlayerState{id, cards}
 }

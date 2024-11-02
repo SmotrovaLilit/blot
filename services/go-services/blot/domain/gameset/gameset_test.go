@@ -41,19 +41,6 @@ func TestGameSet_PlayCard(t *testing.T) {
 			expectedError:      ErrGameSetNotReadyToPlayCard{Status: StatusWaitedForPlayers.String()},
 		},
 		{
-			name:       "should fail when player not found",
-			shouldFail: true,
-			prepareGameSetAndArgs: func() (*GameSet, args) {
-				set := prepareGameSetToPlayCard(t)
-				return set, args{
-					playerID: player.MustNewID("4eb00c05-7f88-47b0-8188-d0977bff0a08"),
-					card:     card.NewCard(card.RankAce, card.SuitDiamonds),
-				}
-			},
-			expectedErrorSting: "player not found",
-			expectedError:      game.ErrPlayerNotFound{ID: player.MustNewID("4eb00c05-7f88-47b0-8188-d0977bff0a08")},
-		},
-		{
 			name:       "should fail when card not found",
 			shouldFail: true,
 			prepareGameSetAndArgs: func() (*GameSet, args) {

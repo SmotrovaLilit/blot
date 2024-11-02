@@ -1,9 +1,10 @@
 package tests
 
 import (
-	"blot/internal/blot/domain/gameset/game/bet"
 	"math/rand/v2"
 	"testing"
+
+	"blot/internal/blot/domain/gameset/game/bet"
 
 	"github.com/stretchr/testify/require"
 
@@ -47,6 +48,10 @@ func PrepareGameSetToPlayCard(t *testing.T) *gameset.GameSet {
 	set := PrepareGameSetToSetBet(t)
 	set.MustSetBet(set.OwnerID(), card.SuitSpades, bet.MustNewAmount(8))
 	require.Equal(t, gameset.StatusPlaying, set.Status())
+	newGame := set.LastGame()
+	lastRound, err := newGame.LastRound()
+	require.NoError(t, err)
+	require.Equal(t, game.RoundNumber1, lastRound.Number())
 	return set
 }
 

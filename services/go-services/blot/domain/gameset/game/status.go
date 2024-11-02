@@ -42,14 +42,13 @@ func (s Status) SetBet() (Status, error) {
 	return StatusPlaying, nil
 }
 
-func (s Status) PlayCard() (Status, error) {
+func (s Status) CanPlayCard() error {
 	if s != StatusPlaying {
-		return Status{}, ErrGameNotReadyToPlayCard{
+		return ErrGameNotReadyToPlayCard{
 			Status: s.String(),
 		}
 	}
-
-	return StatusPlaying, nil
+	return nil
 }
 
 type ErrGameNotReadyToSetBet struct {

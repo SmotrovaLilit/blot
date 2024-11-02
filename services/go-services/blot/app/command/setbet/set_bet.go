@@ -1,9 +1,10 @@
 package setbet
 
 import (
-	"blot/internal/blot/domain/gameset/game/bet"
 	"context"
 	"log/slog"
+
+	"blot/internal/blot/domain/gameset/game/bet"
 
 	"blot/internal/common/decorator"
 
