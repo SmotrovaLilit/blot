@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"blot/internal/blot/app/command/setbet"
-	"blot/internal/blot/domain/gameset/bet"
+	bet2 "blot/internal/blot/domain/gameset/game/bet"
 
 	"blot/internal/blot/app/command/playcard"
+	"blot/internal/blot/app/command/setbet"
 
 	"blot/internal/blot/app/command/creategameset"
 
@@ -65,7 +65,7 @@ func (g GrpcServer) JoinGameSet(ctx context.Context, req *blotservicepb.JoinGame
 //	}
 //	err = g.app.Commands.LeaveGameSet.Handle(ctx, command.LeaveGameSet{
 //		ID:       gameset.NewID(req.Id),
-//		PlayerID: playerID,
+//		playerID: playerID,
 //	})
 //	if err != nil {
 //		return nil, status.Error(codes.Internal, err.Error()) // TODO: map error
@@ -98,7 +98,7 @@ func (g GrpcServer) SetBet(ctx context.Context, req *blotservicepb.SetBetRequest
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
 	}
-	am, err := bet.NewAmount(int(req.Bet.Amount))
+	am, err := bet2.NewAmount(int(req.Bet.Amount))
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
 	}
@@ -246,22 +246,54 @@ func gameToResponse(lastGame game.Game) *blotservicepb.Game {
 		return nil
 	}
 	// TODO try to us iterator
-	playerStates := make([]*blotservicepb.PlayerStateInGame, len(lastGame.PlayerStates()))
-	for i, ps := range lastGame.PlayerStates() {
+	domainPlayers := lastGame.PlayerStates()
+	playerStates := make([]*blotservicepb.PlayerStateInGame, len(domainPlayers))
+	for i, ps := range domainPlayers {
 		playerStates[i] = playerStateToResponse(ps)
 	}
+	domainRounds := lastGame.Rounds()
+	rounds := make([]*blotservicepb.Round, len(domainRounds))
+	for i, r := range domainRounds {
+		rounds[i] = roundToResponse(r, lastGame.Bet().Trump())
+	}
 	return &blotservicepb.Game{
-		Id:           lastGame.ID().String(),
-		Status:       gameStatusToResponse(lastGame.Status()),
-		Round:        nil,
-		Bet:          betToResponse(lastGame.Bet()),
-		Team1:        teamToResponse(lastGame.FirstTeam()),
-		Team2:        teamToResponse(lastGame.SecondTeam()),
-		PlayerStates: playerStates,
+		Id:                  lastGame.ID().String(),
+		Status:              gameStatusToResponse(lastGame.Status()),
+		Rounds:              rounds,
+		Bet:                 betToResponse(lastGame.Bet()),
+		Team1:               teamToResponse(lastGame.FirstTeam()),
+		Team2:               teamToResponse(lastGame.SecondTeam()),
+		PlayerStates:        playerStates,
+		CurrentTurnPlayerId: lastGame.CurrentTurnPlayerID().String(),
 	}
 }
 
-func betToResponse(b bet.Bet) *blotservicepb.Bet {
+func roundToResponse(r game.Round, trump card.Suit) *blotservicepb.Round {
+	domainTableCards := r.TableCards()
+	cards := make([]*blotservicepb.PlayedCard, len(domainTableCards))
+	for i, c := range domainTableCards {
+		cards[i] = toPlayerCardResponse(c)
+	}
+
+	return &blotservicepb.Round{
+		Number:     int32(r.Number().Value()),
+		TableCards: cards,
+		WinnerId:   r.CalculateWinner(trump).PlayerID().String(),
+		Score:      int32(r.CalculateScore(trump).Value()),
+	}
+}
+
+func toPlayerCardResponse(c game.PlayerCard) *blotservicepb.PlayedCard {
+	return &blotservicepb.PlayedCard{
+		PlayerId: c.PlayerID().String(),
+		Card: &blotservicepb.Card{
+			Suit: suitToResponse(c.Card().Suit()),
+			Rank: rankToResponse(c.Card().Rank()),
+		},
+	}
+}
+
+func betToResponse(b bet2.Bet) *blotservicepb.Bet {
 	if b.IsZero() {
 		return nil
 	}
@@ -273,8 +305,9 @@ func betToResponse(b bet.Bet) *blotservicepb.Bet {
 }
 
 func playerStateToResponse(ps game.PlayerState) *blotservicepb.PlayerStateInGame {
-	handCards := make([]*blotservicepb.Card, len(ps.HandCards()))
-	for i, c := range ps.HandCards() {
+	domainHandCards := ps.HandCards()
+	handCards := make([]*blotservicepb.Card, len(domainHandCards))
+	for i, c := range domainHandCards {
 		handCards[i] = &blotservicepb.Card{
 			Suit: suitToResponse(c.Suit()),
 			Rank: rankToResponse(c.Rank()),

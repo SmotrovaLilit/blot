@@ -4,11 +4,12 @@ import (
 	"math/rand/v2"
 	"testing"
 
+	"blot/internal/blot/domain/gameset/game/bet"
+
 	"github.com/stretchr/testify/require"
 
 	"blot/internal/blot/domain/card"
 	"blot/internal/blot/domain/gameset"
-	"blot/internal/blot/domain/gameset/bet"
 	"blot/internal/blot/domain/gameset/game"
 	"blot/internal/blot/domain/gameset/player"
 )
@@ -47,6 +48,10 @@ func PrepareGameSetToPlayCard(t *testing.T) *gameset.GameSet {
 	set := PrepareGameSetToSetBet(t)
 	set.MustSetBet(set.OwnerID(), card.SuitSpades, bet.MustNewAmount(8))
 	require.Equal(t, gameset.StatusPlaying, set.Status())
+	newGame := set.LastGame()
+	lastRound, err := newGame.LastRound()
+	require.NoError(t, err)
+	require.Equal(t, game.RoundNumber1, lastRound.Number())
 	return set
 }
 

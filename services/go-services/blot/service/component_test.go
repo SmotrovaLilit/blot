@@ -161,6 +161,7 @@ func TestSetBet(t *testing.T) {
 	require.Equal(t, blotservicepb.GameStatus_GAME_STATUS_PLAYING, re.GameSet.Game.Status)
 	require.Equal(t, int32(8), re.GameSet.Game.Bet.Amount)
 	require.Equal(t, blotservicepb.Suit_SUIT_DIAMONDS, re.GameSet.Game.Bet.Trump)
+	require.Equal(t, int32(1), re.GameSet.Game.Rounds[0].Number)
 }
 
 func TestPlayCard(t *testing.T) {
@@ -188,10 +189,9 @@ func TestPlayCard(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.NotNil(t, re)
-	//updatedGameSet := re.GameSet
-	//requirePlayerNotContainsCard(t, updatedGameSet, playerID, card)
-	//requireLastPlayedCardIs(t, updatedGameSet, card)
-	//requireNextTurnPlayerIs(t, updatedGameSet, playerID) // TODO Calculate next turn player
+	require.Equal(t, int32(1), re.GameSet.Game.Rounds[0].Number)
+	require.Equal(t, card.Rank, re.GameSet.Game.Rounds[0].TableCards[0].Card.Rank)
+	require.Equal(t, card.Suit, re.GameSet.Game.Rounds[0].TableCards[0].Card.Suit)
 }
 
 func newBlotServiceClient(t *testing.T) blotservicepb.BlotServiceClient {

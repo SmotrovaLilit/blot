@@ -2,8 +2,8 @@ package gameset
 
 import (
 	"blot/internal/blot/domain/card"
-	"blot/internal/blot/domain/gameset/bet"
 	"blot/internal/blot/domain/gameset/game"
+	"blot/internal/blot/domain/gameset/game/bet"
 	"blot/internal/blot/domain/gameset/player"
 	"github.com/stretchr/testify/require"
 	"math/rand/v2"
@@ -39,18 +39,6 @@ func TestGameSet_PlayCard(t *testing.T) {
 			},
 			expectedErrorSting: "game set is not ready to play card",
 			expectedError:      ErrGameSetNotReadyToPlayCard{Status: StatusWaitedForPlayers.String()},
-		},
-		{
-			name:       "should fail when player not found",
-			shouldFail: true,
-			prepareGameSetAndArgs: func() (*GameSet, args) {
-				set := prepareGameSetToPlayCard(t)
-				return set, args{
-					playerID: player.MustNewID("4eb00c05-7f88-47b0-8188-d0977bff0a08"),
-				}
-			},
-			expectedErrorSting: "player not found",
-			expectedError:      game.ErrPlayerNotFound{ID: player.MustNewID("4eb00c05-7f88-47b0-8188-d0977bff0a08")},
 		},
 		{
 			name:       "should fail when card not found",

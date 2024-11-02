@@ -4,7 +4,8 @@ import (
 	"context"
 	"log/slog"
 
-	"blot/internal/blot/domain/gameset/bet"
+	"blot/internal/blot/domain/gameset/game/bet"
+
 	"blot/internal/common/decorator"
 
 	"blot/internal/blot/domain/card"
