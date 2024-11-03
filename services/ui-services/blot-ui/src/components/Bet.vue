@@ -5,6 +5,7 @@
       <p><strong>Team ID:</strong> {{ existingBet.teamId }}</p>
       <p><strong>Amount:</strong> {{ existingBet.amount }}</p>
       <Icon :type="existingBet.trump"/>
+      <div>{{existingBet.teamName}}</div>
     </div>
   </div>
 
@@ -68,6 +69,7 @@ interface Bet {
   teamId: string;
   amount: number;
   trump: string;
+  teamName: string;
 }
 
 // Props

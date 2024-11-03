@@ -18,7 +18,7 @@ import {
     Rank as RankResp,
     Bet as BetResp,
     Round as RoundResp,
-    PlayedCard as PlayedCardResp, SetBetRequest,
+    PlayedCard as PlayedCardResp, SetBetRequest, PlayCardRequest,
 } from '@/generated/blotservice/v1beta1/blotservice';
 import {
     Bet,
@@ -48,6 +48,8 @@ export interface GameSetRepository {
     join(id: string, player: User): Promise<void>;
 
     setBet(id: string, playerId: string, amount: number, trump: string): Promise<void>;
+
+    playCard(id: string, playerId: string, card: Card): Promise<void>;
 
     leave(id: string, playerId: string): Promise<void>;
 }
@@ -161,6 +163,19 @@ export class GrpcGameSetRepository implements GameSetRepository {
         });
         console.log('startGame ended');
     }
+
+    public async playCard(id: string, playerId: string, card: Card): Promise<void> {
+        console.log('playCard started', id, playerId, card);
+        const request = PlayCardRequest.create();
+        request.game_set_id = id;
+        request.player_id = playerId;
+        request.card = convertToCardResp(card);
+        await this.client.playCard(request, {
+            meta: {},
+            timeout: TIMEOUT_MILLISECS,
+        });
+        console.log('playCard ended');
+    }
 }
 
 function convertToGameSet(resp: GameSetResp): GameSet {
@@ -203,6 +218,8 @@ function convertToGameStatus(status: GameStatusResp): GameStatus {
             return GameStatus.GAME_STATUS_BETTING;
         case GameStatusResp.PLAYING:
             return GameStatus.GAME_STATUS_PLAYING;
+        case GameStatusResp.FINISHED:
+            return GameStatus.GAME_STATUS_FINISHED;
         default:
             throw new Error('Unknown game status: ' + status);
     }
@@ -302,4 +319,33 @@ function convertToSuitResp(suit: string): SuitResp {
             return SuitResp.SPADES;
     }
     throw new Error('Unknown suit: ' + suit);
+}
+
+function convertToCardResp(card: Card): CardResp {
+    const c = CardResp.create();
+    c.rank = convertToRankResp(card.rank);
+    c.suit = convertToSuitResp(card.suit);
+    return c;
+}
+
+function convertToRankResp(rank: string): RankResp {
+    switch (rank) {
+        case "a":
+            return RankResp.ACE;
+        case "7":
+            return RankResp.SEVEN;
+        case "8":
+            return RankResp.EIGHT;
+        case "9":
+            return RankResp.NINE;
+        case "10":
+            return RankResp.TEN;
+        case "j":
+            return RankResp.JACK;
+        case "q":
+            return RankResp.QUEEN;
+        case "k":
+            return RankResp.KING;
+    }
+    throw new Error('Unknown rank: ' + rank);
 }
