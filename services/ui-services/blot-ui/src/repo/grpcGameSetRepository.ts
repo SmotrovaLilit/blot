@@ -15,15 +15,19 @@ import {
     StartGameRequest,
     Team as TeamResp,
     Suit as SuitResp,
-    Rank as RankResp
+    Rank as RankResp,
+    Bet as BetResp,
+    Round as RoundResp,
+    PlayedCard as PlayedCardResp, SetBetRequest,
 } from '@/generated/blotservice/v1beta1/blotservice';
 import {
+    Bet,
     Card,
     Game,
     GameSet,
     GameSetStatus,
-    GameStatus,
-    PlayerState,
+    GameStatus, PlayerCard,
+    PlayerState, Round,
     Team
 } from '@/models/gameSet';
 import {GrpcWebFetchTransport} from "@protobuf-ts/grpcweb-transport";
@@ -42,6 +46,8 @@ export interface GameSetRepository {
     startGame(id: string, playerId: string, gameId: string): Promise<void>;
 
     join(id: string, player: User): Promise<void>;
+
+    setBet(id: string, playerId: string, amount: number, trump: string): Promise<void>;
 
     leave(id: string, playerId: string): Promise<void>;
 }
@@ -129,6 +135,20 @@ export class GrpcGameSetRepository implements GameSetRepository {
         console.log('joinGameSet ended');
     }
 
+    public async setBet(id: string, playerId: string, amount: number, trump: string): Promise<void> {
+        const request = SetBetRequest.create();
+        request.game_set_id = id;
+        request.player_id = playerId;
+        request.amount = amount;
+        request.trump = convertToSuitResp(trump);
+        console.log('setBet started', request);
+        await this.client.setBet(request, {
+            meta: {},
+            timeout: TIMEOUT_MILLISECS,
+        });
+        console.log('setBet ended');
+    }
+
     public async startGame(id: string, playerId: string, gameId: string): Promise<void> {
         const request = StartGameRequest.create();
         request.game_set_id = id;
@@ -181,6 +201,8 @@ function convertToGameStatus(status: GameStatusResp): GameStatus {
     switch (status) {
         case GameStatusResp.BETTING:
             return GameStatus.GAME_STATUS_BETTING;
+        case GameStatusResp.PLAYING:
+            return GameStatus.GAME_STATUS_PLAYING;
         default:
             throw new Error('Unknown game status: ' + status);
     }
@@ -190,7 +212,7 @@ function convertToTeam(team?: TeamResp): Team {
     if (!team) {
         throw Error('Team is empty');
     }
-    return new Team(team.player1, team.player2);
+    return new Team(team.id, team.player1, team.player2);
 }
 
 function convertToSuit(suit: SuitResp): string {
@@ -240,5 +262,44 @@ function convertToPlayerState(state: PlayerStateResp): PlayerState {
 function convertToGame(game: GameResp): Game {
     const g = new Game(game.id, convertToGameStatus(game.status), convertToTeam(game.team1), convertToTeam(game.team2));
     g.playerStates = game.player_states.map(convertToPlayerState);
+    g.bet = convertToBet(game.bet);
+    g.rounds = game.rounds.map(convertToRound);
+    g.currentTurnPlayerId = game.current_turn_player_id;
     return g;
+}
+
+function convertToBet(bet?: BetResp): Bet | undefined {
+    if (!bet) {
+        return undefined;
+    }
+    return new Bet(bet.team_id, bet.amount, convertToSuit(bet.trump));
+}
+
+function convertToRound(round: RoundResp): Round {
+   const r = new Round(round.number);
+   r.score = round.score;
+   r.winnerPlayerId = round.winner_id;
+   r.table = round.table_cards.map(convertToPlayerCard);
+   return r;
+}
+
+function convertToPlayerCard(pCard: PlayedCardResp): PlayerCard {
+    if (pCard.card == null) {
+        throw new Error('Card is empty');
+    }
+    return new PlayerCard(pCard.player_id, convertToCard(pCard.card));
+}
+
+function convertToSuitResp(suit: string): SuitResp {
+    switch (suit) {
+        case "clubs":
+            return SuitResp.CLUBS;
+        case "diamonds":
+            return SuitResp.DIAMONDS;
+        case "hearts":
+            return SuitResp.HEARTS;
+        case "spades":
+            return SuitResp.SPADES;
+    }
+    throw new Error('Unknown suit: ' + suit);
 }

@@ -66,7 +66,7 @@ tasks:
         "player_id": "{{.PLAYER_1}}"
         }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.GetGameSetForPlayer
 
-  smoke-test-get-game-set:
+  smoke-test-get-gameset:
     desc: Smoke test get game
     dir: services/go-services/blot
     cmds:

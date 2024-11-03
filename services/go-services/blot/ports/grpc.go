@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	bet2 "blot/internal/blot/domain/gameset/game/bet"
+	"blot/internal/blot/domain/gameset/game/bet"
 
 	"blot/internal/blot/app/command/playcard"
 	"blot/internal/blot/app/command/setbet"
@@ -94,11 +94,11 @@ func (g GrpcServer) SetBet(ctx context.Context, req *blotservicepb.SetBetRequest
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
 	}
-	suit, err := toSuit(req.Bet.Trump)
+	suit, err := toSuit(req.Trump)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
 	}
-	am, err := bet2.NewAmount(int(req.Bet.Amount))
+	am, err := bet.NewAmount(int(req.Amount))
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error()) // TODO: map error
 	}
@@ -276,10 +276,12 @@ func roundToResponse(r game.Round, trump card.Suit) *blotservicepb.Round {
 	}
 
 	return &blotservicepb.Round{
+		// nolint:gosec
 		Number:     int32(r.Number().Value()),
 		TableCards: cards,
 		WinnerId:   r.CalculateWinner(trump).PlayerID().String(),
-		Score:      int32(r.CalculateScore(trump).Value()),
+		// nolint:gosec
+		Score: int32(r.CalculateScore(trump).Value()),
 	}
 }
 
@@ -293,7 +295,7 @@ func toPlayerCardResponse(c game.PlayerCard) *blotservicepb.PlayedCard {
 	}
 }
 
-func betToResponse(b bet2.Bet) *blotservicepb.Bet {
+func betToResponse(b bet.Bet) *blotservicepb.Bet {
 	if b.IsZero() {
 		return nil
 	}
@@ -301,6 +303,7 @@ func betToResponse(b bet2.Bet) *blotservicepb.Bet {
 		Trump: suitToResponse(b.Trump()),
 		// nolint:gosec
 		Amount: int32(b.Amount().Value()),
+		TeamId: b.TeamID().String(),
 	}
 }
 
@@ -359,6 +362,7 @@ func suitToResponse(suit card.Suit) blotservicepb.Suit {
 
 func teamToResponse(team team.Team) *blotservicepb.Team {
 	return &blotservicepb.Team{
+		Id:      team.ID().String(),
 		Player1: team.FirstPlayer().String(),
 		Player2: team.SecondPlayer().String(),
 	}

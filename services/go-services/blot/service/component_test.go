@@ -128,6 +128,8 @@ func TestStartGameSet(t *testing.T) {
 	require.Equal(t, firstPlayerID, re.GameSet.Game.PlayerStates[0].Id)
 	require.Len(t, re.GameSet.Game.PlayerStates, 4)
 	require.Len(t, re.GameSet.Game.PlayerStates[0].HandCards, 8)
+	require.Equal(t, "1", re.GameSet.Game.Team1.Id)
+	require.Equal(t, "2", re.GameSet.Game.Team2.Id)
 }
 
 func TestSetBet(t *testing.T) {
@@ -137,15 +139,15 @@ func TestSetBet(t *testing.T) {
 	gameSetID := "99d6074f-6866-4ca1-9331-3bbfb70358ef"
 	gameSet := prepareGameSetToSetBet(t, gameSetID, client)
 	playerID := firstPlayerID(t, gameSet)
+	teamID := teamByPlayerID(t, gameSet, playerID)
+	require.NotEmpty(t, teamID)
 
 	// ACT
 	_, err := client.SetBet(context.Background(), &blotservicepb.SetBetRequest{
 		GameSetId: gameSetID,
 		PlayerId:  playerID,
-		Bet: &blotservicepb.Bet{
-			Trump:  blotservicepb.Suit_SUIT_DIAMONDS,
-			Amount: 8,
-		},
+		Trump:     blotservicepb.Suit_SUIT_DIAMONDS,
+		Amount:    8,
 	})
 
 	// ASERT
@@ -161,6 +163,7 @@ func TestSetBet(t *testing.T) {
 	require.Equal(t, blotservicepb.GameStatus_GAME_STATUS_PLAYING, re.GameSet.Game.Status)
 	require.Equal(t, int32(8), re.GameSet.Game.Bet.Amount)
 	require.Equal(t, blotservicepb.Suit_SUIT_DIAMONDS, re.GameSet.Game.Bet.Trump)
+	require.Equal(t, teamID, re.GameSet.Game.Bet.TeamId)
 	require.Equal(t, int32(1), re.GameSet.Game.Rounds[0].Number)
 }
 

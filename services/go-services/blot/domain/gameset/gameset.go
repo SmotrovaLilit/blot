@@ -91,11 +91,11 @@ func (s *GameSet) StartGame(gameID game.ID, playerID player.ID, randSource rand.
 		return err
 	}
 
-	team1, err := team.NewTeam(team.NewID("1"), s.players[0].ID(), s.players[2].ID())
+	team1, err := team.NewTeam(team.MustNewID("1"), s.players[0].ID(), s.players[2].ID())
 	if err != nil {
 		return err
 	}
-	team2, err := team.NewTeam(team.NewID("2"), s.players[1].ID(), s.players[3].ID())
+	team2, err := team.NewTeam(team.MustNewID("2"), s.players[1].ID(), s.players[3].ID())
 	if err != nil {
 		return err
 	}

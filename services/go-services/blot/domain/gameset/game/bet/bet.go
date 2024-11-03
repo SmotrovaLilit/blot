@@ -38,3 +38,7 @@ func NewBet(teamID team.ID, amount Amount, trump card.Suit) Bet {
 func (b Bet) IsZero() bool {
 	return b == Bet{}
 }
+
+func (b Bet) TeamID() team.ID {
+	return b.teamID
+}

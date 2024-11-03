@@ -56,3 +56,16 @@ func firstPlayerID(t *testing.T, set *blotservicepb.GameSet) string {
 	t.Helper()
 	return set.Players[0].Id
 }
+
+func teamByPlayerID(t *testing.T, set *blotservicepb.GameSet, playerID string) string {
+	t.Helper()
+	if set.Game.Team1.Player1 == playerID || set.Game.Team1.Player2 == playerID {
+		return set.Game.Team1.Id
+	}
+	if set.Game.Team2.Player1 == playerID || set.Game.Team2.Player2 == playerID {
+		return set.Game.Team2.Id
+	}
+
+	t.Fatalf("player %s not found in teams", playerID)
+	return ""
+}
