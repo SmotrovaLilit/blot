@@ -42,9 +42,13 @@ export interface SetBetRequest {
      */
     player_id: string;
     /**
-     * @generated from protobuf field: blotservice.v1beta1.Bet bet = 3;
+     * @generated from protobuf field: blotservice.v1beta1.Suit trump = 3;
      */
-    bet?: Bet;
+    trump: Suit;
+    /**
+     * @generated from protobuf field: int32 amount = 4;
+     */
+    amount: number;
 }
 /**
  * @generated from protobuf message blotservice.v1beta1.SetBetResponse
@@ -286,6 +290,10 @@ export interface Bet {
      * @generated from protobuf field: int32 amount = 2;
      */
     amount: number;
+    /**
+     * @generated from protobuf field: string team_id = 3;
+     */
+    team_id: string;
 }
 /**
  * @generated from protobuf message blotservice.v1beta1.Team
@@ -571,13 +579,16 @@ class SetBetRequest$Type extends MessageType<SetBetRequest> {
         super("blotservice.v1beta1.SetBetRequest", [
             { no: 1, name: "game_set_id", kind: "scalar", localName: "game_set_id", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "player_id", kind: "scalar", localName: "player_id", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "bet", kind: "message", T: () => Bet }
+            { no: 3, name: "trump", kind: "enum", T: () => ["blotservice.v1beta1.Suit", Suit, "SUIT_"] },
+            { no: 4, name: "amount", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<SetBetRequest>): SetBetRequest {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.game_set_id = "";
         message.player_id = "";
+        message.trump = 0;
+        message.amount = 0;
         if (value !== undefined)
             reflectionMergePartial<SetBetRequest>(this, message, value);
         return message;
@@ -593,8 +604,11 @@ class SetBetRequest$Type extends MessageType<SetBetRequest> {
                 case /* string player_id */ 2:
                     message.player_id = reader.string();
                     break;
-                case /* blotservice.v1beta1.Bet bet */ 3:
-                    message.bet = Bet.internalBinaryRead(reader, reader.uint32(), options, message.bet);
+                case /* blotservice.v1beta1.Suit trump */ 3:
+                    message.trump = reader.int32();
+                    break;
+                case /* int32 amount */ 4:
+                    message.amount = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -614,9 +628,12 @@ class SetBetRequest$Type extends MessageType<SetBetRequest> {
         /* string player_id = 2; */
         if (message.player_id !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.player_id);
-        /* blotservice.v1beta1.Bet bet = 3; */
-        if (message.bet)
-            Bet.internalBinaryWrite(message.bet, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* blotservice.v1beta1.Suit trump = 3; */
+        if (message.trump !== 0)
+            writer.tag(3, WireType.Varint).int32(message.trump);
+        /* int32 amount = 4; */
+        if (message.amount !== 0)
+            writer.tag(4, WireType.Varint).int32(message.amount);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1516,13 +1533,15 @@ class Bet$Type extends MessageType<Bet> {
     constructor() {
         super("blotservice.v1beta1.Bet", [
             { no: 1, name: "trump", kind: "enum", T: () => ["blotservice.v1beta1.Suit", Suit, "SUIT_"] },
-            { no: 2, name: "amount", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 2, name: "amount", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "team_id", kind: "scalar", localName: "team_id", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Bet>): Bet {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.trump = 0;
         message.amount = 0;
+        message.team_id = "";
         if (value !== undefined)
             reflectionMergePartial<Bet>(this, message, value);
         return message;
@@ -1537,6 +1556,9 @@ class Bet$Type extends MessageType<Bet> {
                     break;
                 case /* int32 amount */ 2:
                     message.amount = reader.int32();
+                    break;
+                case /* string team_id */ 3:
+                    message.team_id = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1556,6 +1578,9 @@ class Bet$Type extends MessageType<Bet> {
         /* int32 amount = 2; */
         if (message.amount !== 0)
             writer.tag(2, WireType.Varint).int32(message.amount);
+        /* string team_id = 3; */
+        if (message.team_id !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.team_id);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

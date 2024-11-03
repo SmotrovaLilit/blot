@@ -1,33 +1,31 @@
 <template>
   <div>
     <h1 v-if="user">Current player = {{ user.name }}</h1>
-<!--    <h1 v-if="game">Team = {{ game.currentPlayer.team_id }}</h1>-->
+    <!--    <h1 v-if="game">Team = {{ game.currentPlayer.team_id }}</h1>-->
   </div>
   <div v-if="game">
     <div class="game-stat">
-      <div class="trump">
-<!--        <Icon :type="game.bet.trump"/>-->
-      </div>
+      <Bet :existingBet="game.bet" :set-bet="setBet"/>
       <div class="round">
-<!--        R {{ game.round.number }}-->
+        <!--        R {{ game.round.number }}-->
       </div>
-<!--      <div v-if="betTeam" class="bet">-->
-<!--        {{ betTeam.name }} ({{ game.bet.amount }})-->
-<!--      </div>-->
+      <!--      <div v-if="betTeam" class="bet">-->
+      <!--        {{ betTeam.name }} ({{ game.bet.amount }})-->
+      <!--      </div>-->
     </div>
-    <div class="player-container top-player-container">
+    <div class="player-container top-player-container" :class="{ selected: game.allyPlayer.isCurrentTurn }">
       <div class="player-name">{{ game.allyPlayer.name }}</div>
       <div class="players-cards">
         <ClosedDeck :cards-count="game.allyPlayer.handCards.length"/>
       </div>
     </div>
-    <div class="player-container left-player-container">
+    <div class="player-container left-player-container" :class="{ selected: game.leftPlayer.isCurrentTurn }">
       <div class="player-name">{{ game.leftPlayer.name }}</div>
       <div class="players-cards">
         <ClosedDeck :cards-count="game.leftPlayer.handCards.length"/>
       </div>
     </div>
-    <div class="player-container right-player-container">
+    <div class="player-container right-player-container" :class="{ selected: game.rightPlayer.isCurrentTurn }">
       <div class="player-name">{{ game.rightPlayer.name }}</div>
       <div class="players-cards">
         <ClosedDeck :cards-count="game.rightPlayer.handCards.length"/>
@@ -43,7 +41,7 @@
         <div class="middle">
           <div class="game-table">
             <div class="table-cards">
-<!--              <TableDeck :cards="tableCards"/>-->
+              <!--              <TableDeck :cards="tableCards"/>-->
             </div>
           </div>
         </div>
@@ -51,7 +49,7 @@
         </div>
       </div>
       <div class="game-bottom">
-        <div class="your-cards">
+        <div class="your-cards" :class="{ selected: game.currentPlayer.isCurrentTurn }">
           <HandDeck :cards="game.currentPlayer.handCards"/>
         </div>
       </div>
@@ -61,15 +59,14 @@
 
 <script lang="ts" setup>
 import HandDeck from "@/components/HandDeck.vue";
-import TableDeck from "@/components/TableDeck.vue";
 import ClosedDeck from "@/components/ClosedDeck.vue";
-import Icon from "@/components/Icon.vue";
 import {useRoute, useRouter} from "vue-router";
 import {useUserStore} from "@/stores/userStore";
 import {computed, onMounted, ref} from "vue";
-import {type GameSet, GameSetStatus} from "@/models/gameSet";
+import {Card, type GameSet, GameSetStatus, PlayerState} from "@/models/gameSet";
 import type {User} from "@/models/user";
 import gameSetRemoteRepository from "@/repo/repositores";
+import Bet from "@/components/Bet.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -85,14 +82,35 @@ const game = computed(() => {
   const rightPlayerPosition = (currentPlayerPosition + 3) % 4;
   const allyPlayerPosition = (currentPlayerPosition + 2) % 4;
   const g = {
-    currentPlayer: gameSet.value.game?.playerStates[currentPlayerPosition],
-    leftPlayer: gameSet.value.game?.playerStates[leftPlayerPosition],
-    rightPlayer: gameSet.value.game?.playerStates[rightPlayerPosition],
-    allyPlayer: gameSet.value.game?.playerStates[allyPlayerPosition],
+    currentPlayer: enrichPlayer(gameSet.value.game?.playerStates[currentPlayerPosition]),
+    leftPlayer: enrichPlayer(gameSet.value.game?.playerStates[leftPlayerPosition]),
+    rightPlayer: enrichPlayer(gameSet.value.game?.playerStates[rightPlayerPosition]),
+    allyPlayer: enrichPlayer(gameSet.value.game?.playerStates[allyPlayerPosition]),
+    bet: gameSet.value.game?.bet,
+    currentTurn: gameSet.value.game?.currentTurnPlayerId,
   };
   console.log("game", g);
   return g;
 });
+
+interface Player {
+  id: string;
+  name: string;
+  handCards: Card[];
+  isCurrentTurn: boolean;
+}
+
+const enrichPlayer = (player: PlayerState|undefined): Player => {
+  if (player === undefined) {
+    throw new Error("Player is undefined");
+  }
+  return {
+    id: player.playerId,
+    name: gameSet.value?.players?.find(p => p.id === player.playerId)?.name || '',
+    handCards: player.handCards,
+    isCurrentTurn: player.playerId === gameSet.value?.game?.currentTurnPlayerId,
+  };
+};
 
 onMounted(async () => {
   const playerId: string = userStore.userId;
@@ -104,7 +122,15 @@ onMounted(async () => {
   if (gameSet.value.status != GameSetStatus.GAME_SET_STATUS_PLAYING) {
     await router.push({name: 'GameSet', params: {gameSetId: gameSetId}});
   }
+  console.log("gameSet-game-onMounted", gameSet.value);
 });
+
+const setBet = async (trump: string, amount: number) => {
+  if (!gameSet.value) return;
+  await gameSetRemoteRepository.setBet(gameSetId, userStore.userId, amount, trump);
+  gameSet.value = await gameSetRemoteRepository.get(gameSetId, userStore.userId);
+};
+
 </script>
 
 <style scoped>
@@ -279,5 +305,13 @@ onMounted(async () => {
   color: white;
   font-size: 14px;
   font-weight: bold;
+}
+
+.player-container.selected {
+  border: 2px solid white;
+}
+
+.your-cards.selected {
+  border: 2px solid white;
 }
 </style>

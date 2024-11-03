@@ -45,6 +45,7 @@ func TestGame_SetBet(t *testing.T) {
 			require.Equal(t, bet.MustNewAmount(8), tt.Game.Bet().Amount())
 			require.Equal(t, StatusPlaying, tt.Game.Status())
 			require.Equal(t, RoundNumber1, tt.Game.rounds[0].number)
+			require.Equal(t, tt.Game.team1.ID(), tt.Game.bet.TeamID())
 		})
 	}
 	t.Run("should fail when player not found", func(t *testing.T) {
@@ -63,9 +64,9 @@ func prepareGameToPlayCard(t *testing.T) *Game {
 }
 
 func prepareGameToSetBet(t *testing.T) *Game {
-	team1, err := team.NewTeam(team.NewID("1"), player.MustNewID("5667156e-b34e-422e-ab2c-415811b3fbb6"), player.MustNewID("2667156e-b34e-422e-ab2c-415811b3fbb2"))
+	team1, err := team.NewTeam(team.MustNewID("1"), player.MustNewID("5667156e-b34e-422e-ab2c-415811b3fbb6"), player.MustNewID("2667156e-b34e-422e-ab2c-415811b3fbb2"))
 	require.NoError(t, err)
-	team2, err := team.NewTeam(team.NewID("2"), player.MustNewID("3667156e-b34e-422e-ab2c-415811b3fbb3"), player.MustNewID("4667156e-b34e-422e-ab2c-415811b3fbb4"))
+	team2, err := team.NewTeam(team.MustNewID("2"), player.MustNewID("3667156e-b34e-422e-ab2c-415811b3fbb3"), player.MustNewID("4667156e-b34e-422e-ab2c-415811b3fbb4"))
 	require.NoError(t, err)
 	game, err := NewGame(
 		MustNewID("317c8f91-14ef-4582-aaa0-636b5d2ca0c2"),

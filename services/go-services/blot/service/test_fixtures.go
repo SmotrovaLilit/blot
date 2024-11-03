@@ -48,10 +48,8 @@ func prepareGameSetToPlayCard(t *testing.T, setID string, client blotservicepb.B
 	_, err := client.SetBet(context.Background(), &blotservicepb.SetBetRequest{
 		GameSetId: set.Id,
 		PlayerId:  set.Players[0].Id,
-		Bet: &blotservicepb.Bet{
-			Trump:  blotservicepb.Suit_SUIT_DIAMONDS,
-			Amount: 8,
-		},
+		Trump:     blotservicepb.Suit_SUIT_DIAMONDS,
+		Amount:    8,
 	})
 	require.NoError(t, err)
 	resp, err := client.GetGameSetForPlayer(context.Background(), &blotservicepb.GetGameSetForPlayerRequest{
