@@ -51,6 +51,7 @@ export class Game {
 export enum GameStatus {
     GAME_STATUS_BETTING = "betting",
     GAME_STATUS_PLAYING = "playing",
+    GAME_STATUS_FINISHED = "finished",
 }
 
 export class Team {

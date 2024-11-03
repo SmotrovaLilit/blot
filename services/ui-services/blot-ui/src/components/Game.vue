@@ -6,6 +6,7 @@
   <div v-if="game">
     <div class="game-stat">
       <Bet :existingBet="game.bet" :set-bet="setBet"/>
+      <GameStatistics :rounds="game.rounds"/>
       <div class="round">
         <!--        R {{ game.round.number }}-->
       </div>
@@ -13,19 +14,22 @@
       <!--        {{ betTeam.name }} ({{ game.bet.amount }})-->
       <!--      </div>-->
     </div>
-    <div class="player-container top-player-container" :class="{ selected: game.allyPlayer.isCurrentTurn }">
+    <div v-if="!game.isFinished" class="player-container top-player-container"
+         :class="{ selected: game.allyPlayer.isCurrentTurn }">
       <div class="player-name">{{ game.allyPlayer.name }}</div>
       <div class="players-cards">
         <ClosedDeck :cards-count="game.allyPlayer.handCards.length"/>
       </div>
     </div>
-    <div class="player-container left-player-container" :class="{ selected: game.leftPlayer.isCurrentTurn }">
+    <div v-if="!game.isFinished"  class="player-container left-player-container"
+         :class="{ selected: game.leftPlayer.isCurrentTurn }">
       <div class="player-name">{{ game.leftPlayer.name }}</div>
       <div class="players-cards">
         <ClosedDeck :cards-count="game.leftPlayer.handCards.length"/>
       </div>
     </div>
-    <div class="player-container right-player-container" :class="{ selected: game.rightPlayer.isCurrentTurn }">
+    <div v-if="!game.isFinished"  class="player-container right-player-container"
+         :class="{ selected: game.rightPlayer.isCurrentTurn }">
       <div class="player-name">{{ game.rightPlayer.name }}</div>
       <div class="players-cards">
         <ClosedDeck :cards-count="game.rightPlayer.handCards.length"/>
@@ -39,9 +43,9 @@
         <div class="left-bar">
         </div>
         <div class="middle">
-          <div class="game-table">
+          <div v-if="!game.isFinished"   class="game-table" >
             <div class="table-cards">
-              <!--              <TableDeck :cards="tableCards"/>-->
+              <TableDeck :cards="game.tableCards"/>
             </div>
           </div>
         </div>
@@ -49,8 +53,10 @@
         </div>
       </div>
       <div class="game-bottom">
-        <div class="your-cards" :class="{ selected: game.currentPlayer.isCurrentTurn }">
-          <HandDeck :cards="game.currentPlayer.handCards"/>
+        <div v-if="!game.isFinished" class="your-cards" :class="{ selected: game.currentPlayer.isCurrentTurn }">
+          <HandDeck :cards="game.currentPlayer.handCards"
+                    :is-your-turn="game.currentPlayer.isCurrentTurn"
+                    :play-card="playCard"/>
         </div>
       </div>
     </div>
@@ -63,10 +69,18 @@ import ClosedDeck from "@/components/ClosedDeck.vue";
 import {useRoute, useRouter} from "vue-router";
 import {useUserStore} from "@/stores/userStore";
 import {computed, onMounted, ref} from "vue";
-import {Card, type GameSet, GameSetStatus, PlayerState} from "@/models/gameSet";
+import {
+  Card,
+  type GameSet,
+  GameSetStatus,
+  GameStatus,
+  PlayerState
+} from "@/models/gameSet";
 import type {User} from "@/models/user";
 import gameSetRemoteRepository from "@/repo/repositores";
 import Bet from "@/components/Bet.vue";
+import TableDeck from "@/components/TableDeck.vue";
+import GameStatistics from "@/components/GameStatistics.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -86,8 +100,11 @@ const game = computed(() => {
     leftPlayer: enrichPlayer(gameSet.value.game?.playerStates[leftPlayerPosition]),
     rightPlayer: enrichPlayer(gameSet.value.game?.playerStates[rightPlayerPosition]),
     allyPlayer: enrichPlayer(gameSet.value.game?.playerStates[allyPlayerPosition]),
-    bet: gameSet.value.game?.bet,
+    bet: enrichBet(gameSet.value),
     currentTurn: gameSet.value.game?.currentTurnPlayerId,
+    tableCards: enrichTableCards(gameSet.value),
+    rounds: enrichRounds(gameSet.value),
+    isFinished: gameSet.value.game?.status === GameStatus.GAME_STATUS_FINISHED,
   };
   console.log("game", g);
   return g;
@@ -100,15 +117,103 @@ interface Player {
   isCurrentTurn: boolean;
 }
 
-const enrichPlayer = (player: PlayerState|undefined): Player => {
-  if (player === undefined) {
+const enrichRounds = (gameSet: GameSet) => {
+  return gameSet.game?.rounds?.map(r => {
+    let winnerTeam = '';
+    if (r.winnerPlayerId) {
+      if (r.winnerPlayerId === '00000000-0000-0000-0000-000000000000') { // TODO fix this weird id
+        winnerTeam = 'None';
+      } else {
+        const id = findTeamId(gameSet, r.winnerPlayerId)
+        winnerTeam = calculateTeamName(gameSet, id)
+      }
+    }
+    return {
+      number: r.number,
+      winner: gameSet.players?.find(p => p.id === r.winnerPlayerId)?.name || '',
+      winnerTeam: winnerTeam,
+      score: r.score,
+      table: r.table.map(c => {
+        return {
+          card: c.card,
+          player: {
+            id: c.playerId,
+            name: gameSet.players?.find(p => p.id === c.playerId)?.name || '',
+          }
+        };
+      })
+    };
+  });
+};
+
+const findTeamId = (gameSet: GameSet, playerId: string) => {
+  if (gameSet.game?.team1.player1 === playerId || gameSet.game?.team1.player2 === playerId) {
+    return gameSet.game?.team1.id;
+  }
+  if (gameSet.game?.team2.player1 === playerId || gameSet.game?.team2.player2 === playerId) {
+    return gameSet.game?.team2.id;
+  }
+  throw new Error("Team not found for player " + playerId);
+};
+
+const enrichBet = (gameSet: GameSet) => {
+  return {
+    ...gameSet.game?.bet,
+    teamName: calculateTeamName(gameSet, gameSet.game?.bet?.teamId),
+  }
+};
+
+const calculateTeamName = (gameSet, teamId) => {
+  if (gameSet.game?.team1.id === teamId) {
+    const p1 = gameSet.game?.team1.player1
+    const p2 = gameSet.game?.team1.player2
+    return gameSet.players?.find(p => p.id === p1)?.name + ' & ' + gameSet.players?.find(p => p.id === p2)?.name;
+  }
+  if (gameSet.game?.team2.id === teamId) {
+    const p1 = gameSet.game?.team2.player1
+    const p2 = gameSet.game?.team2.player2
+    return gameSet.players?.find(p => p.id === p1)?.name + ' & ' + gameSet.players?.find(p => p.id === p2)?.name;
+  }
+  throw new Error("Team not found: " + teamId);
+};
+
+const enrichTableCards = (gameSet: GameSet) => {
+  if (!gameSet.game) return [];
+  if (!gameSet.game.rounds) return [];
+  const currentRound = gameSet.game.rounds[gameSet.game.rounds.length - 1];
+  if (currentRound.table.length == 0) {
+    if (gameSet.game.rounds.length == 1) {
+      return [];
+    }
+    return gameSet.game.rounds[gameSet.game.rounds.length - 2].table.map(c => {
+      return {
+        card: c.card,
+        player: {
+          id: c.playerId,
+          name: gameSet.players?.find(p => p.id === c.playerId)?.name || '',
+        }
+      };
+    });
+  }
+  return currentRound.table.map(c => {
+    return {
+      card: c.card,
+      player: {
+        id: c.playerId,
+        name: gameSet.players?.find(p => p.id === c.playerId)?.name || '',
+      }
+    };
+  });
+};
+const enrichPlayer = (playerState: PlayerState | undefined): Player => {
+  if (playerState === undefined) {
     throw new Error("Player is undefined");
   }
   return {
-    id: player.playerId,
-    name: gameSet.value?.players?.find(p => p.id === player.playerId)?.name || '',
-    handCards: player.handCards,
-    isCurrentTurn: player.playerId === gameSet.value?.game?.currentTurnPlayerId,
+    id: playerState.playerId,
+    name: gameSet.value?.players?.find(p => p.id === playerState.playerId)?.name || '',
+    handCards: playerState.handCards,
+    isCurrentTurn: playerState.playerId === gameSet.value?.game?.currentTurnPlayerId,
   };
 };
 
@@ -131,6 +236,11 @@ const setBet = async (trump: string, amount: number) => {
   gameSet.value = await gameSetRemoteRepository.get(gameSetId, userStore.userId);
 };
 
+const playCard = async (card: Card) => {
+  if (!gameSet.value) return;
+  await gameSetRemoteRepository.playCard(gameSetId, userStore.userId, card);
+  gameSet.value = await gameSetRemoteRepository.get(gameSetId, userStore.userId);
+};
 </script>
 
 <style scoped>

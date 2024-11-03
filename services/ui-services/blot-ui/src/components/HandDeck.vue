@@ -1,6 +1,6 @@
 <template>
   <draggable
-      :list="cards"
+      :list="cardsComputed"
       :disabled="false"
       item-key="id"
       class="hand-deck"
@@ -11,17 +11,25 @@
   >
     <template #item="{ element }">
       <div class="card-container" :class="{ 'not-draggable': false }"
+           :onclick="playCard(element.rank, element.suit)"
            :style="element.style">
-        <Card :rank="element.rank" :suit="element.suit"/>
+        <CardView :rank="element.rank" :suit="element.suit"/>
       </div>
     </template>
   </draggable>
 </template>
 
-<script lang="ts">
-import {defineComponent, ref, watch} from 'vue';
-import Card from './Card.vue';
+<script setup lang="ts">
+import {computed} from 'vue';
+import CardView from './Card.vue';
 import draggable from "vuedraggable";
+import {Card} from "@/models/gameSet";
+
+const props = defineProps<{
+  cards: Array<{ rank: string; suit: string }>;
+  isYourTurn: boolean;
+  playCard: (card: Card) => void;
+}>();
 
 function calculateAngle(cardIndex: number, totalCards: number) {
   const angle = 10;
@@ -40,7 +48,7 @@ function calculateNewPositions(
     futureIndex: number
 ): number[] {
   if (currentIndex < 0 || futureIndex < 0 || currentIndex >= length || futureIndex >= length) {
-    return array;
+    return [];
   }
   let res: number[] = new Array(length).fill(0);
   for (let i = 0; i < length; i++) {
@@ -64,108 +72,108 @@ function calculateNewPositions(
 
 }
 
-export default defineComponent({
-  components: {
-    draggable,
-    Card
-  },
-  props: {
-    cards: {
-      type: Array as () => Array<{ rank: string; suit: string }>,
-      required: true
-    }
-  },
-  setup(props) {
-    const cards = ref<Array<{
-      id: string;
-      rank: string;
-      suit: string;
-      style: {}
-    }>>([]);
-    const rotateCards = () => {
-      cards.value.forEach((card, index) => {
-        const angle = calculateAngle(index, props.cards.length);
-        const marginTop = calculateMarginTop(angle);
-        card.style.transform = `rotate(${angle}deg)`;
-        // card.style.transform = `rotate(${angle}deg) translateY(${marginTop}px)`;
-        // card.style.marginTop = `${marginTop}px`;
-        // card.style.paddingTop = `${marginTop}px`;
-        card.style.top = `${marginTop}px`;
-        card.style.zIndex = index;
-      });
-    };
-    cards.value = props.cards.map((card, index) => {
-      const id = `${card.rank}-${card.suit}`;
-      return {
-        id,
-        rank: card.rank,
-        suit: card.suit,
-        style: {
-          transform: ``,
-          marginTop: ``,
-          zIndex: 0,
-        },
-      };
-    });
-    rotateCards();
-    watch(
-        () => cards,
-        (newValue, oldValue) => {
-          console.log('cards changed', newValue, oldValue);
-        },
-        {deep: true}
-    )
-    const onDragEnd = (evt) => {
-      console.log('ended!', evt);
-      rotateCards();
-    };
-
-    const checkMove = (e) => {
-      console.log('moving', e);
-      if (e.draggedContext.futureIndex === undefined) {
-        return;
-      }
-      console.log('Future index: ' + e.draggedContext.futureIndex);
-      console.log('index: ' + e.draggedContext.index);
-
-      console.log('Old array: ' + cards.value[0].rank + ' ' + cards.value[0].style.zIndex)
-      console.log('Old array: ' + cards.value[1].rank + ' ' + cards.value[1].style.zIndex)
-      console.log('old array: ' + cards.value[2].rank + ' ' + cards.value[2].style.zIndex)
-
-      const newPositions = calculateNewPositions(cards.value.length, e.draggedContext.index, e.draggedContext.futureIndex);
-      for (let i = 0; i < newPositions.length; i++) {
-        const angle = calculateAngle(newPositions[i], cards.value.length);
-        // const marginTop = e.draggedContext.index == i ?  calculateMarginTop(angle): calculateMarginTop(angle);
-        const marginTop = e.draggedContext.index == i ? -50 + calculateMarginTop(angle): calculateMarginTop(angle);
-        cards.value[i].style.zIndex = newPositions[i];
-        cards.value[i].style.transform = `rotate(${angle}deg)`;
-        // cards.value[i].style.transform = `rotate(${angle}deg) translateY(${marginTop}px)`;
-        cards.value[i].style.top = `${marginTop}px`;
-        // cards.value[i].style.marginTop = `${marginTop}px`;
-        // cards.value[i].style.paddingTop = `${marginTop}px`;
-      }
-      console.log(cards.value[0].rank + ' ' + cards.value[0].style.zIndex)
-      console.log(cards.value[1].rank + ' ' + cards.value[1].style.zIndex)
-      console.log(cards.value[2].rank + ' ' + cards.value[2].style.zIndex)
-    };
-    const onDragStart = (e) => {
-      console.log('started!', e);
-      const draggedElement = e.item;
-      draggedElement.style.zIndex = cards.value[e.oldIndex].style.zIndex;
-      draggedElement.style.transform = cards.value[e.oldIndex].style.transform;
-      const angle = calculateAngle(e.oldIndex, cards.value.length);
-      const marginTop = -100 + calculateMarginTop(angle);
-      cards.value[e.oldIndex].style.top = `${marginTop}px`;
-    };
+// const cardsComputed = ref<Array<{
+//   id: string;
+//   rank: string;
+//   suit: string;
+//   style: {}
+// }>>([]);
+const cardsComputed = computed(() => {
+  return props.cards.map((card) => {
+    const id = `${card.rank}-${card.suit}`;
     return {
-      cards: cards,
-      dragging: true,
-      onDragEnd,
-      checkMove,
-      onDragStart
+      id,
+      rank: card.rank,
+      suit: card.suit,
+      style: {
+        transform: ``,
+        marginTop: ``,
+        zIndex: 0,
+        top: ``,
+      },
     };
-  }
+  });
 });
+const rotateCards = () => {
+  cardsComputed.value.forEach((card, index) => {
+    const angle = calculateAngle(index, props.cards.length);
+    const marginTop = calculateMarginTop(angle);
+    card.style.transform = `rotate(${angle}deg)`;
+    // card.style.transform = `rotate(${angle}deg) translateY(${marginTop}px)`;
+    // card.style.marginTop = `${marginTop}px`;
+    // card.style.paddingTop = `${marginTop}px`;
+    card.style.top = `${marginTop}px`;
+    card.style.zIndex = index;
+  });
+};
+// cardsComputed.value = props.cards.map((card) => {
+//   const id = `${card.rank}-${card.suit}`;
+//   return {
+//     id,
+//     rank: card.rank,
+//     suit: card.suit,
+//     style: {
+//       transform: ``,
+//       marginTop: ``,
+//       zIndex: 0,
+//     },
+//   };
+// });
+rotateCards();
+const onDragEnd = (e) => {
+  console.log('hand card onDragEnd', e);
+  rotateCards();
+};
+
+const checkMove = (e) => {
+  console.log('hand card checkMove moving', e);
+  if (e.draggedContext.futureIndex === undefined) {
+    return;
+  }
+  // console.log('Future index: ' + e.draggedContext.futureIndex);
+  // console.log('index: ' + e.draggedContext.index);
+  //
+  // console.log('Old array: ' + cardsComputed.value[0].rank + ' ' + cardsComputed.value[0].style.zIndex)
+  // console.log('Old array: ' + cardsComputed.value[1].rank + ' ' + cardsComputed.value[1].style.zIndex)
+  // console.log('old array: ' + cardsComputed.value[2].rank + ' ' + cardsComputed.value[2].style.zIndex)
+
+  const newPositions = calculateNewPositions(cardsComputed.value.length, e.draggedContext.index, e.draggedContext.futureIndex);
+  for (let i = 0; i < newPositions.length; i++) {
+    const angle = calculateAngle(newPositions[i], cardsComputed.value.length);
+    // const marginTop = e.draggedContext.index == i ?  calculateMarginTop(angle): calculateMarginTop(angle);
+    const marginTop = e.draggedContext.index == i ? -50 + calculateMarginTop(angle) : calculateMarginTop(angle);
+    cardsComputed.value[i].style.zIndex = newPositions[i];
+    cardsComputed.value[i].style.transform = `rotate(${angle}deg)`;
+    // cards.value[i].style.transform = `rotate(${angle}deg) translateY(${marginTop}px)`;
+    cardsComputed.value[i].style.top = `${marginTop}px`;
+    // cards.value[i].style.marginTop = `${marginTop}px`;
+    // cards.value[i].style.paddingTop = `${marginTop}px`;
+  }
+  // console.log(cardsComputed.value[0].rank + ' ' + cardsComputed.value[0].style.zIndex)
+  // console.log(cardsComputed.value[1].rank + ' ' + cardsComputed.value[1].style.zIndex)
+  // console.log(cardsComputed.value[2].rank + ' ' + cardsComputed.value[2].style.zIndex)
+};
+const onDragStart = (e) => {
+  console.log('hand card onDragStart!', e);
+  const draggedElement = e.item;
+  draggedElement.style.zIndex = cardsComputed.value[e.oldIndex].style.zIndex;
+  draggedElement.style.transform = cardsComputed.value[e.oldIndex].style.transform;
+  const angle = calculateAngle(e.oldIndex, cardsComputed.value.length);
+  const marginTop = -100 + calculateMarginTop(angle);
+  cardsComputed.value[e.oldIndex].style.top = `${marginTop}px`;
+};
+
+const playCard = (rank: string, suit: string) => {
+  return function () {
+    if (!props.isYourTurn) {
+      console.warn('Not your turn!');
+      return;
+    }
+    console.log('Playing card:', rank, suit);
+    props.playCard(new Card(rank, suit));
+  };
+};
+
 </script>
 
 <style scoped>

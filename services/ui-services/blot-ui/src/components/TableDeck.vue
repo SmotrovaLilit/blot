@@ -2,7 +2,7 @@
   <div id="round-deck-table" class="round-deck-table">
     <div class="round-deck">
       <draggable-resizable-vue
-          v-for="(card, index) in cards"
+          v-for="(card) in displayedCards"
           :key="card.id"
           class="card-container"
           v-model:x="card.x"
@@ -13,7 +13,8 @@
           :z="card.zIndex"
       >
         <div :style="card.style">
-          <Card :rank="card.rank" :suit="card.suit"/>
+          <div class="player-name">{{card.player.name}}</div>
+          <CardView :rank="card.rank" :suit="card.suit"/>
         </div>
       </draggable-resizable-vue>
     </div>
@@ -21,21 +22,21 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, ref, onMounted, onBeforeUnmount} from 'vue';
+import {defineProps, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import DraggableResizableVue from 'draggable-resizable-vue3';
-import Card from './Card.vue';
+import CardView from './Card.vue';
 
-interface Card {
-  rank: string;
-  suit: string;
+interface PlayerCard {
+  player: { id: string; name: string };
+  card: { rank: string; suit: string };
 }
+
 
 interface Props {
-  cards: { type: Card[], required: false };
+  cards: { type: PlayerCard[], required: false, default: [] };
 }
-const props = withDefaults(defineProps<Props>(), {
-  cards: [],
-})
+
+const props = defineProps<Props>()
 
 function generateRandomNumberBetween(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -45,61 +46,85 @@ function randomAngle() {
   return Math.floor(Math.random() * 20) - 10;
 }
 
-const cards = ref<Array<{
+const displayedCards = ref<Array<{
   id: string;
+  player: { id: string; name: string };
   rank: string;
   suit: string;
   style: {};
   x: number;
   y: number;
-  width: number;
-  height: number;
   zIndex: number;
+  width: number;
 }>>([]);
 
+interface ParentContainer {
+  width: number;
+  height: number;
+}
 
-cards.value = props.cards.map((card, index) => {
-  const id = `${card.rank}-${card.suit}`;
-  const angle = randomAngle();
-
-  return {
-    id,
-    rank: card.rank,
-    suit: card.suit,
-    style: {
-      transform: `rotate(${angle}deg)`,
-    },
-    zIndex: index,
-  };
+const parentContainer = ref<ParentContainer>({
+  width: 0,
+  height: 0,
 });
 
-const calculateCardSizes = () => {
-  console.log("table cards ", cards.value)
-  const container = document.getElementById('round-deck-table');
-  let parentWidth = 600;
-  let parentHeight = 600;
-  if (container) {
-    parentWidth = container.clientWidth;
-    parentHeight = container.clientHeight;
+const calculateCards = () => {
+  console.log('props.cards', props.cards);
+  if (!parentContainer.value.width || !parentContainer.value.height) {
+    return [];
   }
-
-  cards.value = cards.value.map((card, index) => {
-    const cardWidth = 0.25 * parentWidth; // 20% of the parent container width
-    const cardX = (parentWidth - cardWidth) / 2; // Center horizontally
-    const cardY = (parentHeight - cardWidth) / 2; // Center vertically
-    const tolerance = 0.25 * parentWidth; // 5% of the parent container width
+  const parentWidth = parentContainer.value.width;
+  const parentHeight = parentContainer.value.height;
+  const cardWidth = 0.25 * parentWidth; // 20% of the parent container width
+  const cardX = (parentWidth - cardWidth) / 2; // Center horizontally
+  const cardY = (parentHeight - cardWidth) / 2; // Center vertically
+  const tolerance = 0.10 * parentWidth; // 5% of the parent container width
+  const previousCards = displayedCards.value;
+  displayedCards.value = props.cards.map((pCard, index) => {
+    const card = pCard.card;
+    const id = `${card.rank}-${card.suit}`;
+    const angle = randomAngle();
+    if (previousCards != undefined) {
+      const prevValues = previousCards.find((c) => c.id === id && c.rank === card.rank && c.suit === card.suit);
+      if (prevValues) {
+        return prevValues;
+      }
+    }
     return {
-      ...card,
+      id,
+      player: {
+        id: pCard.player.id,
+        name: pCard.player.name,
+      },
+      rank: card.rank,
+      suit: card.suit,
+      style: {
+        transform: `rotate(${angle}deg)`,
+      },
+      zIndex: index,
       x: card.x ? card.x : generateRandomNumberBetween(cardX - tolerance, cardX + tolerance), // Centered X position;
       y: card.y ? card.y : generateRandomNumberBetween(cardY - tolerance, cardY + tolerance / 2), // Centered Y position
       width: cardWidth,
     };
   });
+  console.log('displayedCards', displayedCards.value);
+};
+
+watch(() => props.cards, () => {
+  calculateCards();
+});
+
+const calculateParentContainer = () => {
+  const container = document.getElementById('round-deck-table');
+  if (container) {
+    parentContainer.value.width = container.clientWidth;
+    parentContainer.value.height = container.clientHeight;
+  }
 }
 
 onMounted(() => {
-  calculateCardSizes();
-
+  calculateParentContainer();
+  calculateCards();
   // window.addEventListener('resize', calculateCardSizes);
 });
 
