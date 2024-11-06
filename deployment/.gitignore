@@ -1,1 +1,6 @@
 tempo-data
+*.tfstate
+*.tfstate.*
+*.backup
+*.lockgit
+.terraform/
