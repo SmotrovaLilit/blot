@@ -6,15 +6,16 @@
 
 <script setup lang="ts">
 import {useRouter} from 'vue-router';
-import {useMyGameSetsStore} from '@/stores/myGameSetsStore';
 import {v4 as uuidv4} from 'uuid';
+import {useUserStore} from "@/stores/userStore";
+import gameSetRemoteRepository from "@/repo/repositores";
 
 const router = useRouter();
-const gameSetsStore = useMyGameSetsStore();
+const userStore = useUserStore();
 
 const submitForm = async () => {
   const Id = uuidv4()
-  await gameSetsStore.createGameSet(Id);
+  await gameSetRemoteRepository.create(Id, userStore.user);
   await router.push({name: 'gameSet', params: {gameSetId: Id}});
 };
 

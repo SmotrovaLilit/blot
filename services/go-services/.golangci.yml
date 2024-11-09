@@ -1,19 +1,19 @@
 linters:
   disable-all: true
   enable:
-    - govet            # Detects common issues like suspicious constructs
-    - errcheck         # Checks that errors are properly handled
-    - gofmt            # Ensures formatting is consistent with Go standards
-    - goimports        # Formats imports and optimizes their order
-    - ineffassign      # Finds unnecessary assignments
-    - sloglint         # Checks that log messages are consistent and correct
-    - unparam          # Checks that function parameters are used
-    - godot            # Check if comments end in a period.
-    - stylecheck       # Enforces code style and conventions
-    - gocritic         # Provides additional suggestions for code improvement
-# TODO return to this later
-#    - unused           # Detects unused variables, constants, and functions
-#    - revive           # Provides additional suggestions for code improvement
+    - govet # Detects common issues like suspicious constructs
+    - errcheck # Checks that errors are properly handled
+    - gofmt # Ensures formatting is consistent with Go standards
+    - goimports # Formats imports and optimizes their order
+    - ineffassign # Finds unnecessary assignments
+    - sloglint # Checks that log messages are consistent and correct
+    - unparam # Checks that function parameters are used
+    - godot # Check if comments end in a period.
+    - stylecheck # Enforces code style and conventions
+    - gocritic # Provides additional suggestions for code improvement
+    # TODO return to this later
+    #    - unused           # Detects unused variables, constants, and functions
+    #    - revive           # Provides additional suggestions for code improvement
     - gosec
     - misspell
     - goconst
@@ -67,7 +67,7 @@ linters-settings:
     # - "default": report only the default slog logger
     # https://github.com/go-simpler/sloglint?tab=readme-ov-file#no-global
     # Default: ""
-#    no-global: "all"
+    #    no-global: "all"
     # Enforce using methods that accept a context.
     # Values:
     # - "": disabled
@@ -79,11 +79,11 @@ linters-settings:
     # Enforce using static values for log messages.
     # https://github.com/go-simpler/sloglint?tab=readme-ov-file#static-messages
     # Default: false
-#    static-msg: true
+    #    static-msg: true
     # Enforce using constants instead of raw keys.
     # https://github.com/go-simpler/sloglint?tab=readme-ov-file#no-raw-keys
     # Default: false
-#    no-raw-keys: true
+    #    no-raw-keys: true
     # Enforce a single key naming convention.
     # Values: snake, kebab, camel, pascal
     # https://github.com/go-simpler/sloglint?tab=readme-ov-file#key-naming-convention
@@ -128,8 +128,8 @@ run:
   tests: false
   # List of build tags, all linters use it.
   # Default: []
-#  build-tags:
-#    - mytag
+  #  build-tags:
+  #    - mytag
   # If set, we pass it to "go list -mod={option}". From "go help modules":
   # If invoked with -mod=readonly, the go command is disallowed from the implicit
   # automatic updating of go.mod described above. Instead, it fails when any changes
@@ -153,7 +153,7 @@ run:
   # Define the Go version limit.
   # Mainly related to generics support since go1.18.
   # Default: use Go version from the go.mod file, fallback on the env var `GOVERSION`, fallback on 1.17
-  go: '1.23.2'
+  go: "1.23.2"
   # Number of operating system threads (`GOMAXPROCS`) that can execute golangci-lint simultaneously.
   # If it is explicitly set to 0 (i.e. not the default) then golangci-lint will automatically set the value to match Linux container CPU quota.
   # Default: the number of logical CPUs in the machine

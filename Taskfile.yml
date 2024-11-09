@@ -6,12 +6,18 @@ includes:
 
 vars:
   BLOT_SERVICE_ADDRESS: '{{.BLOT_SERVICE_ADDRESS | default "127.0.0.1:8080"}}'
+  PRETTIER_VERSION: "3.2.5"
 
 tasks:
   install-grpcui:
     desc: Install grpcui
     cmds:
       - go install github.com/fullstorydev/grpcui/cmd/grpcui@latest
+
+  install-prettier:
+    desc: Install prettier
+    cmds:
+      - docker pull tmknom/prettier:{{.PRETTIER_VERSION}}
 
   install-envoy:
     desc: Install envoy
@@ -23,6 +29,7 @@ tasks:
     cmds:
       - cd services/go-services && go mod download
       - cd services/go-services && task install-golangci-lint
+      - task: install-prettier
 
   test:
     desc: Run all tests
@@ -33,3 +40,8 @@ tasks:
     desc: Run linter
     cmds:
       - cd services/go-services && task lint
+      - |
+        docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/work tmknom/prettier:{{.PRETTIER_VERSION}} --write "**/*.json"
+        docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/work tmknom/prettier:{{.PRETTIER_VERSION}} --write "**/*.md"
+        docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/work tmknom/prettier:{{.PRETTIER_VERSION}} --write "**/*.yaml"
+        docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/work tmknom/prettier:{{.PRETTIER_VERSION}} --write "**/*.yml"

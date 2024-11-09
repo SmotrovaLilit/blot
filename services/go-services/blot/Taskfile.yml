@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 vars:
   GAME_SET_ID: "71199ac4-dda2-47f1-a207-2ef9e5c48498"
   GAME_ID: "81199ac4-dda2-47f1-a207-2ef9e5c48499"
@@ -55,7 +55,7 @@ tasks:
         "player_name": "Lilit",
         "player_id": "{{.PLAYER_1}}"
         }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.CreateGameSet
-  
+
   get-game-set:
     desc: Get game set
     dir: services/go-services/blot
@@ -96,4 +96,3 @@ tasks:
             "id": "{{.GAME_SET_ID}}",
             "player_name": ""
         }' {{.BLOT_SERVICE_ADDRESS}} blotservice.v1beta1.BlotService.CreateGameSet
-

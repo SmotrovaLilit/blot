@@ -5,11 +5,11 @@ service:
 
 pipeline:
   inputs:
-#    - name: tail
-#      tag: file
-#      path: /var/logs/*.log
-#      parser: json
-#      refresh_interval: 10
+    #    - name: tail
+    #      tag: file
+    #      path: /var/logs/*.log
+    #      parser: json
+    #      refresh_interval: 10
     - name: tail
       tag: file.<app>
       tag_regex: (?<app>[^/]+)\.log$
@@ -22,19 +22,19 @@ pipeline:
         logs:
           - name: content_modifier
             action: extract
-            key: '_metadata_file_path'
+            key: "_metadata_file_path"
             pattern: (?<app>[^/]+)\.log$
 
-#    - name: tail
-#      tag: docker.<container_id>
-#      tag_regex: (?<container_id>[^/]+)-json\.log$
-#      path: /var/lib/docker/containers/*/*-json.log
-#      parser: docker
-#      refresh_interval: 10
+  #    - name: tail
+  #      tag: docker.<container_id>
+  #      tag_regex: (?<container_id>[^/]+)-json\.log$
+  #      path: /var/lib/docker/containers/*/*-json.log
+  #      parser: docker
+  #      refresh_interval: 10
 
   outputs:
     - name: loki
-      match: '*'
+      match: "*"
       host: loki
       port: 3100
       labels: job=logs, app=$app, level=$level, command=$command, query=$query

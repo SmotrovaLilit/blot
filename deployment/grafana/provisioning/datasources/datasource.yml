@@ -23,12 +23,12 @@ datasources:
         hide: false
       traceQuery:
         timeShiftEnabled: true
-        spanStartTimeShift: '1h'
-        spanEndTimeShift: '-1h'
+        spanStartTimeShift: "1h"
+        spanEndTimeShift: "-1h"
       tracesToLogsV2:
-        datasourceUid: 'Loki'
-        spanStartTimeShift: '-1h'
-        spanEndTimeShift: '1h'
+        datasourceUid: "Loki"
+        spanStartTimeShift: "-1h"
+        spanEndTimeShift: "1h"
         filterByTraceID: false
         filterBySpanID: false
         customQuery: true
