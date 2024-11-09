@@ -18,3 +18,18 @@ tasks:
     cmds:
       - brew install envoy
 
+  install-dependencies:
+    desc: Install dependencies
+    cmds:
+      - cd services/go-services && go mod download
+      - cd services/go-services && task install-golangci-lint
+
+  test:
+    desc: Run all tests
+    cmds:
+      - cd services/go-services && task test
+
+  lint:
+    desc: Run linter
+    cmds:
+      - cd services/go-services && task lint
