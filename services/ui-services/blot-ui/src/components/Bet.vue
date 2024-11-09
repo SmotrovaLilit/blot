@@ -91,7 +91,7 @@ const amountError = ref<string | null>(null);
 // Computed property to check if a bet is already set
 const betIsSet = computed(() => {
   console.log('Existing Bet:', props.existingBet);
-  return props.existingBet !== undefined && !!props.existingBet.teamId;
+  return props.existingBet
 });
 
 const validateAmount = () => {

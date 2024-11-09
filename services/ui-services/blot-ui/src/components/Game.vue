@@ -21,14 +21,14 @@
         <ClosedDeck :cards-count="game.allyPlayer.handCards.length"/>
       </div>
     </div>
-    <div v-if="!game.isFinished"  class="player-container left-player-container"
+    <div v-if="!game.isFinished" class="player-container left-player-container"
          :class="{ selected: game.leftPlayer.isCurrentTurn }">
       <div class="player-name">{{ game.leftPlayer.name }}</div>
       <div class="players-cards">
         <ClosedDeck :cards-count="game.leftPlayer.handCards.length"/>
       </div>
     </div>
-    <div v-if="!game.isFinished"  class="player-container right-player-container"
+    <div v-if="!game.isFinished" class="player-container right-player-container"
          :class="{ selected: game.rightPlayer.isCurrentTurn }">
       <div class="player-name">{{ game.rightPlayer.name }}</div>
       <div class="players-cards">
@@ -43,7 +43,7 @@
         <div class="left-bar">
         </div>
         <div class="middle">
-          <div v-if="!game.isFinished"   class="game-table" >
+          <div v-if="!game.isFinished" class="game-table">
             <div class="table-cards">
               <TableDeck :cards="game.tableCards"/>
             </div>
@@ -53,7 +53,8 @@
         </div>
       </div>
       <div class="game-bottom">
-        <div v-if="!game.isFinished" class="your-cards" :class="{ selected: game.currentPlayer.isCurrentTurn }">
+        <div v-if="!game.isFinished" class="your-cards"
+             :class="{ selected: game.currentPlayer.isCurrentTurn }">
           <HandDeck :cards="game.currentPlayer.handCards"
                     :is-your-turn="game.currentPlayer.isCurrentTurn"
                     :play-card="playCard"/>
@@ -157,6 +158,7 @@ const findTeamId = (gameSet: GameSet, playerId: string) => {
 };
 
 const enrichBet = (gameSet: GameSet) => {
+  if (!gameSet.game?.bet) return null;
   return {
     ...gameSet.game?.bet,
     teamName: calculateTeamName(gameSet, gameSet.game?.bet?.teamId),
@@ -181,6 +183,7 @@ const enrichTableCards = (gameSet: GameSet) => {
   if (!gameSet.game) return [];
   if (!gameSet.game.rounds) return [];
   const currentRound = gameSet.game.rounds[gameSet.game.rounds.length - 1];
+  if (!currentRound) return [];
   if (currentRound.table.length == 0) {
     if (gameSet.game.rounds.length == 1) {
       return [];
